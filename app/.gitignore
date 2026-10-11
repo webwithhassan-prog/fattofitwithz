@@ -44,4 +44,4 @@ next-env.d.ts
 !.env.example
 
 # Payload uploads while developing (production uses cloud storage)
-/media
+
