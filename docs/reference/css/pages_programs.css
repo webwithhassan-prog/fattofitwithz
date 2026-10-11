@@ -1,0 +1,382 @@
+.section-template--22459807957147__main-padding {
+    padding-top: 21px;
+    padding-bottom: 21px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807957147__main-padding {
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+  }
+/*----*/
+
+#ftf-programs{
+  --ftf-pink:#FF65C5;
+  --ftf-pink-dark:#c91652;
+  --ftf-black:#151515;
+  --ftf-grey:#666;
+  --ftf-white:#fff;
+  width:100%;
+  padding:70px 20px 80px;
+  background:#fff;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+
+#ftf-programs *{
+  box-sizing:border-box;
+}
+
+#ftf-programs .ftf-programs-header{
+  text-align:center;
+  max-width:850px;
+  margin:0 auto 35px;
+}
+
+#ftf-programs .ftf-programs-header h2{
+  margin:0 0 10px;
+  font-size:35px;
+  line-height:1.15;
+  font-weight:800;
+  color:var(--ftf-black);
+}
+
+#ftf-programs .ftf-programs-header h2 span{
+  color:var(--ftf-pink);
+}
+
+#ftf-programs .ftf-programs-header p{
+  margin:6px auto 0;
+  max-width:650px;
+  color:#555;
+  font-size:28px;
+  line-height:1.5;
+  font-weight:500;
+  letter-spacing:.1px;
+}
+
+#ftf-programs .ftf-programs-header p span{
+  color:var(--ftf-pink);
+  font-weight:700;
+}
+
+#ftf-programs .ftf-filters{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0 auto 38px;
+}
+
+#ftf-programs .ftf-filter-box{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+#ftf-programs .ftf-filter-box label{
+  font-size:14px;
+  font-weight:700;
+  color:var(--ftf-black);
+}
+
+#ftf-programs .ftf-select{
+  min-width:200px;
+  height:46px;
+  padding:0 40px 0 15px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:#fff;
+  color:#222;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  outline:none;
+}
+
+#ftf-programs .ftf-select:focus{
+  border-color:var(--ftf-pink);
+}
+
+#ftf-programs .ftf-slider-wrap{
+  position:relative;
+  width:100%;
+  max-width:1320px;
+  margin:0 auto;
+}
+
+#ftf-programs .ftf-slider{
+  width:100%;
+  overflow:hidden;
+  padding:0 48px;
+}
+
+#ftf-programs .ftf-track{
+  display:flex;
+  gap:22px;
+  transition:transform .45s ease;
+  will-change:transform;
+}
+
+#ftf-programs .ftf-card{
+  flex:0 0 calc((100% - 44px)/3);
+  min-width:0;
+  background:var(--ftf-white);
+  border:1px solid #e8e8e8;
+  border-radius:18px;
+  padding:30px 25px 27px;
+  box-shadow:0 8px 28px rgba(0,0,0,.07);
+  display:flex;
+  flex-direction:column;
+  min-height:485px;
+}
+
+#ftf-programs .ftf-card h3{
+  margin:0 0 8px;
+  color:var(--ftf-black);
+  font-size:23px;
+  line-height:1.25;
+  font-weight:800;
+}
+
+#ftf-programs .ftf-duration{
+  display:inline-flex;
+  align-items:center;
+  width:fit-content;
+  min-height:30px;
+  padding:5px 11px;
+  border-radius:30px;
+  background:#fff0f5;
+  color:var(--ftf-pink-dark);
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:18px;
+}
+
+#ftf-programs .ftf-price{
+  margin-bottom:20px;
+  color:var(--ftf-pink);
+  font-size:32px;
+  line-height:1;
+  font-weight:800;
+}
+
+/* MAIN BENEFITS / COVERS HEADING */
+#ftf-programs .ftf-benefits-title{
+  margin:0 0 12px;
+  color:var(--ftf-black);
+  font-size:18px;
+  line-height:1.3;
+  font-weight:900;
+}
+
+/* BENEFITS TEXT */
+#ftf-programs .ftf-benefits{
+  margin:0 0 25px;
+  padding:0;
+  list-style:none;
+}
+
+#ftf-programs .ftf-benefits li{
+  position:relative;
+  margin:0 0 10px;
+  padding-left:22px;
+  color:#555;
+  font-size:16px;
+  line-height:1.5;
+  font-weight:800;
+}
+
+#ftf-programs .ftf-benefits li::before{
+  content:"✓";
+  position:absolute;
+  left:0;
+  top:0;
+  color:var(--ftf-pink);
+  font-weight:900;
+}
+
+#ftf-programs .ftf-button{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:48px;
+  margin-top:auto;
+  padding:12px 18px;
+  border-radius:8px;
+  background:var(--ftf-pink);
+  color:#fff!important;
+  text-decoration:none!important;
+  font-size:14px;
+  font-weight:800;
+  text-align:center;
+  transition:.25s ease;
+}
+
+#ftf-programs .ftf-button:hover{
+  background:var(--ftf-pink-dark);
+  transform:translateY(-1px);
+}
+
+#ftf-programs .ftf-arrow{
+  position:absolute;
+  top:50%;
+  z-index:20;
+  width:42px;
+  height:42px;
+  margin-top:-21px;
+  border:0;
+  border-radius:50%;
+  background:var(--ftf-pink);
+  color:#fff;
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+  font-size:25px;
+  line-height:1;
+  cursor:pointer;
+  box-shadow:0 5px 18px rgba(0,0,0,.18);
+  transition:.25s ease;
+}
+
+#ftf-programs .ftf-arrow:hover{
+  background:var(--ftf-pink-dark);
+  transform:scale(1.05);
+}
+
+#ftf-programs .ftf-prev{
+  left:2px;
+}
+
+#ftf-programs .ftf-next{
+  right:2px;
+}
+
+#ftf-programs .ftf-arrow:disabled{
+  opacity:.35;
+  cursor:default;
+  transform:none;
+}
+
+#ftf-programs .ftf-dots{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
+  margin-top:28px;
+}
+
+#ftf-programs .ftf-dot{
+  width:8px;
+  height:8px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#d7d7d7;
+  cursor:pointer;
+  transition:.25s ease;
+}
+
+#ftf-programs .ftf-dot.active{
+  width:25px;
+  border-radius:20px;
+  background:var(--ftf-pink);
+}
+
+
+/* TABLET */
+@media(max-width:990px){
+
+  #ftf-programs .ftf-card{
+    flex-basis:calc((100% - 22px)/2);
+  }
+
+}
+
+
+/* MOBILE */
+@media(max-width:650px){
+
+  #ftf-programs{
+    padding:50px 10px 60px;
+  }
+
+  #ftf-programs .ftf-programs-header{
+    margin-bottom:28px;
+  }
+
+  #ftf-programs .ftf-programs-header h2{
+    font-size:30px;
+  }
+
+  #ftf-programs .ftf-programs-header p{
+    max-width:330px;
+    font-size:13px;
+    line-height:1.5;
+    margin-top:7px;
+  }
+
+  #ftf-programs .ftf-filters{
+    margin-bottom:30px;
+  }
+
+  #ftf-programs .ftf-filter-box{
+    width:100%;
+    max-width:330px;
+    justify-content:center;
+  }
+
+  #ftf-programs .ftf-select{
+    min-width:190px;
+  }
+
+  #ftf-programs .ftf-slider{
+    padding:0 40px;
+  }
+
+  #ftf-programs .ftf-card{
+    flex:0 0 100%;
+    min-height:470px;
+    padding:26px 22px 24px;
+  }
+
+  #ftf-programs .ftf-card h3{
+    font-size:21px;
+  }
+
+  #ftf-programs .ftf-price{
+    font-size:29px;
+  }
+
+  /* MAIN BENEFITS MOBILE */
+  #ftf-programs .ftf-benefits-title{
+    font-size:18px;
+    line-height:1.3;
+    font-weight:900;
+    margin-bottom:12px;
+  }
+
+  /* BENEFITS TEXT MOBILE */
+  #ftf-programs .ftf-benefits li{
+    font-size:16px;
+    line-height:1.5;
+    font-weight:800;
+  }
+
+  #ftf-programs .ftf-arrow{
+    width:36px;
+    height:36px;
+    margin-top:-18px;
+    font-size:21px;
+  }
+
+  #ftf-programs .ftf-prev{
+    left:0;
+  }
+
+  #ftf-programs .ftf-next{
+    right:0;
+  }
+
+}

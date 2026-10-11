@@ -1,0 +1,79 @@
+{
+  "note": "Founder message carousel: all 12 gallery photos, each paired with a real line from the coach's own material (source given). Captions are drafts for client confirmation.",
+  "author": "Zaineb Danish",
+  "authorTitle": "Founder, Nutritionist & Certified Fitness Coach",
+  "slides": [
+    {
+      "photo": "/images/coach/coach-p01.jpg",
+      "caption": "At her desk",
+      "message": "Losing weight on desi food is not about giving up desi food.",
+      "source": "Recipe e-book"
+    },
+    {
+      "photo": "/images/coach/coach-p05.jpg",
+      "caption": "Planning client diets",
+      "message": "What I change is rarely the dish. It is the portion, the oil, and the balance of what sits next to it.",
+      "source": "Recipe e-book"
+    },
+    {
+      "photo": "/images/coach/coach-p06.jpg",
+      "caption": "Everyday, real food",
+      "message": "These recipes are written for real kitchens and real budgets. If your kiryana shop does not stock it, it is not in this book.",
+      "source": "Recipe e-book"
+    },
+    {
+      "photo": "/images/coach/coach-p02.jpg",
+      "caption": "In the office",
+      "message": "Every individual is different, which is why a one-size-fits-all approach does not work for everyone.",
+      "source": "Founder message"
+    },
+    {
+      "photo": "/images/coach/coach-p03.jpg",
+      "caption": "Founder",
+      "message": "My goal is not simply to help you lose weight. It is to help you understand your body and improve your relationship with food.",
+      "source": "Founder message"
+    },
+    {
+      "photo": "/images/coach/coach-p07.jpg",
+      "caption": "Tracking progress",
+      "message": "Our mission is simple: to help women achieve their health and fitness goals without extreme restrictions.",
+      "source": "About page"
+    },
+    {
+      "photo": "/images/coach/coach-p04.jpg",
+      "caption": "Founder",
+      "message": "Progress does not require perfection. If you have an off day, simply get back to your routine.",
+      "source": "FAQ"
+    },
+    {
+      "photo": "/images/coach/coach-p08.jpg",
+      "caption": "Founder",
+      "message": "Half a teaspoon means half a teaspoon. Oil poured straight from the bottle is where most home cooking quietly doubles.",
+      "source": "Recipe e-book"
+    },
+    {
+      "photo": "/images/coach/coach-p09.jpg",
+      "caption": "Speaking at a women's health session",
+      "message": "Right plan. Right support. Better you.",
+      "source": "Event banner"
+    },
+    {
+      "photo": "/images/coach/coach-p11.jpg",
+      "caption": "At Lahore Press Club",
+      "message": "Sustainable results come from the right balance of nutrition, movement, consistency and a healthy lifestyle.",
+      "source": "About page"
+    },
+    {
+      "photo": "/images/coach/coach-p10.jpg",
+      "caption": "Recognition ceremony",
+      "message": "Whether your goal is weight management, better nutrition or improved fitness, we are here to guide you every step of the way.",
+      "source": "Founder message"
+    },
+    {
+      "photo": "/images/coach/coach-p12.jpg",
+      "caption": "Recognition ceremony",
+      "message": "Your transformation begins with one decision.",
+      "source": "Testimonials page"
+    }
+  ]
+}

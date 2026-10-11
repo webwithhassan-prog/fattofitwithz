@@ -1,0 +1,107 @@
+{
+  "note": "'Recommended for you' carousel: each goal lists program slugs best-first, with a one-line reason for the top three.",
+  "goals": [
+    {
+      "id": "fat-loss",
+      "label": "Lose fat & tone up",
+      "order": [
+        "fat-loss",
+        "total-transformation",
+        "kickstart",
+        "premium-signature",
+        "health-concerns",
+        "diabetes-control"
+      ],
+      "why": {
+        "fat-loss": "Built around a calculated calorie deficit and progressive strength training.",
+        "total-transformation": "Six months for fat loss plus toning, strength and lasting habits.",
+        "kickstart": "A gentle first month if you want to build habits before a deficit."
+      }
+    },
+    {
+      "id": "hormonal",
+      "label": "PCOS, thyroid or menopause",
+      "order": [
+        "health-concerns",
+        "total-transformation",
+        "premium-signature",
+        "kickstart",
+        "fat-loss",
+        "diabetes-control"
+      ],
+      "why": {
+        "health-concerns": "Condition-focused nutrition for hormonal imbalance, PCOS, thyroid and menopause.",
+        "total-transformation": "Six months that combine health support with full body transformation.",
+        "premium-signature": "One-to-one follow-ups for complex hormonal cases."
+      }
+    },
+    {
+      "id": "diabetes",
+      "label": "Diabetes or insulin resistance",
+      "order": [
+        "diabetes-control",
+        "health-concerns",
+        "total-transformation",
+        "premium-signature",
+        "kickstart",
+        "fat-loss"
+      ],
+      "why": {
+        "diabetes-control": "Designed for insulin resistance and HbA1c, with practical home meals.",
+        "health-concerns": "Also covers metabolic concerns like fatty liver and cholesterol.",
+        "total-transformation": "Longer support if you also want significant weight loss."
+      }
+    },
+    {
+      "id": "beginner",
+      "label": "Just getting started",
+      "order": [
+        "kickstart",
+        "fat-loss",
+        "total-transformation",
+        "health-concerns",
+        "diabetes-control",
+        "premium-signature"
+      ],
+      "why": {
+        "kickstart": "One month to build healthy habits, portion control and a movement routine.",
+        "fat-loss": "When you're ready for visible change: two or four months of focused fat loss.",
+        "total-transformation": "For a full lifestyle reset over six months."
+      }
+    },
+    {
+      "id": "makeover",
+      "label": "Complete makeover",
+      "order": [
+        "total-transformation",
+        "premium-signature",
+        "fat-loss",
+        "health-concerns",
+        "kickstart",
+        "diabetes-control"
+      ],
+      "why": {
+        "total-transformation": "Complete change in body, nutrition and lifestyle, with the recipe e-book.",
+        "premium-signature": "The same depth with VIP one-to-one coaching.",
+        "fat-loss": "A shorter, focused option if fat loss is the main goal."
+      }
+    },
+    {
+      "id": "vip",
+      "label": "1-on-1 VIP support",
+      "order": [
+        "premium-signature",
+        "total-transformation",
+        "health-concerns",
+        "fat-loss",
+        "diabetes-control",
+        "kickstart"
+      ],
+      "why": {
+        "premium-signature": "Maximum personalization with regular one-to-one follow-ups.",
+        "total-transformation": "Comprehensive support with progress tracking and follow-ups.",
+        "health-concerns": "Specialist support if a health condition is your priority."
+      }
+    }
+  ]
+}

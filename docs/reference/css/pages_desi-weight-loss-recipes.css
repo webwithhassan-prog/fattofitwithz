@@ -1,0 +1,83 @@
+.section-template--22459807957147__main-padding {
+    padding-top: 21px;
+    padding-bottom: 21px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807957147__main-padding {
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+  }
+/*----*/
+
+  /* =========================================================
+     FAT TO FIT — DESI WEIGHT LOSS RECIPES
+     IMAGE-ONLY PDF VIEWER
+     NO PDF TOOLBAR / NO BLACK LAYOUT
+     ========================================================= */
+
+  .desi-recipes-image-viewer {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0 50px;
+    background: #fff;
+  }
+
+  .desi-recipes-pages {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .desi-recipe-page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background: #fff;
+  }
+
+  .desi-recipe-page canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    background: #fff;
+  }
+
+  .desi-recipes-loading {
+    width: 100%;
+    padding: 60px 20px;
+    text-align: center;
+    color: #777;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+  }
+
+  .desi-recipes-error {
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    color: #c91f55;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+  }
+
+  @media screen and (max-width: 749px) {
+
+    .desi-recipes-image-viewer {
+      padding: 5px 0 30px;
+    }
+
+    .desi-recipes-pages {
+      gap: 8px;
+    }
+
+    .desi-recipe-page {
+      width: 100%;
+    }
+
+  }

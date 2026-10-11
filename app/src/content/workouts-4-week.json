@@ -1,0 +1,190 @@
+{
+  "title": "4-Week Recorded Workout Plan",
+  "source": "assets/client-supplied/Workout_Recorded_Sessions_4_Weeks.pdf",
+  "hosting": "YouTube youtu.be links (probably unlisted)",
+  "daysPerWeek": 6,
+  "dayTemplate": [
+    "Yoga and Stretches",
+    "Upper Body",
+    "Lower Body",
+    "Cardio",
+    "Abs and Belly",
+    "Full Body Training"
+  ],
+  "warnings": [
+    "Week 3 Day 4 (Cardio) and Day 5 (Abs and Belly) point to the SAME video Wcri2LB3pkI",
+    "Week 4 Day 3 (Lower Body) and Day 4 (Cardio) point to the SAME video e2y64QNsloc",
+    "Original links carry ?si= share-tracking params (stripped here)",
+    "Unlisted YouTube links can be re-shared by anyone - use private hosting if content must stay members-only"
+  ],
+  "sessions": [
+    {
+      "week": 1,
+      "day": 1,
+      "workout": "Yoga and Stretches",
+      "youtubeId": "dGyVLPcUcs8",
+      "url": "https://youtu.be/dGyVLPcUcs8"
+    },
+    {
+      "week": 1,
+      "day": 2,
+      "workout": "Upper Body",
+      "youtubeId": "AzGojifbHzA",
+      "url": "https://youtu.be/AzGojifbHzA"
+    },
+    {
+      "week": 1,
+      "day": 3,
+      "workout": "Lower Body",
+      "youtubeId": "sYcKd8bvDbs",
+      "url": "https://youtu.be/sYcKd8bvDbs"
+    },
+    {
+      "week": 1,
+      "day": 4,
+      "workout": "Cardio",
+      "youtubeId": "skN16-M1J08",
+      "url": "https://youtu.be/skN16-M1J08"
+    },
+    {
+      "week": 1,
+      "day": 5,
+      "workout": "Abs and Belly",
+      "youtubeId": "SeM1ovMh2tY",
+      "url": "https://youtu.be/SeM1ovMh2tY"
+    },
+    {
+      "week": 1,
+      "day": 6,
+      "workout": "Full Body Training",
+      "youtubeId": "H1TNwgqtVWU",
+      "url": "https://youtu.be/H1TNwgqtVWU"
+    },
+    {
+      "week": 2,
+      "day": 1,
+      "workout": "Yoga and Stretches",
+      "youtubeId": "gLhK70qk7Ys",
+      "url": "https://youtu.be/gLhK70qk7Ys"
+    },
+    {
+      "week": 2,
+      "day": 2,
+      "workout": "Upper Body",
+      "youtubeId": "_SXksHQXb8k",
+      "url": "https://youtu.be/_SXksHQXb8k"
+    },
+    {
+      "week": 2,
+      "day": 3,
+      "workout": "Lower Body",
+      "youtubeId": "ZIjiY129gds",
+      "url": "https://youtu.be/ZIjiY129gds"
+    },
+    {
+      "week": 2,
+      "day": 4,
+      "workout": "Cardio",
+      "youtubeId": "f-o2Vnb3mQw",
+      "url": "https://youtu.be/f-o2Vnb3mQw"
+    },
+    {
+      "week": 2,
+      "day": 5,
+      "workout": "Abs and Belly",
+      "youtubeId": "qKW_jsJWW_w",
+      "url": "https://youtu.be/qKW_jsJWW_w"
+    },
+    {
+      "week": 2,
+      "day": 6,
+      "workout": "Full Body Training",
+      "youtubeId": "V4hQQRLFKPA",
+      "url": "https://youtu.be/V4hQQRLFKPA"
+    },
+    {
+      "week": 3,
+      "day": 1,
+      "workout": "Yoga and Stretches",
+      "youtubeId": "qSsy596qkt0",
+      "url": "https://youtu.be/qSsy596qkt0"
+    },
+    {
+      "week": 3,
+      "day": 2,
+      "workout": "Upper Body",
+      "youtubeId": "4Kx-IqDt_w4",
+      "url": "https://youtu.be/4Kx-IqDt_w4"
+    },
+    {
+      "week": 3,
+      "day": 3,
+      "workout": "Lower Body",
+      "youtubeId": "P-6pQrD6vNg",
+      "url": "https://youtu.be/P-6pQrD6vNg"
+    },
+    {
+      "week": 3,
+      "day": 4,
+      "workout": "Cardio",
+      "youtubeId": "Wcri2LB3pkI",
+      "url": "https://youtu.be/Wcri2LB3pkI"
+    },
+    {
+      "week": 3,
+      "day": 5,
+      "workout": "Abs and Belly",
+      "youtubeId": "Wcri2LB3pkI",
+      "url": "https://youtu.be/Wcri2LB3pkI"
+    },
+    {
+      "week": 3,
+      "day": 6,
+      "workout": "Full Body Training",
+      "youtubeId": "ZTgwPgPaDZU",
+      "url": "https://youtu.be/ZTgwPgPaDZU"
+    },
+    {
+      "week": 4,
+      "day": 1,
+      "workout": "Yoga and Stretches",
+      "youtubeId": "BscKxc-7neE",
+      "url": "https://youtu.be/BscKxc-7neE"
+    },
+    {
+      "week": 4,
+      "day": 2,
+      "workout": "Upper Body",
+      "youtubeId": "2VIPZBXb-to",
+      "url": "https://youtu.be/2VIPZBXb-to"
+    },
+    {
+      "week": 4,
+      "day": 3,
+      "workout": "Lower Body",
+      "youtubeId": "e2y64QNsloc",
+      "url": "https://youtu.be/e2y64QNsloc"
+    },
+    {
+      "week": 4,
+      "day": 4,
+      "workout": "Cardio",
+      "youtubeId": "e2y64QNsloc",
+      "url": "https://youtu.be/e2y64QNsloc"
+    },
+    {
+      "week": 4,
+      "day": 5,
+      "workout": "Abs and Belly",
+      "youtubeId": "ZMgcS6d2wvs",
+      "url": "https://youtu.be/ZMgcS6d2wvs"
+    },
+    {
+      "week": 4,
+      "day": 6,
+      "workout": "Full Body Training",
+      "youtubeId": "7nSsSj_DM3U",
+      "url": "https://youtu.be/7nSsSj_DM3U"
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "source": "assets/client-supplied/Fat_to_fitwithz_FAQs (2).pdf (canonical, 25 Q&As) + live homepage FAQ",
+  "faqPage": [
+    {
+      "order": 1,
+      "category": "general",
+      "question": "What is FAT TO FIT WITH Z?",
+      "answer": "FAT TO FIT WITH Z is an online women's health and fitness platform designed to help women achieve their health, weight management, fitness, and lifestyle goals through practical and sustainable guidance. We provide customized diet plans, recorded workout sessions/plans, progress tracking, e-books, and ongoing support to help women build healthier and more sustainable lifestyles.",
+      "bullets": []
+    },
+    {
+      "order": 2,
+      "category": "general",
+      "question": "Who can join the programs?",
+      "answer": "Our programs are designed primarily for women of different ages and fitness levels, including:",
+      "bullets": [
+        "Beginners who don't know where to start",
+        "Women looking for sustainable weight loss",
+        "Women who want to become stronger and more active",
+        "Housewives who prefer working out from home",
+        "Working women with busy schedules",
+        "Women looking for structured diet and workout guidance",
+        "Women who want accountability and consistency",
+        "Women returning to fitness after a long break"
+      ]
+    },
+    {
+      "order": 3,
+      "category": "general",
+      "question": "Are the programs suitable for beginners?",
+      "answer": "Yes, absolutely. Our programs include beginner-friendly options and modifications wherever needed. You can start according to your current fitness level and gradually progress at a comfortable pace.",
+      "bullets": []
+    },
+    {
+      "order": 4,
+      "category": "general",
+      "question": "Do I need a gym membership?",
+      "answer": "No. Our workouts are designed to be done from home. Depending on the program, workouts may include:",
+      "bullets": [
+        "Bodyweight exercises",
+        "Simple home-based movements",
+        "Dumbbells or water bottles",
+        "Resistance bands",
+        "Other easily available household props"
+      ]
+    },
+    {
+      "order": 5,
+      "category": "general",
+      "question": "How does the customized diet plan work?",
+      "answer": "Before creating your plan, we collect information about your goals, current weight and measurements, daily routine, food preferences, eating habits, activity level, lifestyle, and relevant health information. Based on this information, a personalized and practical diet plan is created according to your individual needs and goals.",
+      "bullets": []
+    },
+    {
+      "order": 6,
+      "category": "general",
+      "question": "Do I have to eat special or expensive foods?",
+      "answer": "No. Our diet plans are designed to be practical and can be adjusted according to your regular lifestyle and food preferences. The goal is to help you make healthier choices and create sustainable eating habits without extreme restrictions.",
+      "bullets": []
+    },
+    {
+      "order": 7,
+      "category": "general",
+      "question": "Is the diet plan the same for everyone?",
+      "answer": "No. Every person has different goals, lifestyles, food preferences, routines, and requirements. Therefore, customized diet plans are created according to individual needs rather than following a one-size-fits-all approach.",
+      "bullets": []
+    },
+    {
+      "order": 8,
+      "category": "general",
+      "question": "Do you prescribe supplements or recommend specific brands?",
+      "answer": "No. We do not provide supplementation plans, nor do we prescribe or promote any specific supplement brands. Our main focus is on practical, sustainable nutrition through natural food sources.",
+      "bullets": []
+    },
+    {
+      "order": 9,
+      "category": "general",
+      "question": "Do I need to submit medical lab reports to join?",
+      "answer": "No, we do not require you to share detailed medical lab reports. Sharing your medical diagnosis or relevant health conditions (if any) during the initial evaluation is enough for us to tailor your diet and guidance safely.",
+      "bullets": []
+    },
+    {
+      "order": 10,
+      "category": "general",
+      "question": "What types of workouts are included?",
+      "answer": "Depending on your selected program or membership, you may receive access to recorded workout sessions/plans including:",
+      "bullets": [
+        "Home-based workouts",
+        "Strength training",
+        "Cardio workouts",
+        "Full-body workouts",
+        "Pilates-inspired workouts",
+        "Stretching and mobility sessions",
+        "Beginner-friendly workouts"
+      ],
+      "answerAfterList": "Workout content and access may vary according to your selected package."
+    },
+    {
+      "order": 11,
+      "category": "membership",
+      "question": "What do I get with my membership?",
+      "answer": "Your membership benefits will depend on the package you choose. Depending on your selected program, your membership may include:",
+      "bullets": [
+        "Personalized diet plan",
+        "Recorded workout sessions / workout plan",
+        "E-books and helpful guides",
+        "Progress tracking",
+        "Weekly check-ins",
+        "Meal submission and tracking",
+        "Access to the Member Dashboard",
+        "Ongoing guidance and accountability"
+      ]
+    },
+    {
+      "order": 12,
+      "category": "membership",
+      "question": "What are the e-books included in the membership?",
+      "answer": "Depending on your selected package, members may receive access to exclusive e-books and guides related to health, nutrition, fitness, weight management, healthy habits, and lifestyle improvement. The availability of e-books may vary according to the membership package.",
+      "bullets": []
+    },
+    {
+      "order": 13,
+      "category": "membership",
+      "question": "How do I access my membership?",
+      "answer": "After successfully joining a program, you will receive access to your Member Dashboard. Depending on your membership, the dashboard may include your personalized diet plan, recorded workout sessions / workout plan, e-books, progress tracking forms, weekly check-in forms, daily meal submission forms, and important program updates.",
+      "bullets": []
+    },
+    {
+      "order": 14,
+      "category": "membership",
+      "question": "How long will I have access to the membership?",
+      "answer": "Your access period depends on the package or program you purchase. Each program will clearly mention program duration, membership validity, included services, and access period.",
+      "bullets": []
+    },
+    {
+      "order": 15,
+      "category": "membership",
+      "question": "Can I freeze my package or membership?",
+      "answer": "Yes, a package freeze option may be available under specific circumstances. If you are temporarily unable to continue your program due to a valid reason, you can contact the support team to request a package freeze. The duration and eligibility for freezing a package will depend on the terms of your selected membership.",
+      "bullets": []
+    },
+    {
+      "order": 16,
+      "category": "membership",
+      "question": "Can I upgrade my membership?",
+      "answer": "Yes, where available. If you want additional services or access to a higher-level package, you may be able to upgrade your membership according to the available options.",
+      "bullets": []
+    },
+    {
+      "order": 17,
+      "category": "payments-support",
+      "question": "How can I make a payment?",
+      "answer": "Available payment methods will be displayed during the checkout process. Payment options may vary depending on your country and the selected program.",
+      "bullets": []
+    },
+    {
+      "order": 18,
+      "category": "payments-support",
+      "question": "Is my payment secure?",
+      "answer": "Payments made through the website will be processed through the available secure payment system. Please make sure you complete your payment only through the official website or officially provided payment instructions.",
+      "bullets": []
+    },
+    {
+      "order": 19,
+      "category": "payments-support",
+      "question": "What kind of support will I receive?",
+      "answer": "Support depends on your selected package. Depending on your membership, support may include program-related guidance, weekly check-ins, progress monitoring, accountability, guidance related to your diet and workout plan / recorded sessions, and support regarding the Member Dashboard.",
+      "bullets": []
+    },
+    {
+      "order": 20,
+      "category": "payments-support",
+      "question": "How often will my progress be checked?",
+      "answer": "Progress monitoring depends on your selected package and may include weekly check-ins, weight updates, measurement tracking, progress photos (if applicable), and review of consistency and progress.",
+      "bullets": []
+    },
+    {
+      "order": 21,
+      "category": "payments-support",
+      "question": "How quickly will I see results?",
+      "answer": "Results vary from person to person and depend on factors such as starting point, consistency, nutrition, physical activity, sleep, lifestyle, and individual body differences. We focus on healthy, realistic, and sustainable progress rather than promising instant results.",
+      "bullets": []
+    },
+    {
+      "order": 22,
+      "category": "payments-support",
+      "question": "What happens if I cannot follow the plan perfectly?",
+      "answer": "That's completely okay. Progress does not require perfection. The goal is to build consistency and sustainable habits. If you have an occasional off day, simply get back to your routine and continue your journey.",
+      "bullets": []
+    },
+    {
+      "order": 23,
+      "category": "payments-support",
+      "question": "Can I join from another country?",
+      "answer": "Yes. Our online platform allows women from different countries to join and access their available membership services online.",
+      "bullets": []
+    },
+    {
+      "order": 24,
+      "category": "payments-support",
+      "question": "Is this a medical service?",
+      "answer": "No. Our services focus on nutrition guidance, fitness, lifestyle improvement, and general wellness support. For medical diagnosis, treatment, medication-related concerns, or serious health conditions, you should consult your qualified healthcare professional.",
+      "bullets": []
+    },
+    {
+      "order": 25,
+      "category": "payments-support",
+      "question": "Still have questions?",
+      "answer": "We're here to help! If you cannot find the answer to your question, please contact us through our official support channels for assistance regarding programs, memberships, payments, or your account.",
+      "bullets": []
+    }
+  ],
+  "homepage": [
+    {
+      "question": "How does the program work?",
+      "answer": "Our online platform provides structured fitness and nutrition guidance designed around practical and sustainable lifestyle changes."
+    },
+    {
+      "question": "Do I need gym equipment?",
+      "answer": "No. Our workouts are designed to be done from home and can include bodyweight exercises and simple home-based movements."
+    },
+    {
+      "question": "Can I follow the diet if I have allergies?",
+      "answer": "Your diet plan can be customized according to your food preferences and relevant health information. Please provide details about any food allergies."
+    },
+    {
+      "question": "Can I cancel anytime?",
+      "answer": "Please check the terms and conditions of your selected program or membership for the applicable cancellation policy."
+    },
+    {
+      "question": "How will I get support?",
+      "answer": "Support depends on your selected package and may include program guidance, check-ins, progress monitoring, accountability, and support regarding your program."
+    }
+  ]
+}

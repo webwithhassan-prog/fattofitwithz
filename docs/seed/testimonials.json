@@ -1,0 +1,180 @@
+{
+  "source": "live site + assets/client-supplied/fat_to_fit_instagram_links_v2.pdf",
+  "beforeAfter": [
+    {
+      "order": 1,
+      "image": "/images/results/transformation-01-62-to-54kg.jpg",
+      "startKg": 62,
+      "endKg": 54,
+      "lossKg": 8,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 900
+    },
+    {
+      "order": 2,
+      "image": "/images/results/transformation-02-98-to-62kg.jpg",
+      "startKg": 98,
+      "endKg": 62,
+      "lossKg": 36,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 899,
+      "height": 1599
+    },
+    {
+      "order": 3,
+      "image": "/images/results/transformation-03-95-to-75kg.jpg",
+      "startKg": 95,
+      "endKg": 75,
+      "lossKg": 20,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 900
+    },
+    {
+      "order": 4,
+      "image": "/images/results/transformation-04-71-to-61kg.jpg",
+      "startKg": 71,
+      "endKg": 61,
+      "lossKg": 10,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 560,
+      "height": 612
+    },
+    {
+      "order": 5,
+      "image": "/images/results/transformation-05-65-to-55kg.jpg",
+      "startKg": 65,
+      "endKg": 55,
+      "lossKg": 10,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 806,
+      "height": 1420
+    },
+    {
+      "order": 6,
+      "image": "/images/results/transformation-06.jpg",
+      "startKg": null,
+      "endKg": null,
+      "lossKg": null,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 900
+    },
+    {
+      "order": 7,
+      "image": "/images/results/transformation-07.jpg",
+      "startKg": null,
+      "endKg": null,
+      "lossKg": null,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 754
+    },
+    {
+      "order": 8,
+      "image": "/images/results/transformation-08.jpg",
+      "startKg": null,
+      "endKg": null,
+      "lossKg": null,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 900
+    },
+    {
+      "order": 9,
+      "image": "/images/results/transformation-09.jpg",
+      "startKg": null,
+      "endKg": null,
+      "lossKg": null,
+      "rating": 5,
+      "showOnHome": true,
+      "consentOnFile": null,
+      "width": 900,
+      "height": 900
+    }
+  ],
+  "instagram": [
+    {
+      "type": "transformation",
+      "url": "https://www.instagram.com/p/DaYP7krsqU4/",
+      "onLiveSite": false
+    },
+    {
+      "type": "transformation",
+      "url": "https://www.instagram.com/p/DZUofzCsSDa/",
+      "onLiveSite": false
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/DYmLRlMMByG/",
+      "onLiveSite": true
+    },
+    {
+      "type": "review",
+      "url": "https://www.instagram.com/p/DYMeHz5DPGa/",
+      "onLiveSite": true
+    },
+    {
+      "type": "review",
+      "url": "https://www.instagram.com/p/DXt74AsjJ_w/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C-2gvd4Igmg/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C8Cwu-xIejF/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C7Wuv7foFBb/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C60uZN9IKWV/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C6JAVpJIFhy/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C6D6WH5IvHc/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C6CHH87oNbS/",
+      "onLiveSite": true
+    },
+    {
+      "type": "video",
+      "url": "https://www.instagram.com/reel/C5KGkSbyGmX/",
+      "onLiveSite": true
+    }
+  ]
+}

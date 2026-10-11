@@ -1,0 +1,405 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   BLOSSOM DESIGN TOKENS (approved 2026-10-06, see docs/13-approved-design-decisions.md)
+   Tailwind turns each --color-* into utilities: bg-brand, text-ink, border-line ...
+   ========================================================================= */
+@theme {
+  --color-bg: #fffbf8; /* page background */
+  --color-blush: #fbeff1; /* soft section background */
+  --color-blush-2: #f5e2e7;
+  --color-card: #ffffff;
+  --color-brand: #a3154f; /* buttons, links - passes WCAG AA with white text */
+  --color-brand-hover: #851041;
+  --color-rose: #e8a0b8; /* decoration only (petals, bullets, underlines) */
+  --color-pink: #ff65c5; /* original brand pink - accents only, never text on white */
+  --color-gold: #a57b4f; /* thin outlines and dividers */
+  --color-ink: #2b1a1f; /* main text */
+  --color-muted: #6b585d; /* secondary text */
+  --color-line: #ebdcde; /* borders */
+  --color-whatsapp: #1f9d55;
+
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body: var(--font-jost), "Segoe UI", system-ui, sans-serif;
+
+  --radius-card: 12px;
+  --radius-arch: 999px 999px 14px 14px;
+}
+
+/* ---------- base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+:focus-visible {
+  outline: 2.5px solid var(--color-brand);
+  outline-offset: 3px;
+}
+
+/* ---------- reusable component classes (keep names readable for debugging) ---------- */
+@layer components {
+  .container-site {
+    max-width: 1160px;
+    margin-inline: auto;
+    padding-inline: clamp(16px, 4vw, 40px);
+  }
+  .section {
+    padding-block: clamp(48px, 7vw, 88px);
+  }
+  .kicker {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .script {
+    font-style: italic;
+    color: var(--color-brand);
+  }
+  .lead {
+    color: var(--color-muted);
+    font-size: clamp(16px, 1.6vw, 18px);
+    max-width: 52ch;
+  }
+
+  /* Buttons: .btn (filled), .btn-ghost (outline), .btn-sm (smaller) */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 4px;
+    background: var(--color-brand);
+    color: #fff;
+    padding: 13px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition:
+      background 0.2s,
+      transform 0.2s;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background: var(--color-brand-hover);
+    transform: translateY(-1px);
+  }
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-ink);
+    box-shadow: inset 0 0 0 1px var(--color-ink);
+  }
+  .btn-ghost:hover {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+  .btn-sm {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  /* Round icon button used by every carousel */
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    flex: none;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: var(--color-card);
+    color: var(--color-ink);
+    transition:
+      background 0.2s,
+      color 0.2s;
+  }
+  .icon-btn:hover:not(:disabled) {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+  }
+  .icon-btn:disabled {
+    opacity: 0.35;
+  }
+
+  /* Arch-shaped photo with an offset thin gold outline (Blossom signature) */
+  .arch-frame {
+    position: relative;
+    isolation: isolate;
+  }
+  .arch-frame::before {
+    content: "";
+    position: absolute;
+    inset: -12px 12px 12px -12px;
+    border: 1px solid var(--color-gold);
+    border-radius: var(--radius-arch);
+    z-index: -1;
+  }
+  .arch {
+    border-radius: var(--radius-arch);
+    object-fit: cover;
+  }
+
+  /* Gold rule either side of a kicker */
+  .gold-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .gold-rule::before,
+  .gold-rule::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    max-width: 90px;
+    background: var(--color-gold);
+    opacity: 0.6;
+  }
+  .gold-rule-left {
+    justify-content: flex-start;
+  }
+  .gold-rule-left::before {
+    display: none;
+  }
+
+  .card {
+    background: var(--color-card);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+  .card-hover {
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 44px -26px rgba(120, 20, 60, 0.45);
+  }
+
+  .chip {
+    border: 1px solid var(--color-line);
+    background: var(--color-card);
+    border-radius: 999px;
+    padding: 5px 13px;
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+
+  /* Prose for legal pages and long text */
+  .prose-site h2 {
+    font-size: 24px;
+    margin-top: 2.2em;
+    margin-bottom: 0.6em;
+  }
+  .prose-site p {
+    margin-bottom: 1em;
+    color: var(--color-muted);
+  }
+  .prose-site ul {
+    margin: 0 0 1.2em 1.2em;
+    list-style: disc;
+    color: var(--color-muted);
+  }
+  .prose-site li {
+    margin-bottom: 0.35em;
+  }
+
+  /* Form fields */
+  .field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .field-input {
+    width: 100%;
+    border: 1px solid var(--color-line);
+    background: var(--color-card);
+    border-radius: 8px;
+    padding: 11px 13px;
+  }
+  .field-input:focus {
+    border-color: var(--color-brand);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(163, 21, 79, 0.15);
+  }
+}
+
+/* =========================================================================
+   APPROVED ANIMATIONS (8). Each has a class you can search for.
+   All are switched off for visitors with "reduce motion" turned on.
+   ========================================================================= */
+
+/* 1. Scroll reveal - added by <Reveal> when the element scrolls into view */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.reveal-play {
+  animation: reveal-up 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* 2. Headline script wipe + underline draw (hero) */
+@keyframes script-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes underline-draw {
+  from {
+    stroke-dashoffset: 440;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.anim-script {
+  animation: script-wipe 1.1s cubic-bezier(0.6, 0, 0.2, 1) both;
+}
+.anim-underline path {
+  stroke-dasharray: 440;
+  animation: underline-draw 1.1s 0.6s ease both;
+}
+
+/* 3. Drifting petals (hero) */
+@keyframes petal-fall {
+  0% {
+    transform: translate(0, 0) rotate(0);
+  }
+  100% {
+    transform: translate(-90px, 760px) rotate(560deg);
+    opacity: 0;
+  }
+}
+.petal {
+  position: absolute;
+  top: -30px;
+  background: var(--color-rose);
+  border-radius: 14px 0 14px 0;
+  opacity: 0.75;
+  animation: petal-fall linear infinite;
+}
+
+/* 4. Price flip (region / duration change) */
+@keyframes price-flip {
+  0% {
+    transform: rotateX(0);
+  }
+  50% {
+    transform: rotateX(90deg);
+    opacity: 0.2;
+  }
+  100% {
+    transform: rotateX(0);
+  }
+}
+.price-flip {
+  display: inline-block;
+  animation: price-flip 0.5s ease;
+}
+
+/* 5. Card hover lift -> see .card-hover above */
+
+/* 6. Step line draw (How it works) */
+@keyframes line-draw {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.step-line line {
+  stroke-dasharray: 1000;
+}
+.reveal-play .step-line line {
+  animation: line-draw 1.8s ease both;
+}
+
+/* 7. Before/after slider -> components/home/BeforeAfter.tsx (no keyframes) */
+
+/* 8. WhatsApp pulse ring */
+@keyframes pulse-ring {
+  to {
+    box-shadow: 0 0 0 18px rgba(31, 157, 85, 0);
+  }
+}
+.whatsapp-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 0 rgba(31, 157, 85, 0.5);
+  animation: pulse-ring 2.6s ease-out infinite;
+}
+
+/* Hero progress bar (doubles as the autoplay timer) */
+@keyframes progress-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+.progress-run {
+  animation: progress-fill var(--autoplay-ms, 6500ms) linear forwards;
+}
+.progress-paused {
+  animation-play-state: paused;
+}
+
+/* Hide scrollbars on swipe tracks but keep them scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .petal {
+    display: none;
+  }
+}

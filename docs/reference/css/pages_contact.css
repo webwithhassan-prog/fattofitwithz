@@ -1,0 +1,407 @@
+.section-template--22459807760539__main-padding {
+    padding-top: 27px;
+    padding-bottom: 27px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807760539__main-padding {
+      padding-top: 36px;
+      padding-bottom: 36px;
+    }
+  }
+/*----*/
+
+  /* Hide Shopify default page title */
+  .main-page-title {
+    display: none !important;
+  }
+
+  #ftf-contact-page {
+    --pink: #FF65C5;
+    --pink-dark: #FF3FB7;
+    --light-pink: #fff6fb;
+    --soft-pink: #ffe8f6;
+    --border: #eeeeee;
+    --text: #171717;
+    --grey: #666666;
+    --white: #ffffff;
+
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--text);
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  #ftf-contact-page * {
+    box-sizing: border-box;
+  }
+
+  /* HERO */
+  #ftf-contact-page .contact-hero {
+    background: linear-gradient(
+      135deg,
+      #fff7fc 0%,
+      #ffffff 55%,
+      #ffeaf7 100%
+    );
+    padding: 85px 20px;
+    text-align: center;
+  }
+
+  #ftf-contact-page .contact-hero-inner {
+    max-width: 850px;
+    margin: 0 auto;
+  }
+
+  #ftf-contact-page .contact-eyebrow {
+    color: var(--pink);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+  }
+
+  #ftf-contact-page .contact-hero h1 {
+    margin: 0 0 18px;
+    font-size: 54px;
+    line-height: 1.08;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .contact-hero h1 span {
+    color: var(--pink);
+  }
+
+  #ftf-contact-page .contact-hero p {
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--grey);
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  /* MAIN CONTACT */
+  #ftf-contact-page .contact-section {
+    padding: 75px 20px;
+  }
+
+  #ftf-contact-page .contact-container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  #ftf-contact-page .contact-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 45px;
+    align-items: stretch;
+  }
+
+  /* LEFT */
+  #ftf-contact-page .contact-info {
+    background: var(--light-pink);
+    border-radius: 24px;
+    padding: 38px;
+  }
+
+  /* CONTACT US HEADING */
+  #ftf-contact-page .contact-info h2 {
+    margin: 0 0 14px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--pink);
+  }
+
+  #ftf-contact-page .contact-info > p {
+    margin: 0 0 30px;
+    color: var(--grey);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  #ftf-contact-page .contact-item {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-bottom: 25px;
+  }
+
+  #ftf-contact-page .contact-icon {
+    flex: 0 0 46px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--pink);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .contact-item h3 {
+    margin: 2px 0 5px;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .contact-item p {
+    margin: 0;
+    color: var(--grey);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #ftf-contact-page .contact-item a {
+    color: var(--pink);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  #ftf-contact-page .contact-item a:hover {
+    text-decoration: underline;
+  }
+
+  /* WHATSAPP */
+  #ftf-contact-page .whatsapp-box {
+    margin-top: 30px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 22px;
+    border: 1px solid #f1d6df;
+  }
+
+  #ftf-contact-page .whatsapp-box h3 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .whatsapp-box p {
+    margin: 0 0 17px;
+    color: var(--grey);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #ftf-contact-page .whatsapp-button {
+    display: inline-block;
+    background: var(--pink);
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .whatsapp-button:hover {
+    background: var(--pink-dark);
+  }
+
+  /* RIGHT CONTACT FORM */
+  #ftf-contact-page .contact-form-box {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 38px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.06);
+  }
+
+  /* SEND US A MESSAGE HEADING */
+  #ftf-contact-page .contact-form-box h2 {
+    margin: 0 0 8px;
+    font-size: 32px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--pink);
+  }
+
+  #ftf-contact-page .contact-form-box > p {
+    margin: 0 0 28px;
+    color: var(--grey);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  #ftf-contact-page .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  #ftf-contact-page .form-group {
+    margin-bottom: 18px;
+  }
+
+  #ftf-contact-page .form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  #ftf-contact-page .form-group input,
+  #ftf-contact-page .form-group textarea,
+  #ftf-contact-page .form-group select {
+    width: 100%;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    padding: 13px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: #ffffff;
+    outline: none;
+  }
+
+  #ftf-contact-page .form-group input:focus,
+  #ftf-contact-page .form-group textarea:focus,
+  #ftf-contact-page .form-group select:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(255,101,197,0.12);
+  }
+
+  #ftf-contact-page .form-group textarea {
+    min-height: 145px;
+    resize: vertical;
+  }
+
+  #ftf-contact-page .submit-button {
+    width: 100%;
+    border: 0;
+    background: var(--pink);
+    color: #ffffff;
+    padding: 15px 25px;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease;
+  }
+
+  #ftf-contact-page .submit-button:hover {
+    background: var(--pink-dark);
+    transform: translateY(-2px);
+  }
+
+  /* BOTTOM CTA */
+  #ftf-contact-page .contact-bottom {
+    background: linear-gradient(
+      135deg,
+      #FF65C5,
+      #FF3FB7
+    );
+    color: #ffffff;
+    text-align: center;
+    padding: 70px 20px;
+  }
+
+  #ftf-contact-page .contact-bottom-inner {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  #ftf-contact-page .contact-bottom h2 {
+    margin: 0 0 14px;
+    font-size: 38px;
+    line-height: 1.15;
+    font-weight: 800;
+  }
+
+  #ftf-contact-page .contact-bottom p {
+    margin: 0 auto 25px;
+    font-size: 16px;
+    line-height: 1.7;
+    opacity: .95;
+  }
+
+  #ftf-contact-page .bottom-button {
+    display: inline-block;
+    background: #ffffff;
+    color: var(--pink) !important;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  /* MOBILE */
+  @media (max-width: 800px) {
+
+    #ftf-contact-page .contact-hero {
+      padding: 65px 18px;
+    }
+
+    #ftf-contact-page .contact-hero h1 {
+      font-size: 40px;
+    }
+
+    #ftf-contact-page .contact-hero p {
+      font-size: 15px;
+    }
+
+    #ftf-contact-page .contact-section {
+      padding: 50px 16px;
+    }
+
+    #ftf-contact-page .contact-grid {
+      grid-template-columns: 1fr;
+      gap: 25px;
+    }
+
+    #ftf-contact-page .contact-info,
+    #ftf-contact-page .contact-form-box {
+      padding: 27px;
+      border-radius: 20px;
+    }
+
+    #ftf-contact-page .contact-info h2,
+    #ftf-contact-page .contact-form-box h2 {
+      font-size: 28px;
+    }
+
+    #ftf-contact-page .form-row {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    #ftf-contact-page .contact-bottom {
+      padding: 55px 18px;
+    }
+
+    #ftf-contact-page .contact-bottom h2 {
+      font-size: 31px;
+    }
+  }
+
+  @media (max-width: 480px) {
+
+    #ftf-contact-page .contact-hero h1 {
+      font-size: 34px;
+    }
+
+    #ftf-contact-page .contact-info,
+    #ftf-contact-page .contact-form-box {
+      padding: 22px;
+    }
+  }
+
+/*----*/
+.section-template--22459807760539__form-padding {
+    padding-top: 27px;
+    padding-bottom: 27px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807760539__form-padding {
+      padding-top: 36px;
+      padding-bottom: 36px;
+    }
+  }

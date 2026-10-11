@@ -1,0 +1,66 @@
+{
+  "note": "Hero carousel. Approved 2026-10-06: ONE layout for every banner - only photo, text and badge change. Photos live in public/images/coach/.",
+  "autoplayMs": 6500,
+  "banners": [
+    {
+      "id": "safe-hands",
+      "photo": "/images/coach/coach-p01.jpg",
+      "photoAlt": "Zaineb Danish working at her desk",
+      "kicker": "Online nutrition & fitness coaching for women",
+      "title": "Your Health in",
+      "titleScript": "Safe Hands.",
+      "sub": "Personalized fitness programs, expert guidance and real results, all in one place. Built around desi food and your routine.",
+      "primary": { "label": "Find my program", "href": "/#recommended" },
+      "secondary": { "label": "Chat on WhatsApp", "href": "whatsapp" },
+      "badge": { "big": "5+ years", "small": "coaching women in 8 countries" }
+    },
+    {
+      "id": "desi-recipes",
+      "photo": "/images/coach/coach-p06.jpg",
+      "photoAlt": "Zaineb Danish holding a platter of fresh fruit",
+      "kicker": "New · Desi Weightloss Recipes e-book",
+      "title": "Desi food,",
+      "titleScript": "portioned for results.",
+      "sub": "68 recipes built around roti, dal, sabzi and chai. A 1200 kcal a day plan that is thyroid, PCOS and diabetes friendly.",
+      "primary": { "label": "See the programs", "href": "/programs/total-transformation" },
+      "secondary": { "label": "Find my program", "href": "/#recommended" },
+      "badge": { "big": "68 recipes", "small": "1200 kcal a day, budget friendly" }
+    },
+    {
+      "id": "clinical",
+      "photo": "/images/coach/coach-p02.jpg",
+      "photoAlt": "Zaineb Danish in her office",
+      "kicker": "Health concerns programs",
+      "title": "PCOS, thyroid & diabetes,",
+      "titleScript": "expertly guided.",
+      "sub": "Condition-focused nutrition from a clinical nutritionist, with guided home workouts and regular follow-ups alongside your medical care.",
+      "primary": { "label": "See health programs", "href": "/programs/health-concerns" },
+      "secondary": { "label": "Ask a question", "href": "whatsapp" },
+      "badge": { "big": "Clinical nutrition", "small": "Master's in Dietetics" }
+    },
+    {
+      "id": "stronger",
+      "photo": "/images/coach/coach-p09.jpg",
+      "photoAlt": "Zaineb Danish speaking at a women's health session",
+      "kicker": "Stronger every day",
+      "title": "Right plan. Right support.",
+      "titleScript": "Better you.",
+      "sub": "Personalized diet plans, recorded workouts and a sustainable lifestyle, designed for every fitness level.",
+      "primary": { "label": "How it works", "href": "/how-it-works" },
+      "secondary": { "label": "View programs", "href": "/programs" },
+      "badge": { "big": "Every level", "small": "home workouts, no gym needed" }
+    },
+    {
+      "id": "recognised",
+      "photo": "/images/coach/coach-p10.jpg",
+      "photoAlt": "Zaineb Danish receiving recognition on stage",
+      "kicker": "Trusted by women across 8 countries",
+      "title": "Recognised for",
+      "titleScript": "real results.",
+      "sub": "Clinical nutrition and hormonal health expertise, and an invited speaker on women's health at Lahore Press Club.",
+      "primary": { "label": "See transformations", "href": "/testimonials" },
+      "secondary": { "label": "Meet the founder", "href": "/about" },
+      "badge": { "big": "5+ years", "small": "of serving transformations" }
+    }
+  ]
+}

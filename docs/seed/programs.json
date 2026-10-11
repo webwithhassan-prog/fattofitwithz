@@ -1,0 +1,257 @@
+{
+  "source": "assets/client-supplied/FAT_TO_FIT_WITH_Z_Programs.pdf (canonical long copy) + live site (card copy)",
+  "pricing": "see pricing.json - price is looked up by duration months + region",
+  "programs": [
+    {
+      "slug": "kickstart",
+      "name": "Kickstart Program",
+      "legacyShopifyHandle": "fat-to-fit-basic-plan",
+      "focus": "Habit building, basic nutrition, portion control & movement",
+      "durations": [
+        {
+          "label": "1 Month",
+          "months": 1,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49635073523867
+        }
+      ],
+      "summary": "A practical and structured program designed to help you start your health and fitness journey with the right nutrition, movement, and sustainable lifestyle habits.",
+      "benefitsLabel": "Main Benefits",
+      "cardBenefits": [
+        "Personalized nutrition guidance",
+        "Sustainable weight-management approach",
+        "Improved eating habits and portion control",
+        "Guided workouts and accountability",
+        "Practical long-term consistency strategies"
+      ],
+      "fullBenefits": [
+        "Personalized nutrition guidance tailored to your starting point",
+        "Sustainable weight-management approach with zero extreme dieting",
+        "Improved energy levels and structured daily routine",
+        "Better eating habits and practical portion control techniques",
+        "Guided workouts and regular accountability check-ins",
+        "Practical strategies for long-term consistency"
+      ],
+      "whoIsItFor": "Women who want to improve their health, manage their weight, become more active, and develop sustainable lifestyle habits without extreme dieting.",
+      "howItWorks": "You receive a personalized plan based on your individual goals and needs, along with guided workouts, regular check-ins, progress tracking, and ongoing support to help you stay consistent.",
+      "includes": [],
+      "image": "assets/original/product-kickstart.png",
+      "order": 1,
+      "covers": [],
+      "tag": "Start here"
+    },
+    {
+      "slug": "fat-loss",
+      "name": "Fat Loss Program",
+      "legacyShopifyHandle": "fat-to-fit-standard-plan",
+      "focus": "Calorie deficit, strength training & body composition",
+      "durations": [
+        {
+          "label": "2 Months",
+          "months": 2,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49670850707611
+        },
+        {
+          "label": "4 Months",
+          "months": 4,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49670850740379
+        }
+      ],
+      "summary": "A structured fat-loss program focused on reducing body fat, improving body composition, and creating a visibly fitter, stronger, and more toned physique through nutrition and progressive training.",
+      "benefitsLabel": "Main Benefits",
+      "cardBenefits": [
+        "Focused fat-loss strategy",
+        "Progressive strength training",
+        "Targeted workouts for a toned physique",
+        "Structured professionally guided workouts",
+        "Regular dietitian-led follow-ups",
+        "Progress-focused nutrition adjustments"
+      ],
+      "fullBenefits": [
+        "Focused fat-loss strategy with a calculated calorie deficit",
+        "Progressive strength training to build and maintain lean muscle",
+        "Targeted workouts designed for a more defined and toned physique",
+        "Structured and professionally guided workout sessions",
+        "Regular dietitian-led follow-ups and nutrition adjustments",
+        "Progress-focused guidance based on your body’s response and results"
+      ],
+      "whoIsItFor": "Women who are specifically looking to lose body fat, reduce measurements, improve body shape, increase strength, and achieve visible physical transformation through a structured approach.",
+      "howItWorks": "Your calorie requirements and deficit are calculated according to your individual needs and goals. You follow a personalized nutrition strategy alongside progressively guided strength-training workouts, with regular dietitian follow-ups to monitor progress and make necessary adjustments.",
+      "includes": [],
+      "image": "assets/original/product-fat-loss.png",
+      "order": 2,
+      "covers": [],
+      "tag": "Most popular"
+    },
+    {
+      "slug": "diabetes-control",
+      "name": "Diabetes Control Program",
+      "legacyShopifyHandle": "fat-to-fit-premium-plan",
+      "focus": "Insulin resistance, HbA1c optimization & blood sugar",
+      "durations": [
+        {
+          "label": "3 Months",
+          "months": 3,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49634460532891
+        }
+      ],
+      "summary": "A structured 3-month program designed to support better blood sugar management by addressing insulin resistance, insulin spikes, and hyperglycemia through personalized nutrition, guided exercise, and consistent monitoring.",
+      "benefitsLabel": "Main Benefits",
+      "cardBenefits": [
+        "Personalized diet plans",
+        "Practical home-based meals",
+        "Nutrition strategies for insulin sensitivity",
+        "Guidance to minimize blood sugar spikes",
+        "Regular progress monitoring",
+        "Professionally guided workouts"
+      ],
+      "fullBenefits": [
+        "Personalized diet plans designed for better blood glucose control",
+        "Practical home-based meals with no fancy or complicated cooking",
+        "Nutrition strategies to support improved insulin sensitivity",
+        "Guidance to minimize unnecessary blood sugar spikes",
+        "Regular follow-ups to monitor progress and make timely adjustments",
+        "Structured workout patterns with professionally guided sessions",
+        "Goal-oriented support for improving HbA1c levels toward a healthier range"
+      ],
+      "whoIsItFor": "Women dealing with diabetes, insulin resistance, blood sugar fluctuations, or difficulty maintaining healthy glucose levels, who want a structured lifestyle-based approach alongside their medical care.",
+      "howItWorks": "You receive a personalized nutrition plan based on your health needs, lifestyle, and goals, using simple foods that are practical to prepare at home. Regular check-ins help monitor your progress, dietary response, and consistency, while guided workouts support overall fitness and metabolic health.",
+      "includes": [],
+      "image": "assets/original/product-diabetes-control.png",
+      "order": 3,
+      "covers": [],
+      "tag": "Clinical"
+    },
+    {
+      "slug": "health-concerns",
+      "name": "Health Concerns Program",
+      "legacyShopifyHandle": "health-concerns-programs",
+      "focus": "PCOS, Thyroid, Menopause, Cholesterol, Fatty Liver, Uric Acid",
+      "durations": [
+        {
+          "label": "3 Months",
+          "months": 3,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49670945833115
+        }
+      ],
+      "summary": "A specialized 3-month program designed to address specific health and nutritional concerns through condition-focused nutrition, structured lifestyle guidance, and personalized fitness support.",
+      "benefitsLabel": "Covers",
+      "covers": [
+        "Hormonal Imbalance / PCOS / Thyroid",
+        "Menopause",
+        "Metabolic / Fatty Liver / Cholesterol",
+        "Uric Acid"
+      ],
+      "cardBenefits": [
+        "Hormonal Imbalance / PCOS / Thyroid",
+        "Menopause",
+        "Metabolic / Fatty Liver / Cholesterol",
+        "Uric Acid",
+        "Personalized nutrition plans",
+        "Structured guided workouts"
+      ],
+      "fullBenefits": [
+        "A focused approach based on your specific health condition and individual requirements",
+        "Personalized diet plans with properly divided food groups to meet calorie and nutritional needs",
+        "Balanced nutrition designed to help prevent or address common nutritional deficiencies",
+        "Practical guidance on foods that support your specific health goals",
+        "Structured and guided workout patterns according to your needs and fitness level",
+        "Regular follow-ups to monitor progress and make necessary adjustments"
+      ],
+      "whoIsItFor": "Women who are dealing with specific health concerns such as hormonal imbalance, PCOS, thyroid concerns, menopause, cholesterol, fatty liver, uric acid issues, or other nutrition-related conditions.",
+      "howItWorks": "Your health concern, lifestyle, dietary preferences, calorie requirements, and nutritional needs are assessed first. A personalized plan is created with appropriate food-group distribution, regular follow-ups, and a suitable workout pattern.",
+      "includes": [],
+      "image": "assets/original/product-health-concerns.png",
+      "order": 4,
+      "tag": "Clinical"
+    },
+    {
+      "slug": "total-transformation",
+      "name": "Total Transformation Program",
+      "legacyShopifyHandle": "total-transformation-program",
+      "focus": "Complete body/lifestyle overhaul + Recipe E-Book",
+      "durations": [
+        {
+          "label": "6 Months",
+          "months": 6,
+          "isMinimum": false,
+          "legacyShopifyVariantId": 49671002390683
+        }
+      ],
+      "summary": "A comprehensive transformation program designed to create a complete change in your body, health, fitness, nutrition, and lifestyle through a structured and personalized approach.",
+      "benefitsLabel": "Main Benefits",
+      "cardBenefits": [
+        "Complete body transformation",
+        "Personalized nutrition",
+        "Progressive strength training",
+        "Support for health and lifestyle concerns",
+        "Regular progress tracking",
+        "Exclusive Recipe E-Book included"
+      ],
+      "fullBenefits": [
+        "Complete body transformation with a focus on fat loss, toning, strength, and body shaping",
+        "Personalized nutrition based on your calorie and nutritional requirements",
+        "Progressive strength training and guided workouts",
+        "Support for specific health and lifestyle concerns",
+        "Improved eating habits, energy, fitness, and overall well-being",
+        "Regular progress tracking and personalized follow-ups",
+        "Exclusive Recipe E-Book with detailed recipes and calorie counts included"
+      ],
+      "whoIsItFor": "Women who want more than just weight loss and are ready for a complete transformation — physically, nutritionally, and lifestyle-wise.",
+      "howItWorks": "Your current lifestyle, goals, nutritional requirements, fitness level, and specific concerns are assessed to create a personalized transformation plan. Nutrition and workouts are progressively adjusted according to your progress.",
+      "includes": [
+        "ebook-desi-weightloss-recipes"
+      ],
+      "image": "assets/original/product-total-transformation.png",
+      "order": 5,
+      "covers": [],
+      "tag": "Includes e-book"
+    },
+    {
+      "slug": "premium-signature",
+      "name": "Premium Signature Transformation",
+      "legacyShopifyHandle": "premium-signature-transformation",
+      "focus": "1-on-1 VIP coaching, maximum personalization + E-Book",
+      "durations": [
+        {
+          "label": "6 Months (Minimum)",
+          "months": 6,
+          "isMinimum": true,
+          "legacyShopifyVariantId": 49671055868059
+        }
+      ],
+      "summary": "An exclusive, high-level transformation program designed for women who want a more personalized and comprehensive approach to body transformation, nutrition, fitness, and sustainable lifestyle change.",
+      "benefitsLabel": "Main Benefits",
+      "cardBenefits": [
+        "Highly personalized transformation strategy",
+        "Calculated calorie and nutritional guidance",
+        "Focused fat loss and body shaping",
+        "Progressive professionally guided workouts",
+        "One-to-one follow-ups and monitoring",
+        "Exclusive Nutrition & Lifestyle E-Book"
+      ],
+      "fullBenefits": [
+        "Highly personalized nutrition and transformation strategy",
+        "Calculated calorie and nutritional guidance based on individual requirements",
+        "Focused fat loss, body shaping, toning, and strength development",
+        "Progressive and professionally guided workout plans",
+        "Personalized support for specific health and lifestyle concerns",
+        "Regular one-to-one follow-ups, progress monitoring, and plan adjustments",
+        "Exclusive Nutrition & Lifestyle E-Book for additional guidance and support"
+      ],
+      "whoIsItFor": "Women who are serious about achieving a complete and lasting transformation and want a premium, highly personalized level of guidance, accountability, and support throughout their journey.",
+      "howItWorks": "The program begins with an assessment of your goals, lifestyle, nutritional requirements, fitness level, and specific concerns. Your nutrition and workout plans are customized accordingly and continuously refined based on your progress.",
+      "includes": [
+        "ebook-nutrition-lifestyle (NOT YET SUPPLIED)"
+      ],
+      "image": "assets/original/product-premium-signature.png",
+      "order": 6,
+      "covers": [],
+      "tag": "1-on-1 VIP"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "brand": {
+    "name": "Fat To Fit With Z",
+    "legalName": "Fat to Fit with Z",
+    "founder": "Zaineb Danish",
+    "founderTitle": "Founder & Nutrition Professional",
+    "founderCredentials": "Nutritionist / Health Coach & Certified Fitness Coach",
+    "experience": "5+ years of serving transformations (from event banner)",
+    "location": "Lahore, Pakistan",
+    "audience": "Women",
+    "taglines": [
+      "Your Health in Safe Hands.",
+      "Personalized fitness programs, expert guidance and real results — all in one place.",
+      "Stronger Every Day",
+      "Live workouts. Personalized diet. Sustainable lifestyle.",
+      "Right plan. Right support. Better you."
+    ],
+    "footerDescription": "Personalized nutrition, fitness and lifestyle guidance designed to help you build healthier habits and achieve sustainable results."
+  },
+  "contact": {
+    "whatsappE164": "+19176952569",
+    "whatsappUrl": "https://wa.me/19176952569",
+    "whatsappDefaultMessage": "Hi Fat To Fit With Z, I have a question about your programs.",
+    "publicEmail": "info@fattofitwithz.com",
+    "legalEmail": "fattofitwithz@gmail.com",
+    "_todo": "Client to confirm ONE email for all public use"
+  },
+  "social": {
+    "instagram": "https://www.instagram.com/fat_to_fitwithz/",
+    "facebook": "https://www.facebook.com/profile.php?id=61550961720812",
+    "youtube": "https://www.youtube.com/@zainebdanishnutritionist",
+    "tiktok": "https://www.tiktok.com/@fat_to_fitwithz"
+  },
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about" },
+    { "label": "Programs", "href": "/programs" },
+    { "label": "How It Works", "href": "/how-it-works" },
+    { "label": "Testimonials", "href": "/testimonials" },
+    { "label": "FAQ", "href": "/faq" },
+    { "label": "Contact", "href": "/contact" }
+  ],
+  "footerLinks": [
+    { "label": "About Us", "href": "/about" },
+    { "label": "Testimonials", "href": "/testimonials" },
+    { "label": "Refund, Cancellation & Freeze Policy", "href": "/refund-policy" },
+    { "label": "Privacy Policy", "href": "/privacy-policy" },
+    { "label": "Terms of Service", "href": "/terms" }
+  ],
+  "contactSubjects": ["General Question", "Program Information", "Membership", "Payment", "Account Support", "Other"],
+  "qualifications": [
+    "Bachelor of Science (B.Sc.)",
+    "Master's Degree in Dietetics",
+    "Advanced Qualification in Clinical Nutrition",
+    "Professional Certification in Hormonal Health & Hormonal Imbalance Management",
+    "Certified Fitness Coach"
+  ],
+  "expertise": [
+    "Clinical Nutrition & Dietetics",
+    "Weight Management (Healthy Loss & Gain)",
+    "PCOS & Hormonal Health Management",
+    "Diabetes & Blood Sugar Control",
+    "Cholesterol & Fatty Liver Management",
+    "Uric Acid & Menopause Management",
+    "Lifestyle Modification & Fitness Coaching"
+  ],
+  "credit": { "label": "Powered by 10X", "href": "https://www.tenx.com.pk/", "_todo": "Confirm whether to keep" }
+}

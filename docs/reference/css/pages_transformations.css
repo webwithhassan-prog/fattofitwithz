@@ -1,0 +1,594 @@
+.section-template--22459807957147__main-padding {
+    padding-top: 21px;
+    padding-bottom: 21px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807957147__main-padding {
+      padding-top: 28px;
+      padding-bottom: 28px;
+    }
+  }
+/*----*/
+
+/* =========================================================
+   FAT TO FIT WITH Z — COMPLETE PAGE
+   UPDATED BRAND COLOR: #FF65C5
+   ========================================================= */
+
+#ftf-page {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#ftf-page *,
+#ftf-page *::before,
+#ftf-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+#ftf-page .ftf-hero {
+  text-align: center;
+  padding: 70px 20px 60px;
+  background: #fff;
+}
+
+#ftf-page .ftf-hero h1 {
+  margin: 0 0 12px;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-hero h2 {
+  margin: 0 0 16px;
+  font-size: 25px;
+  line-height: 1.3;
+  font-weight: 700;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-hero p {
+  max-width: 750px;
+  margin: 0 auto;
+  color: #666;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   TRANSFORMATIONS
+   ========================================================= */
+
+#ftf-transformations {
+  width: 100%;
+  background: #fff;
+}
+
+#ftf-transformations .ftf-transformations-inner {
+  width: 100%;
+  max-width: 1250px;
+  margin: 0 auto;
+  padding: 55px 20px 70px;
+}
+
+#ftf-transformations .ftf-transformations-heading {
+  text-align: center;
+  margin-bottom: 38px;
+}
+
+#ftf-transformations .ftf-transformations-heading h2 {
+  margin: 0 0 10px;
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #FF65C5;
+}
+
+#ftf-transformations .ftf-transformations-heading p {
+  margin: 0 auto;
+  max-width: 720px;
+  color: #666;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   SLIDER
+   ========================================================= */
+
+#ftf-transformations .ftf-slider-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+#ftf-transformations .ftf-slider-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+#ftf-transformations .ftf-slider-track {
+  display: flex;
+  gap: 24px;
+  transition: transform 0.45s ease;
+  will-change: transform;
+}
+
+
+/* =========================================================
+   TRANSFORMATION CARD
+   ========================================================= */
+
+#ftf-transformations .ftf-transformation-card {
+  position: relative;
+  flex: 0 0 calc((100% - 48px) / 3);
+  min-width: 0;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+#ftf-transformations .ftf-transformation-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+#ftf-transformations .ftf-transformation-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+
+/* =========================================================
+   BEFORE / AFTER LABELS
+   ========================================================= */
+
+#ftf-transformations .ftf-photo-label {
+  position: absolute;
+  top: 16px;
+  z-index: 3;
+
+  padding: 8px 16px;
+  border-radius: 30px;
+
+  color: #fff;
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 800;
+  text-transform: uppercase;
+
+  background: rgba(20,20,20,0.82);
+}
+
+#ftf-transformations .ftf-photo-label.before {
+  left: 16px;
+}
+
+#ftf-transformations .ftf-photo-label.after {
+  right: 16px;
+  background: #FF65C5;
+}
+
+
+/* =========================================================
+   CARD BOTTOM
+   ========================================================= */
+
+#ftf-transformations .ftf-transformation-content {
+  min-height: 125px;
+  padding: 20px 15px 25px;
+  text-align: center;
+}
+
+#ftf-transformations .ftf-stars {
+  margin-bottom: 16px;
+  color: #FF65C5;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+#ftf-transformations .ftf-weight-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 45px;
+  padding: 10px 22px;
+
+  border-radius: 30px;
+  background: #FF65C5;
+  color: #fff;
+
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 800;
+
+  box-shadow: 0 7px 16px rgba(255,101,197,0.22);
+}
+
+#ftf-transformations .ftf-before-after-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 45px;
+  padding: 10px 22px;
+
+  border-radius: 30px;
+  background: #FF65C5;
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  box-shadow: 0 7px 16px rgba(255,101,197,0.22);
+}
+
+
+/* =========================================================
+   ARROWS
+   ========================================================= */
+
+#ftf-transformations .ftf-slider-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+
+  width: 58px;
+  height: 58px;
+
+  transform: translateY(-50%);
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #FF65C5;
+
+  font-size: 38px;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+#ftf-transformations .ftf-slider-prev {
+  left: -30px;
+}
+
+#ftf-transformations .ftf-slider-next {
+  right: -30px;
+}
+
+#ftf-transformations .ftf-slider-arrow:hover {
+  background: #FF65C5;
+  color: #fff;
+}
+
+
+/* =========================================================
+   CLIENT EXPERIENCES
+   ========================================================= */
+
+#ftf-page .ftf-experiences {
+  background: #faf5f7;
+  border-radius: 22px;
+  padding: 45px 25px;
+  margin: 10px 15px 45px;
+  text-align: center;
+}
+
+#ftf-page .ftf-experiences-small-title {
+  color: #FF65C5;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 10px;
+}
+
+#ftf-page .ftf-experiences h2 {
+  font-size: 30px;
+  margin: 0 0 15px;
+  font-weight: 800;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-experiences-intro {
+  max-width: 700px;
+  margin: 0 auto 30px;
+  color: #666;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   CLIENT REVIEWS
+   ========================================================= */
+
+#ftf-page .ftf-client-reviews-title {
+  font-size: 22px;
+  margin: 30px 0 20px;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-review-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+}
+
+#ftf-page .ftf-review-buttons a {
+  display: inline-block;
+
+  background: #FF65C5;
+  color: #fff;
+  text-decoration: none;
+
+  padding: 13px 22px;
+  border-radius: 30px;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: opacity 0.2s ease;
+}
+
+#ftf-page .ftf-review-buttons a:hover {
+  opacity: 0.85;
+}
+
+
+/* =========================================================
+   VIDEO TESTIMONIALS
+   ========================================================= */
+
+#ftf-page .ftf-video-testimonials h3 {
+  font-size: 22px;
+  margin: 45px 0 12px;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-video-testimonials > p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+#ftf-page .ftf-video-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+#ftf-page .ftf-video-buttons a {
+  display: inline-block;
+
+  background: #fff;
+  border: 1px solid #FF65C5;
+  color: #333;
+
+  text-decoration: none;
+
+  padding: 11px 18px;
+  border-radius: 25px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+#ftf-page .ftf-video-buttons a:hover {
+  background: #FF65C5;
+  border-color: #FF65C5;
+  color: #fff;
+}
+
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+#ftf-page .ftf-final-cta {
+  text-align: center;
+  padding: 35px 20px 50px;
+}
+
+#ftf-page .ftf-final-cta h2 {
+  font-size: 30px;
+  margin: 0 0 15px;
+  font-weight: 800;
+  color: #FF65C5;
+}
+
+#ftf-page .ftf-final-cta p {
+  max-width: 650px;
+  margin: 0 auto 25px;
+  color: #666;
+  line-height: 1.6;
+}
+
+#ftf-page .ftf-final-cta a {
+  display: inline-block;
+
+  background: #FF65C5;
+  color: #fff;
+  text-decoration: none;
+
+  padding: 15px 32px;
+  border-radius: 30px;
+
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+#ftf-page .ftf-final-cta a:hover {
+  opacity: 0.85;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1000px) {
+
+  #ftf-transformations .ftf-transformation-card {
+    flex: 0 0 calc((100% - 24px) / 2);
+  }
+
+  #ftf-transformations .ftf-slider-prev {
+    left: -15px;
+  }
+
+  #ftf-transformations .ftf-slider-next {
+    right: -15px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+  #ftf-page .ftf-hero {
+    padding: 50px 18px;
+  }
+
+  #ftf-page .ftf-hero h1 {
+    font-size: 31px;
+  }
+
+  #ftf-page .ftf-hero h2 {
+    font-size: 21px;
+  }
+
+  #ftf-page .ftf-hero p {
+    font-size: 15px;
+  }
+
+  #ftf-transformations .ftf-transformations-inner {
+    padding: 50px 15px 60px;
+  }
+
+  #ftf-transformations .ftf-transformations-heading h2 {
+    font-size: 28px;
+  }
+
+  #ftf-transformations .ftf-transformations-heading p {
+    font-size: 14px;
+  }
+
+  #ftf-transformations .ftf-slider-track {
+    gap: 15px;
+  }
+
+  #ftf-transformations .ftf-transformation-card {
+    flex: 0 0 100%;
+  }
+
+  #ftf-transformations .ftf-slider-arrow {
+    width: 46px;
+    height: 46px;
+    font-size: 30px;
+  }
+
+  #ftf-transformations .ftf-slider-prev {
+    left: -7px;
+  }
+
+  #ftf-transformations .ftf-slider-next {
+    right: -7px;
+  }
+
+  #ftf-transformations .ftf-photo-label {
+    top: 12px;
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+
+  #ftf-transformations .ftf-photo-label.before {
+    left: 12px;
+  }
+
+  #ftf-transformations .ftf-photo-label.after {
+    right: 12px;
+  }
+
+  #ftf-transformations .ftf-stars {
+    font-size: 26px;
+  }
+
+  #ftf-transformations .ftf-weight-badge,
+  #ftf-transformations .ftf-before-after-badge {
+    font-size: 14px;
+    padding: 10px 17px;
+  }
+
+  #ftf-page .ftf-experiences {
+    padding: 40px 18px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  #ftf-page .ftf-experiences h2 {
+    font-size: 27px;
+  }
+
+  #ftf-page .ftf-video-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #ftf-page .ftf-video-buttons a {
+    width: 100%;
+  }
+
+  #ftf-page .ftf-final-cta h2 {
+    font-size: 27px;
+  }
+
+}

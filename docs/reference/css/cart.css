@@ -1,0 +1,23 @@
+.section-template--22459807727771__cart-items-padding {
+    padding-top: 27px;
+    padding-bottom: 27px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807727771__cart-items-padding {
+      padding-top: 36px;
+      padding-bottom: 36px;
+    }
+  }
+/*----*/
+.section-template--22459807727771__cart-footer-padding {
+    padding-top: 15px;
+    padding-bottom: 30px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-template--22459807727771__cart-footer-padding {
+      padding-top: 20px;
+      padding-bottom: 40px;
+    }
+  }

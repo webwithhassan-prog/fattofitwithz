@@ -1,0 +1,87 @@
+/*
+ * Styles for the admin home page (src/payload/admin/Dashboard.tsx).
+ * Uses Payload's own colour variables (--theme-...) so it also works in the admin's dark mode,
+ * plus the Blossom brand colour for numbers and the chart.
+ */
+.ftf-dash {
+  --ftf-brand: #a3154f;
+  --ftf-rose: #e8a0b8;
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+.ftf-dash h1 { margin: 0; font-size: 30px; }
+.ftf-dash h3 { margin: 0 0 14px; font-size: 17px; }
+.ftf-dash__muted { margin: 4px 0 0; color: var(--theme-elevation-500); }
+
+.ftf-dash__head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+.ftf-dash__range { display: flex; gap: 6px; }
+.ftf-dash__range a {
+  padding: 7px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+}
+.ftf-dash__range a[aria-current="page"] { background: var(--ftf-brand); color: #fff; }
+
+.ftf-dash__pills { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 8px; }
+.ftf-dash__pills a {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-elevation-150);
+  background: var(--theme-elevation-0);
+  text-decoration: none;
+  color: inherit;
+}
+.ftf-dash__pills a:hover { border-color: var(--ftf-brand); color: var(--ftf-brand); }
+
+.ftf-dash__section {
+  margin: 34px 0 12px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.ftf-dash__cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.ftf-dash__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  border: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-0);
+  box-shadow: 0 6px 18px -12px rgba(43, 26, 31, 0.25);
+  text-decoration: none;
+  color: inherit;
+}
+a.ftf-dash__card:hover { border-color: var(--ftf-brand); }
+.ftf-dash__card-label { color: var(--theme-elevation-600); font-size: 14px; }
+.ftf-dash__card-value { font-size: 32px; font-weight: 700; color: var(--ftf-brand); line-height: 1.1; }
+.ftf-dash__money { display: block; font-size: 22px; }
+.ftf-dash__card-note { font-size: 12px; color: var(--theme-elevation-500); }
+
+.ftf-dash__panel {
+  margin-top: 18px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid var(--theme-elevation-100);
+  background: var(--theme-elevation-0);
+}
+.ftf-dash__two { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px; }
+.ftf-dash__two .ftf-dash__panel { margin-top: 18px; }
+
+.ftf-dash__chart { display: flex; align-items: flex-end; gap: 4px; height: 170px; }
+.ftf-dash__bar { flex: 1; min-width: 3px; border-radius: 4px 4px 0 0; background: var(--ftf-rose); }
+.ftf-dash__bar:hover { background: var(--ftf-brand); }
+.ftf-dash__chart-axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: var(--theme-elevation-500); }
+
+.ftf-dash__table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ftf-dash__table th { text-align: left; font-weight: 500; color: var(--theme-elevation-500); padding: 6px 8px 8px 0; }
+.ftf-dash__table td { padding: 9px 8px 9px 0; border-top: 1px solid var(--theme-elevation-100); vertical-align: top; }
+.ftf-dash__table a { color: inherit; }
+.ftf-dash__sub { display: block; font-size: 12px; color: var(--theme-elevation-500); }
+
+.ftf-dash__badge { padding: 2px 10px; border-radius: 999px; font-size: 12px; background: var(--theme-elevation-100); }
+.ftf-dash__badge--todo { background: #fbeff1; color: var(--ftf-brand); }

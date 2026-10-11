@@ -1,0 +1,264 @@
+{
+  "source": "docs/assets/client-supplied/pricing_sheet.pdf (International Pricing & Discount Sheet)",
+  "note": "Price depends on DURATION, not program. 'compareAt' = standard (strikethrough) rate, 'amount' = discounted rate actually offered.",
+  "regions": [
+    {
+      "code": "usa",
+      "label": "USA / Global",
+      "currency": "USD",
+      "format": "${n}",
+      "countries": [
+        "US"
+      ],
+      "isDefault": true
+    },
+    {
+      "code": "canada",
+      "label": "Canada",
+      "currency": "CAD",
+      "format": "CAD {n}",
+      "countries": [
+        "CA"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "uae",
+      "label": "UAE",
+      "currency": "AED",
+      "format": "AED {n}",
+      "countries": [
+        "AE"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "saudi",
+      "label": "Saudi Arabia",
+      "currency": "SAR",
+      "format": "SAR {n}",
+      "countries": [
+        "SA"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "qatar",
+      "label": "Qatar",
+      "currency": "QAR",
+      "format": "QAR {n}",
+      "countries": [
+        "QA"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "india",
+      "label": "India",
+      "currency": "INR",
+      "format": "₹{n}",
+      "countries": [
+        "IN"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "pakistan",
+      "label": "Pakistan",
+      "currency": "PKR",
+      "format": "Rs. {n}",
+      "countries": [
+        "PK"
+      ],
+      "isDefault": false
+    },
+    {
+      "code": "australia",
+      "label": "Australia",
+      "currency": "AUD",
+      "format": "AUD {n}",
+      "countries": [
+        "AU"
+      ],
+      "isDefault": false
+    }
+  ],
+  "pricesByDuration": {
+    "usa": {
+      "1": {
+        "amount": 15,
+        "compareAt": 20
+      },
+      "2": {
+        "amount": 27,
+        "compareAt": 40
+      },
+      "3": {
+        "amount": 39,
+        "compareAt": 60
+      },
+      "4": {
+        "amount": 49,
+        "compareAt": 80
+      },
+      "6": {
+        "amount": 69,
+        "compareAt": 120
+      }
+    },
+    "canada": {
+      "1": {
+        "amount": 21,
+        "compareAt": 28
+      },
+      "2": {
+        "amount": 38,
+        "compareAt": 56
+      },
+      "3": {
+        "amount": 54,
+        "compareAt": 83
+      },
+      "4": {
+        "amount": 68,
+        "compareAt": 111
+      },
+      "6": {
+        "amount": 95,
+        "compareAt": 166
+      }
+    },
+    "uae": {
+      "1": {
+        "amount": 55,
+        "compareAt": 75
+      },
+      "2": {
+        "amount": 99,
+        "compareAt": 150
+      },
+      "3": {
+        "amount": 145,
+        "compareAt": 220
+      },
+      "4": {
+        "amount": 180,
+        "compareAt": 295
+      },
+      "6": {
+        "amount": 255,
+        "compareAt": 440
+      }
+    },
+    "saudi": {
+      "1": {
+        "amount": 55,
+        "compareAt": 75
+      },
+      "2": {
+        "amount": 100,
+        "compareAt": 150
+      },
+      "3": {
+        "amount": 145,
+        "compareAt": 225
+      },
+      "4": {
+        "amount": 185,
+        "compareAt": 300
+      },
+      "6": {
+        "amount": 260,
+        "compareAt": 450
+      }
+    },
+    "qatar": {
+      "1": {
+        "amount": 55,
+        "compareAt": 75
+      },
+      "2": {
+        "amount": 99,
+        "compareAt": 145
+      },
+      "3": {
+        "amount": 145,
+        "compareAt": 220
+      },
+      "4": {
+        "amount": 180,
+        "compareAt": 290
+      },
+      "6": {
+        "amount": 255,
+        "compareAt": 435
+      }
+    },
+    "india": {
+      "1": {
+        "amount": 1499,
+        "compareAt": 1900
+      },
+      "2": {
+        "amount": 2299,
+        "compareAt": 3800
+      },
+      "3": {
+        "amount": 3299,
+        "compareAt": 5700
+      },
+      "4": {
+        "amount": 4199,
+        "compareAt": 7600
+      },
+      "6": {
+        "amount": 5999,
+        "compareAt": 11500
+      }
+    },
+    "pakistan": {
+      "1": {
+        "amount": 4000,
+        "compareAt": 5500
+      },
+      "2": {
+        "amount": 7000,
+        "compareAt": 11000
+      },
+      "3": {
+        "amount": 9999,
+        "compareAt": 16500
+      },
+      "4": {
+        "amount": 12500,
+        "compareAt": 22000
+      },
+      "6": {
+        "amount": 18500,
+        "compareAt": 33000
+      }
+    },
+    "australia": {
+      "1": {
+        "amount": 22,
+        "compareAt": 28
+      },
+      "2": {
+        "amount": 40,
+        "compareAt": 56
+      },
+      "3": {
+        "amount": 58,
+        "compareAt": 84
+      },
+      "4": {
+        "amount": 72,
+        "compareAt": 112
+      },
+      "6": {
+        "amount": 102,
+        "compareAt": 168
+      }
+    }
+  }
+}
