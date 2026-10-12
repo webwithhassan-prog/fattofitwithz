@@ -15,7 +15,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: "orderLabel",
     defaultColumns: ["orderLabel", "email", "amount", "currency", "status", "createdAt"],
-    group: "Clients",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     pagination: { defaultLimit: 50 },
   },
   fields: [

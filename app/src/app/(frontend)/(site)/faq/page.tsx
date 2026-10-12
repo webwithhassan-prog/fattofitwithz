@@ -42,7 +42,7 @@ export default async function FaqPage() {
           />
           <nav aria-label="FAQ sections" className="mb-10 flex flex-wrap justify-center gap-2.5">
             {GROUPS.map((g) => (
-              <a key={g.id} href={`#${g.id}`} className="chip hover:border-brand hover:text-brand">
+              <a key={g.id} href={`#${g.id}`} className="chip hover:border-brand hover:text-brand-dark">
                 {g.title}
               </a>
             ))}

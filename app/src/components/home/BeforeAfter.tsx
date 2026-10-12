@@ -35,7 +35,7 @@ export function BeforeAfter({ before, after, beforeAlt, afterAlt }: Props) {
       <div aria-hidden="true" className="absolute inset-y-0 left-[var(--cut)] w-0.5 -translate-x-1/2 bg-white" />
       <div
         aria-hidden="true"
-        className="absolute top-[58%] left-[var(--cut)] grid h-11.5 w-11.5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-lg text-brand shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
+        className="absolute top-[58%] left-[var(--cut)] grid h-11.5 w-11.5 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-lg text-brand-dark shadow-[0_6px_18px_rgba(0,0,0,0.25)]"
       >
         ↔
       </div>

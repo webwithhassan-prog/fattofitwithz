@@ -46,9 +46,11 @@ async function main() {
     const cached = photoIds.get(publicPath);
     if (cached) return cached;
     const filename = path.basename(publicPath);
-    const found = await payload.find({ collection: "media", where: { filename: { equals: filename } }, limit: 1, context });
-    const doc = found.docs[0]
-      ? found.docs[0]
+    // Uploads get a unique prefix ("lq3k2a-coach-p01.jpg"), so match on the end of the name.
+    const found = await payload.find({ collection: "media", where: { filename: { like: filename } }, limit: 10, context });
+    const existing = found.docs.find((d) => d.filename === filename || d.filename?.endsWith(`-${filename}`));
+    const doc = existing
+      ? existing
       : await payload.create({
           collection: "media",
           data: { alt },
@@ -163,7 +165,7 @@ async function main() {
 
   // ---------- globals ----------
   await seedGlobals(payload, photo, programIds);
-  log("globals: prices, contact & site settings, homepage (banners, founder messages, goal picker)");
+  log("globals: prices, contact & site settings, e-book, homepage (banners, founder messages, goal picker)");
 
   log("Done. Open http://localhost:3000/admin to see the content.");
 }
@@ -174,7 +176,8 @@ async function seedGlobals(
   programIds: Map<string, number>,
 ) {
   // Pricing
-  const pricing = await readJson<{ regions: Region[]; pricesByDuration: Record<string, Record<string, PriceCell>> }>("pricing.json");
+  type PricingRegion = Omit<Region, "ebook"> & { ebookPrice: number; ebookPriceWithPlan: number };
+  const pricing = await readJson<{ regions: PricingRegion[]; pricesByDuration: Record<string, Record<string, PriceCell>> }>("pricing.json");
   await payload.updateGlobal({
     slug: "pricing",
     context,
@@ -186,6 +189,8 @@ async function seedGlobals(
         format: r.format,
         countries: r.countries.join(", "),
         isDefault: r.isDefault,
+        ebookPrice: r.ebookPrice,
+        ebookPriceWithPlan: r.ebookPriceWithPlan,
         prices: Object.entries(pricing.pricesByDuration[r.code]).map(([months, cell]) => ({
           months: Number(months),
           amount: cell.amount,
@@ -222,6 +227,31 @@ async function seedGlobals(
       contactSubjects: lines(s.contactSubjects),
       qualifications: lines(s.qualifications),
       expertise: lines(s.expertise),
+    },
+  });
+
+  // E-book (the Drive link is added by the owner in admin)
+  const ebook = await readJson<{ enabled: boolean; title: string; description: string; cover: string; coverAlt: string }>("ebook.json");
+  await payload.updateGlobal({
+    slug: "ebook",
+    context,
+    data: { enabled: ebook.enabled, title: ebook.title, description: ebook.description, cover: await photo(ebook.cover, ebook.coverAlt) },
+  });
+
+  // Page photos: About page + before/after slider (admin > Site photos)
+  await payload.updateGlobal({
+    slug: "page-photos",
+    context,
+    data: {
+      aboutPhoto: await photo("/images/coach/coach-p03.jpg", "Portrait of Zaineb Danish"),
+      aboutEvents: [
+        { photo: await photo("/images/coach/coach-p09.jpg", "Zaineb Danish speaking at a women's health session"), caption: "Women's health session" },
+        { photo: await photo("/images/coach/coach-p11.jpg", "Zaineb Danish speaking at the Lahore Press Club podium"), caption: "Lahore Press Club" },
+        { photo: await photo("/images/coach/coach-p10.jpg", "Zaineb Danish receiving recognition on stage"), caption: "Recognition ceremony" },
+        { photo: await photo("/images/coach/coach-p12.jpg", "Zaineb Danish receiving an award with the organisers"), caption: "Recognition ceremony" },
+      ],
+      beforePhoto: await photo("/images/results/before-71kg.jpg", "Client before the program, 71 kg"),
+      afterPhoto: await photo("/images/results/after-61kg.jpg", "The same client after the program, 61 kg"),
     },
   });
 
@@ -263,6 +293,7 @@ async function seedGlobals(
       goals: goals.map((g) => ({
         goalId: g.id,
         label: g.label,
+        healthConcern: Boolean(g.healthConcern),
         programs: g.order.map((slug) => {
           const id = programIds.get(slug);
           if (!id) throw new Error(`[seed] goals.json mentions unknown program "${slug}"`);

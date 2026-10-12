@@ -16,7 +16,7 @@ import { normalizeEmail } from "../fields/normalizeEmail";
 
 export const Members: CollectionConfig = {
   slug: "members",
-  labels: { singular: "Member", plural: "Members" },
+  labels: { singular: "Client", plural: "Clients" },
   defaultSort: "-createdAt",
   admin: {
     useAsTitle: "displayName",
@@ -24,9 +24,18 @@ export const Members: CollectionConfig = {
     listSearchableFields: ["fullName", "email", "phone"],
     group: "Clients",
     pagination: { defaultLimit: 50 },
-    description: "Client accounts. Open one to see her forms, memberships and orders in one place.",
+    description: "Client accounts. Open one to see her details, forms, memberships and orders in one place.",
   },
   hooks: {
+    // Deleting a client also deletes what belongs only to her (otherwise the database refuses,
+    // because those rows require a client). Orders are KEPT as payment records (they keep her email).
+    beforeDelete: [
+      async ({ id, req }) => {
+        for (const collection of ["first-day-forms", "follow-up-forms", "memberships", "member-sessions", "password-resets", "client-issues", "announcements"] as const) {
+          await req.payload.delete({ collection, where: { member: { equals: id } }, req });
+        }
+      },
+    ],
     beforeChange: [
       // Name shown in lists and links: her full name, or her email until she adds a name.
       ({ data, originalDoc }) => {
@@ -44,6 +53,8 @@ export const Members: CollectionConfig = {
         {
           label: "Overview",
           fields: [
+            // WhatsApp / email / reminder buttons at the top of the page (src/payload/admin/ClientActions.tsx)
+            { name: "clientActions", type: "ui", admin: { components: { Field: "/payload/admin/ClientActions#ClientActions" } } },
             {
               type: "row",
               fields: [

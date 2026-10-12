@@ -103,3 +103,6 @@ export const EMPTY_FIRST_DAY_FORM: FirstDayFormData = {
 };
 
 export const EMPTY_FOLLOW_UP_FORM: FollowUpFormData = { weightKg: "", mood: "", measurements: EMPTY_MEASUREMENTS, notes: "" };
+
+/** Topics a client can choose on "Report an issue" (also the options in admin > Client issues). */
+export const ISSUE_TOPICS = ["Payment", "Login / account", "Forms", "Workout videos", "Diet plan", "Other"] as const;

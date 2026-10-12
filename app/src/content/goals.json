@@ -4,6 +4,7 @@
     {
       "id": "fat-loss",
       "label": "Lose fat & tone up",
+      "healthConcern": false,
       "order": [
         "fat-loss",
         "total-transformation",
@@ -21,6 +22,7 @@
     {
       "id": "hormonal",
       "label": "PCOS, thyroid or menopause",
+      "healthConcern": true,
       "order": [
         "health-concerns",
         "total-transformation",
@@ -38,6 +40,7 @@
     {
       "id": "diabetes",
       "label": "Diabetes or insulin resistance",
+      "healthConcern": true,
       "order": [
         "diabetes-control",
         "health-concerns",
@@ -55,6 +58,7 @@
     {
       "id": "beginner",
       "label": "Just getting started",
+      "healthConcern": false,
       "order": [
         "kickstart",
         "fat-loss",
@@ -72,6 +76,7 @@
     {
       "id": "makeover",
       "label": "Complete makeover",
+      "healthConcern": false,
       "order": [
         "total-transformation",
         "premium-signature",
@@ -89,6 +94,7 @@
     {
       "id": "vip",
       "label": "1-on-1 VIP support",
+      "healthConcern": false,
       "order": [
         "premium-signature",
         "total-transformation",

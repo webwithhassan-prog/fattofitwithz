@@ -23,12 +23,13 @@ import {
   getGoals,
   getHeroBanners,
   getHomeFaqs,
+  getPagePhotos,
+  getExchangeRates,
   getPriceTable,
   getPrograms,
   getRegions,
   whatsappLink,
 } from "@/lib/content";
-import { getInitialRegion } from "@/lib/region.server";
 import { buildMetadata, faqSchema, founderSchema } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -38,8 +39,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const initialRegion = await getInitialRegion();
-  const [hero, founder, homeFaqs, allFaqs, programs, goals, regions, table, whatsappHref] = await Promise.all([
+  const [hero, founder, homeFaqs, allFaqs, programs, goals, regions, table, whatsappHref, pagePhotos, rates] = await Promise.all([
     getHeroBanners(),
     getFounderSlides(),
     getHomeFaqs(),
@@ -49,6 +49,8 @@ export default async function HomePage() {
     getRegions(),
     getPriceTable(),
     whatsappLink(),
+    getPagePhotos(),
+    getExchangeRates(),
   ]);
 
   return (
@@ -58,14 +60,14 @@ export default async function HomePage() {
       <HeroCarousel banners={hero.banners} autoplayMs={hero.autoplayMs} whatsappHref={whatsappHref} />
       <TrustStrip />
 
-      <RegionProvider initialRegion={initialRegion} regions={regions} table={table}>
+      <RegionProvider regions={regions} table={table} rates={rates}>
         <section className="section" id="programs">
           <div className="container-site">
             <SectionHeading
               kicker="Programs"
               title="Choose your"
               highlight="program"
-              lead="Every program includes a personalized diet plan, recorded home workouts and regular follow-ups."
+              lead="Every program includes a personalized diet plan on WhatsApp, recorded home workouts and regular follow-ups."
             />
             <ProgramsCarousel programs={programs} />
           </div>
@@ -88,12 +90,7 @@ export default async function HomePage() {
 
       <section className="section bg-blush" id="results">
         <div className="container-site grid items-center gap-[clamp(24px,5vw,64px)] md:grid-cols-2">
-          <BeforeAfter
-            before="/images/results/before-71kg.jpg"
-            after="/images/results/after-61kg.jpg"
-            beforeAlt="Client before the program, 71 kg"
-            afterAlt="The same client after the program, 61 kg"
-          />
+          <BeforeAfter before={pagePhotos.before.src} after={pagePhotos.after.src} beforeAlt={pagePhotos.before.alt} afterAlt={pagePhotos.after.alt} />
           <Reveal>
             <div className="gold-rule gold-rule-left">
               <span className="kicker">Real people. Real results.</span>
@@ -105,7 +102,7 @@ export default async function HomePage() {
               Drag the handle to compare. Every story on our testimonials page comes with the result and the program used.
             </p>
             <p className="mt-5 font-display text-[26px]">
-              71 kg → 61 kg <span className="text-brand">· −10 kg</span>
+              71 kg → 61 kg <span className="text-brand-dark">· −10 kg</span>
             </p>
             <p className="tracking-[3px] text-gold" aria-label="Rated 5 out of 5">
               ★★★★★

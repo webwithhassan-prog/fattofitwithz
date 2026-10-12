@@ -46,7 +46,7 @@ export function FormSharePanel({ imageUrl, fileName, whatsappUrl, message }: Pro
 
   return (
     <div className="rounded-[16px] border border-line bg-blush p-5">
-      <p className="font-medium text-brand">Saved. Now send it to your coach:</p>
+      <p className="font-medium text-brand-dark">Saved. Now send it to your coach:</p>
       {/* eslint-disable-next-line @next/next/no-img-element -- generated per member, not a static asset */}
       <img src={imageUrl} alt="Picture of your submitted answers" className="mt-4 w-full max-w-[420px] rounded-[12px] border border-line bg-white" />
       <div className="mt-4 flex flex-wrap gap-3">

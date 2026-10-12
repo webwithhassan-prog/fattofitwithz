@@ -62,6 +62,8 @@ export type Program = {
 export type Goal = {
   id: string;
   label: string;
+  /** Health issue (PCOS, diabetes...): the button is highlighted */
+  healthConcern: boolean;
   /** Program slugs, best match first */
   order: string[];
   /** One-line reason per program slug (top three) */

@@ -10,7 +10,9 @@
       "countries": [
         "US"
       ],
-      "isDefault": true
+      "isDefault": true,
+      "ebookPrice": 8,
+      "ebookPriceWithPlan": 6
     },
     {
       "code": "canada",
@@ -20,7 +22,9 @@
       "countries": [
         "CA"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 11,
+      "ebookPriceWithPlan": 8
     },
     {
       "code": "uae",
@@ -30,7 +34,9 @@
       "countries": [
         "AE"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 29,
+      "ebookPriceWithPlan": 22
     },
     {
       "code": "saudi",
@@ -40,7 +46,9 @@
       "countries": [
         "SA"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 30,
+      "ebookPriceWithPlan": 23
     },
     {
       "code": "qatar",
@@ -50,7 +58,9 @@
       "countries": [
         "QA"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 29,
+      "ebookPriceWithPlan": 22
     },
     {
       "code": "india",
@@ -60,7 +70,9 @@
       "countries": [
         "IN"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 690,
+      "ebookPriceWithPlan": 520
     },
     {
       "code": "pakistan",
@@ -70,7 +82,9 @@
       "countries": [
         "PK"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 2250,
+      "ebookPriceWithPlan": 1700
     },
     {
       "code": "australia",
@@ -80,7 +94,9 @@
       "countries": [
         "AU"
       ],
-      "isDefault": false
+      "isDefault": false,
+      "ebookPrice": 12,
+      "ebookPriceWithPlan": 9
     }
   ],
   "pricesByDuration": {

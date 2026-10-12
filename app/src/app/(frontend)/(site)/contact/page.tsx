@@ -30,7 +30,7 @@ export default async function ContactPage() {
           />
           <div className="grid gap-8 md:grid-cols-[0.9fr_1.1fr]">
             <div className="flex flex-col gap-5 rounded-[24px] bg-blush p-8">
-              <h2 className="text-[28px] text-brand">Contact details</h2>
+              <h2 className="text-[28px] text-brand-dark">Contact details</h2>
               <div>
                 <h3 className="text-lg">WhatsApp (fastest)</h3>
                 <p className="text-muted">Chat with our team directly.</p>
@@ -41,7 +41,7 @@ export default async function ContactPage() {
               </div>
               <div>
                 <h3 className="text-lg">Email</h3>
-                <a href={`mailto:${s.contact.publicEmail}`} className="text-brand underline">
+                <a href={`mailto:${s.contact.publicEmail}`} className="text-brand-dark underline">
                   {s.contact.publicEmail}
                 </a>
               </div>
@@ -51,7 +51,7 @@ export default async function ContactPage() {
               </div>
             </div>
             <div className="card p-8">
-              <h2 className="mb-1 text-[28px] text-brand">Send us a message</h2>
+              <h2 className="mb-1 text-[28px] text-brand-dark">Send us a message</h2>
               <p className="mb-6 text-muted">Fill out the form and our team will get back to you.</p>
               <ContactForm subjects={s.contactSubjects} />
             </div>

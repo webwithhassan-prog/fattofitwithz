@@ -4,7 +4,7 @@ import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getSettings } from "@/lib/content";
+import { getPagePhotos, getSettings } from "@/lib/content";
 import { breadcrumbSchema, buildMetadata, founderSchema } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -16,15 +16,9 @@ export const metadata = buildMetadata({
 
 const APPROACH = ["Balanced nutrition", "Regular movement", "Consistency", "Healthy lifestyle habits", "Personalized support"];
 
-const EVENTS = [
-  { src: "/images/coach/coach-p09.jpg", alt: "Zaineb Danish speaking at a women's health session", caption: "Women's health session" },
-  { src: "/images/coach/coach-p11.jpg", alt: "Zaineb Danish speaking at the Lahore Press Club podium", caption: "Lahore Press Club" },
-  { src: "/images/coach/coach-p10.jpg", alt: "Zaineb Danish receiving recognition on stage", caption: "Recognition ceremony" },
-  { src: "/images/coach/coach-p12.jpg", alt: "Zaineb Danish receiving an award with the organisers", caption: "Recognition ceremony" },
-];
-
 export default async function AboutPage() {
-  const s = await getSettings();
+  // Photos are changed in admin > Site photos
+  const [s, photos] = await Promise.all([getSettings(), getPagePhotos()]);
   return (
     <>
       <JsonLd data={[await founderSchema(), breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about" }])]} />
@@ -38,7 +32,7 @@ export default async function AboutPage() {
             <h1 className="mt-4 text-[clamp(36px,5vw,58px)]">
               Meet <span className="script">Zaineb Danish</span>
             </h1>
-            <p className="mt-2 text-brand">Nutritionist &amp; Certified Fitness Coach</p>
+            <p className="mt-2 text-brand-dark">Nutritionist &amp; Certified Fitness Coach</p>
             <p className="lead mt-5">
               Fat To Fit With Z is an online women&apos;s health and fitness platform. We help women reach their health, weight
               management, fitness and lifestyle goals through practical, personalized guidance they can follow in everyday life.
@@ -53,11 +47,12 @@ export default async function AboutPage() {
           </div>
           <div className="arch-frame w-full max-w-[440px] justify-self-center">
             <Image
-              src="/images/coach/coach-p03.jpg"
-              alt="Portrait of Zaineb Danish"
+              src={photos.aboutPhoto.src}
+              alt={photos.aboutPhoto.alt}
               width={720}
               height={900}
-              priority
+              loading="eager"
+              fetchPriority="high"
               sizes="(min-width: 768px) 440px, 90vw"
               className="arch aspect-[4/5] w-full"
             />
@@ -128,7 +123,7 @@ export default async function AboutPage() {
             lead="Zaineb speaks on women's health and has been recognised for her work at events in Lahore."
           />
           <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {EVENTS.map((e) => (
+            {photos.aboutEvents.map((e) => (
               <li key={e.src}>
                 <figure>
                   <Image src={e.src} alt={e.alt} width={720} height={900} sizes="(min-width: 1024px) 270px, 45vw" className="aspect-[4/5] w-full rounded-[12px] object-cover" />

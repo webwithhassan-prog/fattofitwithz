@@ -17,7 +17,7 @@ export const Faqs: CollectionConfig = {
     useAsTitle: "question",
     defaultColumns: ["question", "showOn", "category", "order"],
     listSearchableFields: ["question", "answer"],
-    group: "Website",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     pagination: { defaultLimit: 50 },
     description: "Questions for the FAQ page and the homepage. Lower order numbers show first.",
   },

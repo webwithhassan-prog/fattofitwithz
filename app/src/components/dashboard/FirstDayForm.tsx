@@ -75,32 +75,32 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
           <fieldset className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             <legend className="mb-3 font-display text-xl text-ink">About you</legend>
             <div>
-              <label htmlFor="fd-name" className="field-label">Full name <span className="text-brand">*</span></label>
+              <label htmlFor="fd-name" className="field-label">Full name <span className="text-brand-dark">*</span></label>
               <input id="fd-name" required value={data.fullName} onChange={(e) => set("fullName", e.target.value)} className="field-input" autoComplete="name" />
             </div>
             <div>
-              <label htmlFor="fd-age" className="field-label">Age <span className="text-brand">*</span></label>
+              <label htmlFor="fd-age" className="field-label">Age <span className="text-brand-dark">*</span></label>
               <select id="fd-age" required value={data.age} onChange={(e) => set("age", e.target.value)} className="field-input">
                 <option value="">Select age</option>
                 {AGES.map((a) => <option key={a}>{a}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="fd-height" className="field-label">Height <span className="text-brand">*</span></label>
+              <label htmlFor="fd-height" className="field-label">Height <span className="text-brand-dark">*</span></label>
               <select id="fd-height" required value={data.height} onChange={(e) => set("height", e.target.value)} className="field-input">
                 <option value="">Select height</option>
                 {HEIGHTS.map((h) => <option key={h}>{h}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="fd-marital" className="field-label">Marital status <span className="text-brand">*</span></label>
+              <label htmlFor="fd-marital" className="field-label">Marital status <span className="text-brand-dark">*</span></label>
               <select id="fd-marital" required value={data.maritalStatus} onChange={(e) => set("maritalStatus", e.target.value)} className="field-input">
                 <option value="">Select status</option>
                 {MARITAL.map((m) => <option key={m}>{m}</option>)}
               </select>
             </div>
             <div>
-              <label htmlFor="fd-weight" className="field-label">Current weight (kg) <span className="text-brand">*</span></label>
+              <label htmlFor="fd-weight" className="field-label">Current weight (kg) <span className="text-brand-dark">*</span></label>
               <input id="fd-weight" required type="number" min={30} max={250} step="0.1" inputMode="decimal" value={data.currentWeightKg} onChange={(e) => set("currentWeightKg", e.target.value)} className="field-input" />
             </div>
             <div>
@@ -134,11 +134,11 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
               ) : null}
             </div>
             <div className="md:col-span-2">
-              <label htmlFor="fd-likes" className="field-label">Foods you like <span className="text-brand">*</span></label>
+              <label htmlFor="fd-likes" className="field-label">Foods you like <span className="text-brand-dark">*</span></label>
               <input id="fd-likes" required value={data.likes} onChange={(e) => set("likes", e.target.value)} className="field-input" />
             </div>
             <div className="md:col-span-2">
-              <label htmlFor="fd-dislikes" className="field-label">Foods you dislike <span className="text-brand">*</span></label>
+              <label htmlFor="fd-dislikes" className="field-label">Foods you dislike <span className="text-brand-dark">*</span></label>
               <input id="fd-dislikes" required value={data.dislikes} onChange={(e) => set("dislikes", e.target.value)} className="field-input" />
             </div>
           </fieldset>
@@ -156,7 +156,7 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
 
           <div>
             <button type="submit" className="btn" disabled={saving}>{saving ? "Saving…" : "Save my first day form"}</button>
-            {error ? <p role="alert" className="mt-3 text-sm text-brand">{error}</p> : null}
+            {error ? <p role="alert" className="mt-3 text-sm text-brand-dark">{error}</p> : null}
           </div>
         </form>
       )}

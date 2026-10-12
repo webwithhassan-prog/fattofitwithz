@@ -4,9 +4,9 @@ import { ProgramCard } from "@/components/programs/ProgramCard";
 import { RegionProvider } from "@/components/pricing/RegionProvider";
 import { RegionSelect } from "@/components/pricing/RegionSelect";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getPriceTable, getPrograms, getRegions, whatsappLink } from "@/lib/content";
-import { getInitialRegion } from "@/lib/region.server";
+import { getExchangeRates, getPriceTable, getPrograms, getRegions, whatsappLink } from "@/lib/content";
 import { durationLabel } from "@/lib/pricing";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 
@@ -18,16 +18,16 @@ export const metadata = buildMetadata({
 });
 
 export default async function ProgramsPage() {
-  const [programs, regions, table, initialRegion, helpHref] = await Promise.all([
+  const [programs, regions, table, helpHref, rates] = await Promise.all([
     getPrograms(),
     getRegions(),
     getPriceTable(),
-    getInitialRegion(),
     whatsappLink("Hi, I need help choosing a program."),
+    getExchangeRates(),
   ]);
 
   return (
-    <RegionProvider initialRegion={initialRegion} regions={regions} table={table}>
+    <RegionProvider regions={regions} table={table} rates={rates}>
       <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Programs", path: "/programs" }])} />
 
       <section className="section bg-gradient-to-b from-blush to-bg">
@@ -37,16 +37,17 @@ export default async function ProgramsPage() {
             kicker="Programs"
             title="Find the program that"
             highlight="fits your goals"
-            lead="Every program includes a personalized diet plan built around desi food, recorded home workouts and regular follow-ups with your coach."
+            lead="Every program includes a personalized diet plan built around desi food (sent on WhatsApp), recorded home workouts and regular follow-ups with your coach."
           />
           <div className="mb-6 flex justify-center">
             <RegionSelect />
           </div>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {/* "stagger": the cards fade up one after another when scrolled into view */}
+          <Reveal className="stagger grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {programs.map((program) => (
               <ProgramCard key={program.slug} program={program} />
             ))}
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -68,7 +69,7 @@ export default async function ProgramsPage() {
                 {programs.map((p) => (
                   <tr key={p.slug} className="border-t border-line align-top">
                     <th scope="row" className="p-4 font-medium">
-                      <Link href={`/programs/${p.slug}`} className="text-brand hover:underline">
+                      <Link href={`/programs/${p.slug}`} className="text-brand-dark hover:underline">
                         {p.name}
                       </Link>
                     </th>
@@ -88,11 +89,11 @@ export default async function ProgramsPage() {
           </div>
           <p className="mt-8 text-center text-muted">
             Not sure which one fits?{" "}
-            <a href={helpHref} className="text-brand underline" target="_blank" rel="noopener noreferrer">
+            <a href={helpHref} className="text-brand-dark underline" target="_blank" rel="noopener noreferrer">
               Ask us on WhatsApp
             </a>{" "}
             or{" "}
-            <Link href="/#recommended" className="text-brand underline">
+            <Link href="/#recommended" className="text-brand-dark underline">
               pick your goal
             </Link>
             .

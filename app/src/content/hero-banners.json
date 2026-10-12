@@ -12,7 +12,7 @@
       "sub": "Personalized fitness programs, expert guidance and real results, all in one place. Built around desi food and your routine.",
       "primary": { "label": "Find my program", "href": "/#recommended" },
       "secondary": { "label": "Chat on WhatsApp", "href": "whatsapp" },
-      "badge": { "big": "5+ years", "small": "coaching women in 8 countries" }
+      "badge": { "big": "5+ years", "small": "coaching women worldwide" }
     },
     {
       "id": "desi-recipes",
@@ -21,10 +21,10 @@
       "kicker": "New · Desi Weightloss Recipes e-book",
       "title": "Desi food,",
       "titleScript": "portioned for results.",
-      "sub": "68 recipes built around roti, dal, sabzi and chai. A 1200 kcal a day plan that is thyroid, PCOS and diabetes friendly.",
+      "sub": "A recipe e-book built around roti, dal, sabzi and chai. A 1200 kcal a day plan that is thyroid, PCOS and diabetes friendly.",
       "primary": { "label": "See the programs", "href": "/programs/total-transformation" },
       "secondary": { "label": "Find my program", "href": "/#recommended" },
-      "badge": { "big": "68 recipes", "small": "1200 kcal a day, budget friendly" }
+      "badge": { "big": "E-book", "small": "1200 kcal a day, budget friendly" }
     },
     {
       "id": "clinical",
@@ -54,7 +54,7 @@
       "id": "recognised",
       "photo": "/images/coach/coach-p10.jpg",
       "photoAlt": "Zaineb Danish receiving recognition on stage",
-      "kicker": "Trusted by women across 8 countries",
+      "kicker": "Trusted by women worldwide",
       "title": "Recognised for",
       "titleScript": "real results.",
       "sub": "Clinical nutrition and hormonal health expertise, and an invited speaker on women's health at Lahore Press Club.",

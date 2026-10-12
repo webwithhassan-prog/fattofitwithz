@@ -7,6 +7,10 @@ import * as migration_20261007_154551_checkbox_defaults from './20261007_154551_
 import * as migration_20261007_161826_site_stats from './20261007_161826_site_stats';
 import * as migration_20261007_175826_simplify_add_forms_ebook from './20261007_175826_simplify_add_forms_ebook';
 import * as migration_20261007_175934_simplify_remove_old from './20261007_175934_simplify_remove_old';
+import * as migration_20261012_182146_goal_health_concern from './20261012_182146_goal_health_concern';
+import * as migration_20261012_184719_media_files from './20261012_184719_media_files';
+import * as migration_20261012_193109_admin_tasks_issues_photos from './20261012_193109_admin_tasks_issues_photos';
+import * as migration_20261013_090000_ebook_menu_and_faq from './20261013_090000_ebook_menu_and_faq';
 
 export const migrations = [
   {
@@ -52,6 +56,26 @@ export const migrations = [
   {
     up: migration_20261007_175934_simplify_remove_old.up,
     down: migration_20261007_175934_simplify_remove_old.down,
-    name: '20261007_175934_simplify_remove_old'
+    name: '20261007_175934_simplify_remove_old',
+  },
+  {
+    up: migration_20261012_182146_goal_health_concern.up,
+    down: migration_20261012_182146_goal_health_concern.down,
+    name: '20261012_182146_goal_health_concern',
+  },
+  {
+    up: migration_20261012_184719_media_files.up,
+    down: migration_20261012_184719_media_files.down,
+    name: '20261012_184719_media_files',
+  },
+  {
+    up: migration_20261012_193109_admin_tasks_issues_photos.up,
+    down: migration_20261012_193109_admin_tasks_issues_photos.down,
+    name: '20261012_193109_admin_tasks_issues_photos',
+  },
+  {
+    up: migration_20261013_090000_ebook_menu_and_faq.up,
+    down: migration_20261013_090000_ebook_menu_and_faq.down,
+    name: '20261013_090000_ebook_menu_and_faq'
   },
 ];

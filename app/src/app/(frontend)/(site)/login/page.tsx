@@ -1,8 +1,9 @@
-/** /login - members log in with email + password. Already logged in? Straight to the dashboard. */
+/** /login?next=/checkout... - members log in with email + password, then go to `next` (default: the dashboard). */
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/auth/AuthForms";
 import { getCurrentMember } from "@/lib/auth/session.server";
+import { safeNextPath } from "@/lib/auth/safe-next";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -12,11 +13,12 @@ export const metadata = buildMetadata({
   noIndex: true,
 });
 
-type PageProps = { searchParams: Promise<{ loggedOut?: string }> };
+type PageProps = { searchParams: Promise<{ loggedOut?: string; next?: string }> };
 
 export default async function LoginPage({ searchParams }: PageProps) {
-  if (await getCurrentMember()) redirect("/dashboard");
-  const { loggedOut } = await searchParams;
+  const { loggedOut, next } = await searchParams;
+  const nextPath = safeNextPath(next); // e.g. back to /checkout after logging in
+  if (await getCurrentMember()) redirect(nextPath);
 
   return (
     <section className="section bg-gradient-to-b from-blush to-bg">
@@ -27,9 +29,9 @@ export default async function LoginPage({ searchParams }: PageProps) {
             Welcome <span className="script">back</span>
           </h1>
         </div>
-        <LoginForm notice={loggedOut ? "You've been logged out." : undefined} />
+        <LoginForm notice={loggedOut ? "You've been logged out." : undefined} next={nextPath} />
         <p className="mt-6 text-center text-sm text-muted">
-          New here? <Link href="/signup" className="text-brand underline">Create an account</Link>
+          New here? <Link href="/signup" className="text-brand-dark underline">Create an account</Link>
         </p>
       </div>
     </section>

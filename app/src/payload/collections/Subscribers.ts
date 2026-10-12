@@ -6,6 +6,6 @@ export const Subscribers: CollectionConfig = {
   slug: "subscribers",
   labels: { singular: "Newsletter subscriber", plural: "Newsletter subscribers" },
   defaultSort: "-createdAt",
-  admin: { useAsTitle: "email", defaultColumns: ["email", "createdAt"], group: "Inbox" },
+  admin: { useAsTitle: "email", defaultColumns: ["email", "createdAt"], group: false }, // hidden from the menu (2026-10-13)
   fields: [{ name: "email", type: "email", required: true, unique: true, index: true, hooks: { beforeValidate: [normalizeEmail] } }],
 };

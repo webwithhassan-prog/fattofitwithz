@@ -9,7 +9,8 @@ import { revalidateGlobalAfterChange } from "../hooks/revalidateSite";
 export const Ebook: GlobalConfig = {
   slug: "ebook",
   label: "E-book",
-  admin: { group: "Website", description: "The e-book offer. Its prices per country are under Prices." },
+  admin: { group: false, // hidden from the menu (2026-10-13)
+    description: "The e-book offer. Its prices per country are under Prices." },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {

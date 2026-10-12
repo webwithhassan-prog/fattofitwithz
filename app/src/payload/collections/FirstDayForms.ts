@@ -17,7 +17,7 @@ export const FirstDayForms: CollectionConfig = {
     defaultColumns: ["title", "member", "reviewed", "updatedAt"],
     group: "Clients",
     pagination: { defaultLimit: 50 },
-    description: "Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick \"Reviewed\".",
+    description: "Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick \"Diet plan sent\".",
   },
   hooks: {
     beforeChange: [
@@ -32,11 +32,12 @@ export const FirstDayForms: CollectionConfig = {
   fields: [
     { name: "title", type: "text", admin: { hidden: true } },
     {
+      // Stored as "reviewed" in the database; shown as "Diet plan sent" (admin > Diet plans to send lists the unticked ones).
       name: "reviewed",
       type: "checkbox",
-      label: "Reviewed",
+      label: "Diet plan sent",
       defaultValue: false,
-      admin: { position: "sidebar", description: "Tick after you've read it and sent the diet plan." },
+      admin: { position: "sidebar", description: "Tick after you've sent her diet plan on WhatsApp." },
     },
     { name: "member", type: "relationship", relationTo: "members", required: true, unique: true, index: true, admin: { position: "sidebar" } },
     {

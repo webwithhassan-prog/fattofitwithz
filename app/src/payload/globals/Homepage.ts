@@ -30,7 +30,8 @@ const button = (name: string, label: string) => ({
 export const Homepage: GlobalConfig = {
   slug: "homepage",
   label: "Homepage",
-  admin: { group: "Website", description: "The big banners at the top, Zaineb's messages, and the goal picker." },
+  admin: { group: false, // hidden from the menu (2026-10-13)
+    description: "The big banners at the top, Zaineb's messages, and the goal picker." },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {
@@ -79,7 +80,7 @@ export const Homepage: GlobalConfig = {
                       type: "row",
                       fields: [
                         { name: "big", type: "text", required: true, label: "Big text", admin: { placeholder: "5+ years" } },
-                        { name: "small", type: "text", required: true, label: "Small text", admin: { placeholder: "coaching women in 8 countries" } },
+                        { name: "small", type: "text", required: true, label: "Small text", admin: { placeholder: "coaching women worldwide" } },
                       ],
                     },
                   ],
@@ -137,6 +138,12 @@ export const Homepage: GlobalConfig = {
                     { name: "label", type: "text", required: true, label: "Button text", admin: { placeholder: "Lose fat & tone up" } },
                     { name: "goalId", type: "text", required: true, label: "Short code", admin: { placeholder: "fat-loss" } },
                   ],
+                },
+                {
+                  name: "healthConcern",
+                  type: "checkbox",
+                  defaultValue: false,
+                  label: "Health concern (show this button highlighted)",
                 },
                 {
                   name: "programs",

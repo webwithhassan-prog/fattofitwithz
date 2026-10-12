@@ -4,12 +4,12 @@ import { contentHooks } from "../hooks/revalidateSite";
 
 export const WorkoutSessions: CollectionConfig = {
   slug: "workout-sessions",
-  labels: { singular: "Recorded workout", plural: "Recorded workouts" },
+  labels: { singular: "Workout recording", plural: "Workout recordings" },
   defaultSort: "week",
   admin: {
     useAsTitle: "workout",
     defaultColumns: ["workout", "week", "day", "youtubeUrl"],
-    group: "Member area",
+    group: "Website",
     pagination: { defaultLimit: 50 },
     description: "The recorded YouTube workouts on the member dashboard. Six per week (Monday to Saturday); day 1 = Monday.",
   },

@@ -2,14 +2,14 @@
 
 /**
  * Member area frame: sidebar navigation, a top bar with her name, and the page content.
- * Kept deliberately small: home, the two forms, the recorded library and settings.
+ * Kept deliberately small: home, the two forms, the recorded library, "report an issue" and settings.
  * (Diet plans and day-to-day coaching happen on WhatsApp.)
  */
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Clipboard, Close, Heart, Home, LogOut, Menu, PlayCircle, Settings } from "@/components/ui/Icons";
+import { AlertCircle, Clipboard, Close, Heart, Home, LogOut, Menu, PlayCircle, Settings } from "@/components/ui/Icons";
 import { logOut } from "@/app/(frontend)/dashboard/actions";
 
 const NAV = [
@@ -17,6 +17,7 @@ const NAV = [
   { href: "/dashboard/first-day", label: "First day form", Icon: Clipboard },
   { href: "/dashboard/follow-up", label: "Follow-up form", Icon: Clipboard },
   { href: "/dashboard/library", label: "Recorded library", Icon: PlayCircle },
+  { href: "/dashboard/issues", label: "Report an issue", Icon: AlertCircle },
   { href: "/dashboard/settings", label: "Settings", Icon: Settings },
 ];
 
@@ -33,7 +34,7 @@ export function DashboardShell({ firstName, initial, children }: Props) {
     <nav aria-label="Member area" className="flex h-full flex-col gap-1.5 p-4">
       <Link href="/" className="mb-5 flex items-center gap-2.5 px-2">
         <Image src="/images/logo.png" alt="" width={40} height={40} className="h-10 w-10 rounded-full bg-white" />
-        <span className="font-display text-xl text-brand italic">
+        <span className="font-display text-xl text-brand-dark italic">
           Fat to Fit <span className="block text-sm not-italic text-muted">with Z</span>
         </span>
       </Link>
@@ -44,7 +45,7 @@ export function DashboardShell({ firstName, initial, children }: Props) {
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            className="flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[15px] text-ink transition hover:bg-blush aria-[current=page]:bg-blush aria-[current=page]:font-medium aria-[current=page]:text-brand"
+            className="flex items-center gap-3 rounded-[10px] px-3 py-2.5 text-[15px] text-ink transition hover:bg-blush aria-[current=page]:bg-blush aria-[current=page]:font-medium aria-[current=page]:text-brand-dark"
           >
             <Icon className="h-5 w-5" />
             {label}
@@ -52,11 +53,11 @@ export function DashboardShell({ firstName, initial, children }: Props) {
         );
       })}
       <div className="mt-auto rounded-[14px] bg-blush p-5 text-center">
-        <p className="font-display text-lg leading-snug text-brand italic">Your Health in Safe Hands.</p>
-        <Heart className="mx-auto mt-2 h-4 w-4 text-brand" />
+        <p className="font-display text-lg leading-snug text-brand-dark italic">Your Health in Safe Hands.</p>
+        <Heart className="mx-auto mt-2 h-4 w-4 text-brand-dark" />
       </div>
       <form action={logOut}>
-        <button type="submit" className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left text-[15px] text-muted transition hover:bg-blush hover:text-brand">
+        <button type="submit" className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left text-[15px] text-muted transition hover:bg-blush hover:text-brand-dark">
           <LogOut className="h-5 w-5" /> Log out
         </button>
       </form>
@@ -64,7 +65,7 @@ export function DashboardShell({ firstName, initial, children }: Props) {
   );
 
   return (
-    <div className="min-h-screen bg-[#fdf6f8] lg:grid lg:grid-cols-[250px_1fr]">
+    <div className="min-h-screen bg-blush/50 lg:grid lg:grid-cols-[250px_1fr]">
       <aside className="sticky top-0 hidden h-screen border-r border-line bg-card lg:block">{sidebar}</aside>
 
       {drawerOpen ? (
@@ -87,7 +88,7 @@ export function DashboardShell({ firstName, initial, children }: Props) {
           <p className="min-w-0 flex-1 truncate text-lg">
             Welcome, <b className="font-semibold">{firstName}!</b>
           </p>
-          <Link href="/dashboard/settings" className="grid h-9 w-9 place-items-center rounded-full bg-rose font-medium text-white" aria-label="Settings">
+          <Link href="/dashboard/settings" className="grid h-9 w-9 place-items-center rounded-full bg-brand font-medium text-ink" aria-label="Settings">
             {initial}
           </Link>
         </header>

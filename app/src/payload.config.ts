@@ -11,7 +11,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { buildConfig } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { cloudStoragePlugin } from "@payloadcms/plugin-cloud-storage";
 import sharp from "sharp";
+import { databaseFiles } from "./payload/storage/databaseFiles";
 
 import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
@@ -30,10 +32,13 @@ import { Subscribers } from "./payload/collections/Subscribers";
 import { PasswordResets } from "./payload/collections/PasswordResets";
 import { MemberSessions } from "./payload/collections/MemberSessions";
 import { SiteStats } from "./payload/collections/SiteStats";
+import { Announcements } from "./payload/collections/Announcements";
+import { ClientIssues } from "./payload/collections/ClientIssues";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { Pricing } from "./payload/globals/Pricing";
 import { Homepage } from "./payload/globals/Homepage";
 import { Ebook } from "./payload/globals/Ebook";
+import { PagePhotos } from "./payload/globals/PagePhotos";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -49,41 +54,49 @@ export default buildConfig({
     user: Users.slug,
     meta: { titleSuffix: " | Fat To Fit With Z admin" },
     importMap: { baseDir: path.resolve(dirname) },
+    theme: "light", // the admin design (src/app/(payload)/custom.css) is made for light mode
     components: {
       graphics: { Logo: "/payload/admin/Logo#Logo", Icon: "/payload/admin/Logo#Icon" },
-      // The admin home page: website + coaching overview (src/payload/admin/Dashboard.tsx)
-      views: { dashboard: { Component: "/payload/admin/Dashboard#Dashboard" } },
+      // Shortcuts at the top of the menu: Overview, Diet plans to send, Site photos
+      beforeNavLinks: ["/payload/admin/NavLinks#NavLinks"],
+      views: {
+        // The admin home page: to-do list + sales of the last 30 days
+        dashboard: { Component: "/payload/admin/Dashboard#Dashboard" },
+        dietPlans: { Component: "/payload/admin/DietPlans#DietPlans", path: "/diet-plans", meta: { title: "Diet plans to send" } },
+        sitePhotos: { Component: "/payload/admin/SitePhotos#SitePhotos", path: "/site-photos", meta: { title: "Site photos" } },
+      },
     },
   },
 
-  // The admin menu shows groups in the order they first appear below, and inside a group
-  // lists (collections) come before single pages (globals). Each file sets its own group.
+  // THE ADMIN MENU (owner's list, 2026-10-13). Groups appear in the order below; each file sets its group.
+  //   Clients:             Clients, First day forms, Follow-up forms, Client issues
+  //   Messages to clients: Reminders & announcements
+  //   Website:             Workout recordings, All photos
+  // Everything else has `admin.group: false`: hidden from the menu, but the pages and data still work
+  // (open them from a client's page, the Overview, Site photos, or by address, e.g. /admin/globals/pricing).
   collections: [
-    // Clients: the coach's daily work
     Members,
-    Memberships,
     FirstDayForms,
     FollowUpForms,
-    Orders,
-    // Member area: the recorded workout library
+    ClientIssues,
+    Announcements,
     WorkoutSessions,
-    // Website: lists, then the single pages from `globals` (Homepage, Prices, Contact & site settings)
+    Media,
+    // Hidden from the menu
+    Memberships,
+    Orders,
     Programs,
     Testimonials,
     Faqs,
     LegalPages,
-    Media,
-    // Inbox
     ContactMessages,
     Subscribers,
-    // Admin
     Users,
-    // Not in the menu (shown inside each member, or internal)
     MemberSessions,
     PasswordResets,
     SiteStats,
   ],
-  globals: [Homepage, Pricing, Ebook, SiteSettings],
+  globals: [Homepage, Pricing, Ebook, SiteSettings, PagePhotos], // all hidden from the menu
 
   secret: process.env.PAYLOAD_SECRET ?? "",
   db: postgresAdapter({
@@ -97,5 +110,9 @@ export default buildConfig({
   }),
   graphQL: { disable: true }, // not used; fewer endpoints to secure
   sharp,
+  plugins: [
+    // Photos are saved in the database (table media_files), not on disk: see src/payload/storage/databaseFiles.ts
+    cloudStoragePlugin({ collections: { media: { adapter: databaseFiles, disableLocalStorage: true } } }),
+  ],
   typescript: { outputFile: path.resolve(dirname, "payload-types.ts") },
 });

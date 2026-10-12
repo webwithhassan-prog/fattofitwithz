@@ -2,6 +2,8 @@
 
 How a visitor becomes a client, what the client does each day and week, and what the coach does in the admin panel. It also covers what the system does by itself, and how the developer changes and ships the site.
 
+> **Note (2026-10-13):** the member area was simplified on 2026-10-07. It now has a first day form, follow-up forms, the recorded library and the e-book. Diet plans go on WhatsApp. Any section below that still mentions weekly check-ins, daily logs or meal plans in the dashboard is out of date; section 2a is current.
+
 **Status markers:**
 - ✅ built and tested
 - 🟡 planned, can be built now
@@ -23,24 +25,31 @@ How a visitor becomes a client, what the client does each day and week, and what
 
 ## 2. Visitor → paying client
 
-### 2a. Card payment (Stripe) ✅ (live mode ⛔)
+### 2a. Card payment (Stripe) ✅ (live mode ⛔). Updated 2026-10-13
 
-1. The visitor arrives from Instagram, WhatsApp, Google or an AI assistant at the homepage, a program page or the FAQ.
-2. **Prices show in her country's currency automatically.** The order is: her saved choice, then her country, then USD. She can switch country in the picker.
+1. The visitor arrives from Instagram, WhatsApp, Google or an AI assistant. Public pages are served from the CDN, so they open fast.
+2. **Prices show in her country's currency automatically.** The browser checks her saved choice (cookie), else asks `/api/region` (Netlify's country header), else uses USD. She can switch country in the picker.
 3. She chooses a program by:
    - browsing the **Programs** carousel or page,
-   - using the **goal picker** ("What's your main goal?"), or
+   - using the **goal picker** ("What's your main goal?"; health concerns are highlighted), or
    - asking on **WhatsApp** (floating button on every page).
-4. On the program page she picks a duration (for example 2 or 4 months) and presses **Join now**. The system counts this as "Checkout started".
-5. The server works out the price from **admin › Prices**, never from the browser, and opens **Stripe Checkout**.
-6. She pays by card. Stripe sends her to **/checkout/success**: "Payment received, here's what happens next".
-7. **Automatically (Stripe webhook):**
-   - finds her by email, or creates her **member** account
-   - saves the **order** (program, months, amount, currency)
+4. On the program page she picks a duration and presses **Join now**.
+5. **E-book popup:** "Add the e-book for $6 (normally $8)?", shown in her currency. Either "Yes, add it" or "No thanks" opens **/checkout**. The popup is skipped if the e-book is switched off in admin.
+6. **/checkout:** order summary (program + optional e-book + total).
+   - **Not logged in:** full name, email, WhatsApp number, new password. The account is created and she is logged in.
+   - **Already has an account?** "Log in" brings her back to the same checkout (`/login?next=...`).
+   - **Logged in:** she only confirms her WhatsApp number.
+7. The server works out the price from **admin › Prices** (never from the browser) and opens **Stripe Checkout**. This counts as "Checkout started".
+8. She pays. Stripe sends her to **/checkout/success**, which shows "Next: fill in your first day form" and the e-book link if she bought it.
+9. **Automatically (Stripe webhook):**
+   - links the order to the account made at checkout (or finds or creates her by email)
+   - saves the **order** (program, months, e-book yes/no, amount, currency)
    - creates the **membership**: start today, end after the paid months. If she already has a running membership, the new one starts the day after it ends.
-   - emails a **welcome message** with a **"create your password"** link that works for 7 days
+   - emails a **welcome message**: login link, first day form link, e-book link if bought
    - Stripe sending the same event twice never creates duplicates.
-8. The coach contacts her on **WhatsApp within 24 hours** for the intake: goals, routine, food and health.
+10. She fills in the **first day form**. The coach prepares the diet plan and sends it on **WhatsApp**.
+
+**E-book on its own:** `/ebook` → "Buy the e-book" → Stripe (no account needed) → success page with the Drive link. The order is saved; it is linked to a member only if that email already has an account.
 
 > ⛔ Live card payments: Stripe does not accept businesses registered in Pakistan. This needs a company in a supported country (for example Stripe Atlas), or another gateway.
 

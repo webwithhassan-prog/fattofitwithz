@@ -87,3 +87,29 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
     hasEbook: ebookOrders.totalDocs > 0,
   };
 });
+
+/** Reminders for her + announcements for everyone, newest first (admin > Reminders & announcements). */
+export async function getClientMessages(memberId: number) {
+  const payload = await getPayloadClient();
+  const today = isoDay(new Date());
+  const { docs } = await payload.find({
+    collection: "announcements",
+    where: {
+      and: [
+        { or: [{ audience: { equals: "everyone" } }, { member: { equals: memberId } }] },
+        { or: [{ showUntil: { exists: false } }, { showUntil: { greater_than_equal: today } }] },
+      ],
+    },
+    sort: "-createdAt",
+    limit: 5,
+    depth: 0,
+  });
+  return docs.map((d) => ({ id: d.id, title: d.title, message: d.message, isReminder: d.audience === "one", createdAt: d.createdAt }));
+}
+
+/** Issues she reported, newest first, with the coach's reply (admin > Client issues). */
+export async function getClientIssues(memberId: number) {
+  const payload = await getPayloadClient();
+  const { docs } = await payload.find({ collection: "client-issues", where: { member: { equals: memberId } }, sort: "-createdAt", limit: 30, depth: 0 });
+  return docs.map((d) => ({ id: d.id, topic: d.topic, message: d.message, status: d.status, reply: d.reply ?? "", createdAt: d.createdAt }));
+}

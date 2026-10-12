@@ -18,7 +18,7 @@ export const Testimonials: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["image", "title", "type", "consentOnFile", "order"],
     pagination: { defaultLimit: 50 },
-    group: "Website",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     description: "Before/after photos and Instagram posts for the Testimonials page. Lower order numbers show first.",
   },
   hooks: {

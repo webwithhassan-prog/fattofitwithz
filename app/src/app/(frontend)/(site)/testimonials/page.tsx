@@ -9,7 +9,7 @@ import { BeforeAfter } from "@/components/home/BeforeAfter";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { InstagramIcon } from "@/components/ui/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getBeforeAfters, getInstagramItems, getSettings } from "@/lib/content";
+import { getBeforeAfters, getInstagramItems, getPagePhotos, getSettings } from "@/lib/content";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
@@ -22,9 +22,7 @@ export const metadata = buildMetadata({
 const TYPE_LABEL = { video: "Video testimonial", review: "Client review", transformation: "Transformation" } as const;
 
 export default async function TestimonialsPage() {
-  const results = await getBeforeAfters();
-  const instagram = await getInstagramItems();
-  const { social } = await getSettings();
+  const [results, instagram, { social }, photos] = await Promise.all([getBeforeAfters(), getInstagramItems(), getSettings(), getPagePhotos()]);
 
   return (
     <>
@@ -40,15 +38,10 @@ export default async function TestimonialsPage() {
             lead="Real journeys and real progress from women who trusted Fat To Fit With Z and committed to changing their lives."
           />
           <div className="grid items-center gap-10 md:grid-cols-2">
-            <BeforeAfter
-              before="/images/results/before-71kg.jpg"
-              after="/images/results/after-61kg.jpg"
-              beforeAlt="Client before the program, 71 kg"
-              afterAlt="The same client after the program, 61 kg"
-            />
+            <BeforeAfter before={photos.before.src} after={photos.after.src} beforeAlt={photos.before.alt} afterAlt={photos.after.alt} />
             <div>
               <p className="font-display text-[30px]">
-                71 kg → 61 kg <span className="text-brand">· −10 kg</span>
+                71 kg → 61 kg <span className="text-brand-dark">· −10 kg</span>
               </p>
               <p className="lead mt-3">Drag the handle to compare. Below is every transformation our clients agreed to share.</p>
             </div>
@@ -80,7 +73,7 @@ export default async function TestimonialsPage() {
                       {r.startKg} → {r.endKg} kg · −{r.lossKg} kg
                     </span>
                   ) : (
-                    <span className="rounded-full border border-brand px-3 py-1 text-sm text-brand">Before &amp; after</span>
+                    <span className="rounded-full border border-brand px-3 py-1 text-sm text-brand-dark">Before &amp; after</span>
                   )}
                 </div>
               </li>
@@ -111,7 +104,7 @@ export default async function TestimonialsPage() {
                     rel="noopener noreferrer"
                     className="card card-hover flex items-center gap-3 px-4 py-3.5"
                   >
-                    <InstagramIcon className="h-6 w-6 text-brand" />
+                    <InstagramIcon className="h-6 w-6 text-brand-dark" />
                     <span>
                       <span className="block font-display text-lg">
                         {TYPE_LABEL[item.type]} {String(i + 1).padStart(2, "0")}

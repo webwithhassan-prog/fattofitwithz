@@ -19,7 +19,7 @@ const existing = await payload.find({ collection: "members", where: { email: { e
 if (process.argv[2] === "remove") {
   const member = existing.docs[0];
   if (member) {
-    for (const collection of ["first-day-forms", "follow-up-forms", "memberships", "member-sessions", "password-resets", "orders"] as const) {
+    for (const collection of ["first-day-forms", "follow-up-forms", "memberships", "member-sessions", "password-resets", "orders", "client-issues", "announcements"] as const) {
       await payload.delete({ collection, where: { member: { equals: member.id } } });
     }
     await payload.delete({ collection: "members", id: member.id });

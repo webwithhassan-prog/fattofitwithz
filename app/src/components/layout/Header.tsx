@@ -21,10 +21,12 @@ export function Header({ nav }: { nav: NavItem[] }) {
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/90 backdrop-blur">
+    <header className="header-scroll sticky top-0 z-40 border-b border-line/70 bg-bg/90 backdrop-blur">
+      {/* Thin pink bar that fills as you scroll down the page (CSS only, see .scroll-progress) */}
+      <span aria-hidden="true" className="scroll-progress" />
       <div className="container-site flex items-center justify-between gap-4 py-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 font-display text-base whitespace-nowrap text-ink sm:text-[19px]">
-          <Image src="/images/logo.png" alt="" width={40} height={40} className="h-10 w-10 rounded-full bg-white" priority />
+          <Image src="/images/logo.png" alt="" width={40} height={40} className="h-10 w-10 rounded-full bg-white" loading="eager" />
           Fat To Fit With Z
         </Link>
 
@@ -35,7 +37,7 @@ export function Header({ nav }: { nav: NavItem[] }) {
                 <Link
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
-                  className="transition-colors hover:text-brand aria-[current=page]:text-brand"
+                  className="transition-colors hover:text-brand-dark aria-[current=page]:text-brand-dark"
                 >
                   {item.label}
                 </Link>
@@ -45,7 +47,7 @@ export function Header({ nav }: { nav: NavItem[] }) {
         </nav>
 
         <div className="flex flex-none items-center gap-2">
-          <Link href="/dashboard" className="hidden text-sm text-muted hover:text-brand sm:inline">
+          <Link href="/dashboard" className="hidden text-sm text-muted hover:text-brand-dark sm:inline">
             Member login
           </Link>
           <Link href="/programs" className="btn btn-sm px-3 whitespace-nowrap sm:px-4">
@@ -72,7 +74,7 @@ export function Header({ nav }: { nav: NavItem[] }) {
                 <Link
                   href={item.href}
                   aria-current={isActive(item.href) ? "page" : undefined}
-                  className="block py-3 text-lg aria-[current=page]:text-brand"
+                  className="block py-3 text-lg aria-[current=page]:text-brand-dark"
                 >
                   {item.label}
                 </Link>

@@ -23,25 +23,25 @@ const STEPS = [
   {
     title: "Join Fat To Fit With Z",
     lead: "Complete registration and payment.",
-    text: "Pay securely online. You get a welcome email straight away, and your coach reaches out to collect your goals, routine, food preferences and health information.",
+    text: "Create your account and pay securely online. You get a welcome email straight away and your member area opens.",
     image: "/images/illustrations/how-step-02-get-plan.png",
   },
   {
     title: "Get your plan",
-    lead: "Receive access to your member dashboard.",
-    text: "Your personalized diet plan, recorded workout sessions and progress forms are added to your member dashboard.",
+    lead: "Fill in your first day form, get your diet plan on WhatsApp.",
+    text: "Tell your coach about your goals, routine, food and health in the first day form. Your personalized diet plan is sent to you on WhatsApp, and your recorded workouts are ready in your member area.",
     image: "/images/illustrations/how-step-03-follow-track.png",
   },
   {
     title: "Follow & stay consistent",
     lead: "Follow your nutrition, fitness and lifestyle guidance.",
-    text: "Train with recorded home workouts, log your water and sleep, and submit your weekly progress form.",
+    text: "Train with the recorded home workouts and send a follow-up form whenever your coach asks.",
     image: "/images/illustrations/how-step-04-see-results.png",
   },
   {
     title: "Get ongoing support",
     lead: "Stay connected with the team throughout your journey.",
-    text: "Your coach reviews your check-ins and adjusts your plan as you progress, so you keep moving toward your goals.",
+    text: "Your coach reviews your follow-ups and adjusts your plan on WhatsApp as you progress, so you keep moving toward your goals.",
     image: null,
   },
 ];
@@ -62,13 +62,13 @@ export default function HowItWorksPage() {
           <ol className="relative mx-auto max-w-[860px] border-l border-gold/60 pl-8 md:pl-12">
             {STEPS.map((step, i) => (
               <Reveal as="li" key={step.title} className="relative mb-12 last:mb-0">
-                <span className="absolute top-0 -left-[49px] grid h-11 w-11 place-items-center rounded-full border border-gold bg-bg font-display text-lg text-brand md:-left-[65px]">
+                <span className="absolute top-0 -left-[49px] grid h-11 w-11 place-items-center rounded-full border border-gold bg-bg font-display text-lg text-brand-dark md:-left-[65px]">
                   {i + 1}
                 </span>
                 <div className="grid items-center gap-6 sm:grid-cols-[1fr_180px]">
                   <div>
                     <h2 className="text-[clamp(24px,3vw,32px)]">{step.title}</h2>
-                    <p className="mt-1 text-brand">{step.lead}</p>
+                    <p className="mt-1 text-brand-dark">{step.lead}</p>
                     <p className="mt-3 text-muted">{step.text}</p>
                   </div>
                   {step.image ? (

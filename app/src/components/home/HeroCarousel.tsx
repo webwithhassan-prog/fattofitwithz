@@ -13,10 +13,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/components/ui/hooks";
-import { ChevronLeft, ChevronRight, Pause, Play } from "@/components/ui/Icons";
+import { ChevronLeft, ChevronRight, Pause, Play, WhatsAppIcon } from "@/components/ui/Icons";
 import type { HeroBanner } from "@/lib/types";
 
 type Props = { banners: HeroBanner[]; autoplayMs: number; whatsappHref: string };
+
+/** Round white arrow button (position classes are added where it is used). */
+const ARROW = "icon-btn absolute z-20 -translate-y-1/2 bg-card shadow-[0_8px_20px_-8px_rgba(80,20,40,0.45)]";
 
 const PETALS = Array.from({ length: 10 }, (_, i) => ({
   left: `${(5 + i * 10) % 100}%`,
@@ -55,8 +58,8 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) setHovering(false);
       }}
     >
-      {/* Approved animation #3: drifting petals (decorative) */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-10">
+      {/* Approved animation #3: drifting petals (decorative, behind the text so they never cover words) */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
         {PETALS.map((p, i) => (
           <span
             key={i}
@@ -67,17 +70,17 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
       </div>
 
       <div className="container-site relative">
-        {/* Arrows on the left and right sides of the banner */}
-        <button type="button" className="icon-btn absolute top-1/2 z-20 -translate-y-1/2 bg-card shadow-[0_8px_20px_-8px_rgba(80,20,40,0.45)] left-1 xl:-left-6" onClick={() => goTo(active - 1)} aria-label="Previous banner">
+        {/* Desktop: arrows on the left and right sides of the banner. (Phones: arrows sit beside the photo, see below.) */}
+        <button type="button" className={`${ARROW} top-1/2 left-1 hidden md:grid xl:-left-6`} onClick={() => goTo(active - 1)} aria-label="Previous banner">
           <ChevronLeft />
         </button>
-        <button type="button" className="icon-btn absolute top-1/2 z-20 -translate-y-1/2 bg-card shadow-[0_8px_20px_-8px_rgba(80,20,40,0.45)] right-1 xl:-right-6" onClick={() => goTo(active + 1)} aria-label="Next banner">
+        <button type="button" className={`${ARROW} top-1/2 right-1 hidden md:grid xl:-right-6`} onClick={() => goTo(active + 1)} aria-label="Next banner">
           <ChevronRight />
         </button>
 
         {/* All slides sit in the same grid cell, so the hero keeps the height of the tallest one. */}
         <div
-          className="grid"
+          className="grid touch-pan-y" // touch-pan-y: phones scroll the page up/down, sideways swipes change the banner
           onPointerDown={(e) => {
             if (e.pointerType !== "mouse") swipeStartX.current = e.clientX;
           }}
@@ -99,33 +102,31 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
                 aria-label={`${index + 1} of ${banners.length}`}
                 aria-hidden={!isActive}
                 inert={!isActive}
-                className={`grid items-center gap-[clamp(24px,5vw,64px)] pt-[clamp(28px,4vw,48px)] pb-[clamp(40px,5vw,64px)] transition-[opacity,visibility] duration-700 [grid-area:1/1] md:grid-cols-[1.05fr_0.95fr] ${isActive ? "visible opacity-100" : "invisible opacity-0"}`}
+                className={`grid content-start items-center gap-6 pt-5 pb-7 transition-[opacity,visibility] duration-700 [grid-area:1/1] md:grid-cols-[1.05fr_0.95fr] md:content-center md:gap-[clamp(24px,5vw,64px)] md:pt-[clamp(28px,4vw,48px)] md:pb-[clamp(40px,5vw,64px)] ${isActive ? "visible opacity-100" : "invisible opacity-0"}`}
               >
-                <div className="min-w-0">
-                  <p className="kicker">{banner.kicker}</p>
-                  <Heading className="mt-3.5 min-h-[2.3em] text-[clamp(36px,5.2vw,62px)] tracking-[-0.01em]">
+                {/* Text. On phones it comes AFTER the photo (order-2); on desktop it is the left column. */}
+                <div key={isActive ? `t-${tick}` : "t-off"} className={`order-2 min-w-0 md:order-1 ${isActive ? "hero-enter" : ""}`}>
+                  <p className="kicker text-[11px] tracking-[0.1em] sm:text-xs sm:tracking-[0.14em]">{banner.kicker}</p>
+                  <Heading className="mt-3 text-[clamp(34px,5.2vw,62px)] md:min-h-[2.3em]">
                     {banner.title}{" "}
-                    <span key={isActive ? `on-${tick}` : "off"} className={`script block ${isActive ? "anim-script" : ""}`}>
-                      {banner.titleScript}
-                    </span>
+                    <span className={`script block ${isActive ? "anim-script" : ""}`}>{banner.titleScript}</span>
                   </Heading>
                   <svg
-                    key={isActive ? `u-${tick}` : "u-off"}
-                    className={`mt-1 block h-3.5 w-[min(100%,420px)] ${isActive ? "anim-underline" : ""}`}
+                    className={`mt-1 block h-3 w-[min(80%,420px)] ${isActive ? "anim-underline" : ""}`}
                     viewBox="0 0 420 14"
                     preserveAspectRatio="none"
                     aria-hidden="true"
                   >
-                    <path d="M4 10 C 100 2, 220 2, 416 8" fill="none" stroke="var(--color-rose)" strokeWidth="4" strokeLinecap="round" />
+                    <path d="M4 10 C 100 2, 220 2, 416 8" fill="none" stroke="var(--color-brand)" strokeWidth="4" strokeLinecap="round" />
                   </svg>
-                  <p className="lead mt-4.5">{banner.sub}</p>
-                  <div className="mt-6.5 flex flex-wrap gap-3">
+                  <p className="lead mt-4">{banner.sub}</p>
+                  <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap">
                     <Link className="btn" href={resolveHref(banner.primary.href)}>
                       {banner.primary.label}
                     </Link>
                     {isExternal(banner.secondary.href) ? (
                       <a className="btn btn-ghost" href={whatsappHref} target="_blank" rel="noopener noreferrer">
-                        {banner.secondary.label}
+                        <WhatsAppIcon className="h-4.5 w-4.5 text-whatsapp" /> {banner.secondary.label}
                       </a>
                     ) : (
                       <Link className="btn btn-ghost" href={banner.secondary.href}>
@@ -135,19 +136,35 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
                   </div>
                 </div>
 
-                <div className="arch-frame w-full max-w-[320px] justify-self-center md:max-w-[420px]">
-                  <Image
-                    src={banner.photo}
-                    alt={banner.photoAlt}
-                    width={720}
-                    height={900}
-                    sizes="(min-width: 768px) 420px, 320px"
-                    priority={index === 0}
-                    className="arch aspect-[4/5] w-full"
-                  />
-                  <div className="absolute bottom-[10%] left-0 rounded-[12px] border border-line bg-card px-4 py-3 text-[13px] leading-snug text-muted shadow-[0_18px_40px_-18px_rgba(80,20,40,0.4)] md:-left-[8%]">
-                    <b className="block font-display text-2xl font-medium text-brand">{banner.badge.big}</b>
-                    {banner.badge.small}
+                {/* Photo. Phones: smaller and first; the row is full width so the arrows sit at the left and right edges of the section. */}
+                <div className="relative isolate order-1 flex w-full justify-center md:order-2 md:w-auto md:justify-self-center">
+                  <button type="button" className={`${ARROW} top-1/2 -left-1 md:hidden`} onClick={() => goTo(active - 1)} aria-label="Previous banner">
+                    <ChevronLeft />
+                  </button>
+                  <button type="button" className={`${ARROW} top-1/2 -right-1 md:hidden`} onClick={() => goTo(active + 1)} aria-label="Next banner">
+                    <ChevronRight />
+                  </button>
+
+                  {/* soft pink glow behind the photo */}
+                  <div aria-hidden="true" className="absolute inset-x-[22%] inset-y-[8%] -z-10 rounded-full bg-brand/30 blur-3xl md:inset-[8%]" />
+                  <div className="arch-frame w-[min(54vw,215px)] md:w-[min(36vw,420px)]">
+                    <div className="arch overflow-hidden">
+                      <Image
+                        key={isActive ? `img-${tick}` : "img-off"}
+                        src={banner.photo}
+                        alt={banner.photoAlt}
+                        width={720}
+                        height={900}
+                        sizes="(min-width: 768px) 420px, 215px"
+                        loading={index === 0 ? "eager" : "lazy"}
+                        fetchPriority={index === 0 ? "high" : "auto"}
+                        className={`aspect-[4/5] w-full object-cover ${isActive ? "slow-zoom" : ""}`}
+                      />
+                    </div>
+                    <div className="float-soft absolute bottom-[8%] -left-6 rounded-[14px] border border-line bg-card px-3.5 py-2.5 text-[12px] leading-snug text-muted shadow-[0_18px_40px_-18px_rgba(80,20,40,0.4)] md:-left-[10%] md:px-4 md:py-3 md:text-[13px]">
+                      <b className="block font-display text-xl font-medium text-brand-dark md:text-2xl">{banner.badge.big}</b>
+                      {banner.badge.small}
+                    </div>
                   </div>
                 </div>
               </div>

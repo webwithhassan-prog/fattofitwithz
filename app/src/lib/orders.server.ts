@@ -1,11 +1,15 @@
 /**
  * What happens after a successful Stripe payment (called by the Stripe webhook).
  *
- *   1. find the member by email, or create her
+ * PROGRAM order (may include the e-book):
+ *   1. find the member (memberId from checkout, else by email), or create her
  *   2. save the order          (admin > Shop > Orders)
  *   3. create the membership   (admin > Members > Memberships), start today or right after
  *      her current membership ends (renewals don't overlap)
- *   4. email her a welcome message (with a "set your password" link if she has no password yet)
+ *   4. email her a welcome message (+ the e-book link if she bought it)
+ *
+ * E-BOOK ONLY order:
+ *   save the order (linked to a member only if that email has an account) and email the link.
  *
  * Stripe may deliver the same event more than once, even at the same moment. The order's
  * stripeSessionId is unique in the database, so a repeat is detected and nothing is duplicated.
@@ -15,11 +19,11 @@ import type Stripe from "stripe";
 import { getPayloadClient } from "./payload.server";
 import { sendEmail } from "./email.server";
 import { absoluteUrl } from "./site";
-import { isRegionCode } from "./pricing";
-import { createPasswordLink } from "./auth/passwords.server";
+import { fromStripeAmount, isRegionCode } from "./pricing";
+import { getEbook } from "./content";
 
 type FulfilResult =
-  | { status: "created"; memberId: number; orderId: number }
+  | { status: "created"; memberId: number | null; orderId: number }
   | { status: "already-done" }
   | { status: "skipped"; reason: string };
 
@@ -34,16 +38,26 @@ function addMonths(day: string, months: number): string {
   return isoDay(date);
 }
 
+/** Lines about the e-book for the emails. */
+async function ebookLines(): Promise<string[]> {
+  const ebook = await getEbook();
+  return ebook.driveLink
+    ? [`Your e-book "${ebook.title}": ${ebook.driveLink}`]
+    : [`Your e-book "${ebook.title}": we'll send you the link on WhatsApp shortly.`];
+}
+
 export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<FulfilResult> {
   if (session.payment_status !== "paid") {
     return { status: "skipped", reason: `payment_status is "${session.payment_status}"` };
   }
   const email = session.customer_details?.email?.trim().toLowerCase();
-  const { programSlug, months: monthsText, region } = session.metadata ?? {};
+  const { programSlug, months: monthsText, region, ebook: ebookFlag, memberId: memberIdText } = session.metadata ?? {};
   const months = Number(monthsText);
-  if (!email || !programSlug || !months) {
-    return { status: "skipped", reason: "missing email, programSlug or months in the session" };
-  }
+  const boughtEbook = ebookFlag === "1";
+  const isProgramOrder = Boolean(programSlug);
+  if (!email) return { status: "skipped", reason: "no email in the session" };
+  if (isProgramOrder && !months) return { status: "skipped", reason: "program order without months" };
+  if (!isProgramOrder && !boughtEbook) return { status: "skipped", reason: "nothing was bought (no program, no e-book)" };
 
   const payload = await getPayloadClient();
 
@@ -51,18 +65,29 @@ export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<
   const existingOrder = await payload.find({ collection: "orders", where: { stripeSessionId: { equals: session.id } }, limit: 1, depth: 0 });
   if (existingOrder.docs[0]) return { status: "already-done" };
 
-  const programs = await payload.find({ collection: "programs", where: { slug: { equals: programSlug } }, limit: 1, depth: 0 });
-  const program = programs.docs[0];
-  if (!program) throw new Error(`[orders] Paid session ${session.id} is for unknown program "${programSlug}"`);
+  let program = null;
+  if (isProgramOrder) {
+    const programs = await payload.find({ collection: "programs", where: { slug: { equals: programSlug } }, limit: 1, depth: 0 });
+    program = programs.docs[0];
+    if (!program) throw new Error(`[orders] Paid session ${session.id} is for unknown program "${programSlug}"`);
+  }
 
-  // 1. Member
-  const found = await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 });
-  const member =
-    found.docs[0] ??
-    (await payload.create({
+  // 1. Member: the account made at checkout (memberId), else the one with this email.
+  //    Program buyers always get an account; e-book buyers only if they already have one.
+  let member = null;
+  if (Number(memberIdText)) {
+    member = await payload.findByID({ collection: "members", id: Number(memberIdText), depth: 0 }).catch(() => null);
+  }
+  if (!member) {
+    const found = await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 });
+    member = found.docs[0] ?? null;
+  }
+  if (!member && isProgramOrder) {
+    member = await payload.create({
       collection: "members",
       data: { email, fullName: session.customer_details?.name ?? "", phone: session.customer_details?.phone ?? "" },
-    }));
+    });
+  }
 
   // 2. Order (the unique stripeSessionId stops a duplicate if two deliveries race each other)
   let order;
@@ -71,10 +96,11 @@ export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<
       collection: "orders",
       data: {
         email,
-        member: member.id,
-        program: program.id,
-        months,
-        amount: (session.amount_total ?? 0) / 100,
+        member: member?.id,
+        program: program?.id,
+        months: isProgramOrder ? months : undefined,
+        ebook: boughtEbook,
+        amount: fromStripeAmount(session.amount_total ?? 0, session.currency ?? "usd"),
         currency: (session.currency ?? "").toUpperCase(),
         region: isRegionCode(region) ? region : undefined,
         status: "paid",
@@ -89,57 +115,62 @@ export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<
     throw error;
   }
 
-  // 3. Membership: starts today, or the day after her latest membership ends (renewal).
-  const today = isoDay(new Date());
-  const latest = await payload.find({
-    collection: "memberships",
-    where: { and: [{ member: { equals: member.id } }, { status: { not_equals: "cancelled" } }] },
-    sort: "-endDate",
-    limit: 1,
-    depth: 0,
-  });
-  const latestEnd = latest.docs[0] ? latest.docs[0].endDate.slice(0, 10) : null;
-  const startDate = latestEnd && latestEnd >= today ? isoDay(new Date(Date.parse(middayUtc(latestEnd)) + DAY)) : today;
-  await payload.create({
-    collection: "memberships",
-    data: {
-      member: member.id,
-      program: program.id,
-      order: order.id,
-      startDate: middayUtc(startDate),
-      endDate: middayUtc(addMonths(startDate, months)),
-      status: "active",
-    },
-  });
-
-  // 4. Welcome email (a failure here must not undo the order, so it's only logged)
-  try {
-    const loginSteps = member.passwordHash
-      ? [`2. Log in to your member dashboard with your email and password: ${absoluteUrl("/login")}`]
-      : [
-          "2. Create your password for the member dashboard (this link works for 7 days):",
-          `   ${await createPasswordLink(member.id, email, 7 * 24)}`,
-          `   After that, log in any time at ${absoluteUrl("/login")}`,
-        ];
-    await sendEmail({
-      to: email,
-      subject: "Welcome to Fat To Fit With Z",
-      text: [
-        `Thank you for joining the ${program.name} (${months} month${months > 1 ? "s" : ""})!`,
-        "",
-        "What happens next:",
-        "1. Your coach will contact you on WhatsApp within 24 hours to learn about your goals, routine,",
-        "   food preferences and any health conditions, so your personalized plan can be prepared.",
-        ...loginSteps,
-        "",
-        "Questions? Reply to this email or message us on WhatsApp.",
-      ].join("\n"),
+  // 3. Membership (program orders only): starts today, or the day after her latest membership ends.
+  if (program && member) {
+    const today = isoDay(new Date());
+    const latest = await payload.find({
+      collection: "memberships",
+      where: { and: [{ member: { equals: member.id } }, { status: { not_equals: "cancelled" } }] },
+      sort: "-endDate",
+      limit: 1,
+      depth: 0,
     });
-  } catch (error) {
-    console.error("[orders] Order saved, but the welcome email failed:", error);
+    const latestEnd = latest.docs[0] ? latest.docs[0].endDate.slice(0, 10) : null;
+    const startDate = latestEnd && latestEnd >= today ? isoDay(new Date(Date.parse(middayUtc(latestEnd)) + DAY)) : today;
+    await payload.create({
+      collection: "memberships",
+      data: {
+        member: member.id,
+        program: program.id,
+        order: order.id,
+        startDate: middayUtc(startDate),
+        endDate: middayUtc(addMonths(startDate, months)),
+        status: "active",
+      },
+    });
   }
 
-  return { status: "created", memberId: member.id, orderId: order.id };
+  // 4. Email (a failure here must not undo the order, so it's only logged)
+  try {
+    if (program) {
+      await sendEmail({
+        to: email,
+        subject: "Welcome to Fat To Fit With Z",
+        text: [
+          `Thank you for joining the ${program.name} (${months} month${months > 1 ? "s" : ""})!`,
+          "",
+          "What happens next:",
+          `1. Log in to your member area: ${absoluteUrl("/login")}`,
+          '   (Forgot your password? Use "Forgot password" on the login page.)',
+          `2. Fill in your first day form: ${absoluteUrl("/dashboard/first-day")}`,
+          "3. Your coach prepares your personalized diet plan and sends it to you on WhatsApp.",
+          ...(boughtEbook ? ["", ...(await ebookLines())] : []),
+          "",
+          "Questions? Reply to this email or message us on WhatsApp.",
+        ].join("\n"),
+      });
+    } else {
+      await sendEmail({
+        to: email,
+        subject: "Your e-book from Fat To Fit With Z",
+        text: ["Thank you for your purchase!", "", ...(await ebookLines()), "", "Questions? Reply to this email or message us on WhatsApp."].join("\n"),
+      });
+    }
+  } catch (error) {
+    console.error("[orders] Order saved, but the email failed:", error);
+  }
+
+  return { status: "created", memberId: member?.id ?? null, orderId: order.id };
 }
 
 /** A payment was refunded in Stripe: mark the order refunded and cancel its membership. */

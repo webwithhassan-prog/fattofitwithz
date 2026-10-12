@@ -1,43 +1,42 @@
 "use client";
 
 /**
- * Shows "Rs. 7,000  ~~Rs. 11,000~~  Save 36%" for a duration in the current region.
- * Approved animation #4: the price flips when the region or duration changes
- * (not on first load).
+ * Shows "£39  ~~£63~~  Save 39%" for a duration, in the visitor's currency.
+ * - Hidden (but taking its space) until her country is known, then fades in.
+ * - Approved animation #4: the price flips when she changes the country or duration.
  */
 import { useEffect, useRef, useState } from "react";
-import { formatPrice, getPrice, savingsPercent } from "@/lib/pricing";
+import { savingsPercent } from "@/lib/pricing";
 import { useRegion } from "./RegionProvider";
 
 type Props = { months: number; size?: "lg" | "md" };
 
 export function PriceTag({ months, size = "lg" }: Props) {
-  const { region, table } = useRegion();
-  const cell = getPrice(table, region.code, months);
+  const { market, ready, price, money } = useRegion();
+  const cell = price(months);
 
-  // Play the flip animation only when the value changes after the first render.
+  // Flip only when the visitor changes something AFTER the price was shown.
   const [flipKey, setFlipKey] = useState(0);
-  const firstRender = useRef(true);
+  const shownValue = useRef<string | null>(null);
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    setFlipKey((k) => k + 1);
-  }, [region.code, months]);
+    if (!ready) return;
+    const value = `${market.country}-${months}`;
+    if (shownValue.current !== null && shownValue.current !== value) setFlipKey((k) => k + 1);
+    shownValue.current = value;
+  }, [ready, market.country, months]);
 
   return (
-    <div className="flex flex-wrap items-baseline gap-2.5 [perspective:400px]">
+    <div className={`flex flex-wrap items-baseline gap-2.5 transition-opacity duration-300 [perspective:400px] ${ready ? "opacity-100" : "opacity-0"}`}>
       <span
         key={flipKey}
         className={`font-display tabular-nums text-ink ${size === "lg" ? "text-[34px]" : "text-2xl"} ${flipKey ? "price-flip" : ""}`}
       >
-        {formatPrice(cell.amount, region)}
+        {money(cell.amount)}
       </span>
-      <s className="text-[15px] text-muted" aria-label={`Standard price ${formatPrice(cell.compareAt, region)}`}>
-        {formatPrice(cell.compareAt, region)}
+      <s className="text-[15px] text-muted" aria-label={`Standard price ${money(cell.compareAt)}`}>
+        {money(cell.compareAt)}
       </s>
-      <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs text-brand">Save {savingsPercent(cell)}%</span>
+      <span className="rounded-full bg-blush px-2.5 py-0.5 text-xs text-brand-dark">Save {savingsPercent(cell)}%</span>
     </div>
   );
 }

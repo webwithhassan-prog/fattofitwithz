@@ -5,7 +5,7 @@ export function Logo() {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
       <img src="/images/logo.png" alt="" width={56} height={56} style={{ borderRadius: "50%", background: "#fff" }} />
-      <span style={{ fontSize: 22, fontWeight: 600, color: "#a3154f" }}>Fat To Fit With Z</span>
+      <span style={{ fontSize: 22, fontWeight: 600, color: "#d6339f" }}>Fat To Fit With Z</span>
     </div>
   );
 }

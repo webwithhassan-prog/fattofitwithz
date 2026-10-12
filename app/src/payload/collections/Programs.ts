@@ -11,7 +11,7 @@ export const Programs: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "tag", "order"],
-    group: "Website",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     description: "The six programs. Prices are under Prices (they depend on months and country, not on the program).",
   },
   hooks: contentHooks,

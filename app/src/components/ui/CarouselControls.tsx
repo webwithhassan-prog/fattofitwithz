@@ -5,19 +5,6 @@ import { ChevronLeft, ChevronRight } from "./Icons";
 
 type ArrowsProps = { canPrev: boolean; canNext: boolean; prev: () => void; next: () => void; label: string };
 
-export function CarouselArrows({ canPrev, canNext, prev, next, label }: ArrowsProps) {
-  return (
-    <div className="flex gap-2.5">
-      <button type="button" className="icon-btn" onClick={prev} disabled={!canPrev} aria-label={`Previous ${label}`}>
-        <ChevronLeft />
-      </button>
-      <button type="button" className="icon-btn" onClick={next} disabled={!canNext} aria-label={`Next ${label}`}>
-        <ChevronRight />
-      </button>
-    </div>
-  );
-}
-
 /**
  * Arrows on the LEFT and RIGHT edges of a slider, vertically centred.
  * Put inside a `relative` wrapper around the slider. Hidden arrows keep their space empty.

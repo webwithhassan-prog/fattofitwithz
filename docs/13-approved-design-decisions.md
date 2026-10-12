@@ -2,6 +2,70 @@
 
 Decision log. The newest entries are at the top. These override earlier recommendations in 10 and 12.
 
+## 2026-10-13 (later): Admin panel rebuilt, worldwide prices, full audit
+
+**Admin panel.** The owner's list; everything else is hidden from the menu (`admin.group: false`), not deleted.
+
+| Section | What it is |
+|---|---|
+| **Overview** | To do: diet plans to send, follow-ups to review, open client issues, website messages, active clients. Sales of the last 30 days: revenue per currency, paid orders, programs and e-books sold, visits, an orders-per-day chart and the full sales log. |
+| **Clients** | Full create, read, update and delete, restyled. WhatsApp / Email / "Write a reminder" buttons at the top. Deleting a client also deletes her forms, memberships, issues and reminders; orders are kept. |
+| **First day forms**, **Follow-up forms** | Unchanged. The first day form's tick is now labelled "Diet plan sent" (stored as `reviewed`). |
+| **Diet plans to send** | Custom page: clients waiting for a plan, with WhatsApp, "Open form", "Mark as sent" and Undo. |
+| **Reminders & announcements** | New. An announcement goes to every client; a reminder goes to one client. Shown as "From your coach" on the dashboard; optional "Show until" date. |
+| **Client issues** | New. Clients use "Report an issue" (`/dashboard/issues`). The coach sets a status and writes a reply the client sees. |
+| **Site photos** | Custom page: every picture by where it appears; "Change photo" replaces the file. About and before/after photos moved into a new **Page photos** global. Uploads get unique file names, so caches never show an old picture. |
+| **Workout recordings**, **All photos** | Unchanged. |
+
+- **Admin design:** the website palette and fonts, a pink nav, pill buttons and rounded cards (`src/app/(payload)/custom.css`). Light mode only.
+
+**Prices worldwide** (`src/lib/pricing.ts`, `src/lib/countries.ts`):
+- The country comes from the internet address, with no permission popup: Netlify header, then an IP lookup (country.is), then the device time zone.
+- The 8 owner price lists keep their exact prices. Every other country sees the US list converted into her currency (ExchangeRate-API, daily, cached 12 h), rounded to tidy numbers and shown with the local symbol. Stripe charges exactly that amount; zero- and three-decimal currencies are handled.
+- If a currency has no rate, or Stripe can't charge in it, prices show in USD.
+- "Prices for" lists every country. The "8 countries" wording was replaced with "worldwide".
+
+**Audit fixes:**
+- Removed unused code: `lib/action-result.ts`, an unused access helper, the CarouselArrows component, 10 icons, a CSS class and 2 duplicate photos.
+- No broken links across 35 pages.
+- Fixed:
+  - the Programs grid was 17 px wider than phones;
+  - `#section` links stopped behind the sticky header;
+  - the page scrolled behind the e-book popup;
+  - dashboard dates were a day early before 5 am Pakistan time;
+  - deleting a client failed when she had forms;
+  - a hydration mismatch in the country list;
+  - the deprecated image `priority` prop was replaced;
+  - the hero swipe area now lets phones scroll the page vertically.
+
+## 2026-10-12/13: Live site polish, speed, photos on Netlify, checkout
+
+The owner's requests: the site is live on https://fattofitwithz.netlify.app; make the mobile hero better; make fonts more readable; add light animations; make every page faster; use the brand pink #FF65C5 "only if it suits, with a matching combination"; replace the leaf bullets; highlight the health issues in the goal picker; keep the code simple to debug.
+
+- **Colours** (`app/src/app/globals.css`):
+  - `bg-brand` = **#FF65C5** for buttons, chips and badges, with **dark text** on top. White on this pink is only 2.6:1 contrast; WCAG AA needs 4.5:1.
+  - `text-brand-dark` = **#D6339F** (the same pink, deeper) for pink text on light backgrounds.
+  - Blush backgrounds were re-tinted to the new pink; text is dark plum (#2b1a24). Buttons are now pill-shaped.
+- **Fonts:** body **DM Sans** (replaces Jost; larger letters, easier to read on phones). Headings stay **Fraunces**.
+- **Bullets:** the leaf bullets were replaced with a pink tick in a soft circle (`components/ui/CheckBullet.tsx`).
+- **Goal picker:** each goal in admin has a **"Health concern"** tick. Ticked goals (PCOS/thyroid/menopause, diabetes) are shown on their own highlighted "Health concerns" row with a heart icon.
+- **Mobile hero:** photo first (smaller), arrows beside the photo, a one-line kicker, full-width buttons; petals moved behind the text. The whole hero fits the first screen at 375 px. Desktop is unchanged apart from animations.
+- **Animations** (CSS only, all off with "reduce motion"):
+  - hero text fades up one line after another; the photo slowly zooms; the badge floats
+  - shine sweep on buttons
+  - reading-progress bar under the header, and a header shadow after scrolling
+  - program cards and the "how it works" steps appear one after another as you scroll
+  - FAQ answers slide in; goal cards fade when a goal is picked; the e-book popup pops in
+- **Speed:**
+  - Home, Programs, each program page and /ebook are now **static** (served from the CDN), refreshed when something is saved in admin.
+  - The visitor's currency is picked in the browser: cookie first, else `GET /api/region` (Netlify geo header). Prices fade in once it's known.
+  - Uploaded photos are shrunk to max 1800 px.
+- **Photos on Netlify:** Netlify can't keep uploaded files, so photos are now saved in the **database** (table `media_files`, `src/payload/storage/databaseFiles.ts`). URLs are unchanged (`/api/media/file/...`) and cached for 30 days. The 22 existing photos were copied in.
+- **Checkout flow (doc 15 step 1 to 4 done):**
+  - Join now → e-book popup ($6 with a plan / $8 alone, local currency) → `/checkout` (name, email, WhatsApp, password; logged-in members only confirm WhatsApp) → Stripe.
+  - Also: the `/ebook` page; an updated success page; the webhook handles e-book-only orders and accounts created at checkout; login `?next=` only allows paths on this site.
+- **Not changed:** legal pages. The admin panel is waiting on the owner's list.
+
 ## 2026-10-07 (evening) — Admin Overview dashboard
 
 The user's request: build something like the analytics dashboard of another admin panel they showed (fitnesszone.ltd/admin/dashboard).

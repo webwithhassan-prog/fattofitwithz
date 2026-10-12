@@ -32,7 +32,7 @@ export function RecordedSessions({ sessions, initialWeek }: Props) {
             role="tab"
             aria-selected={w === week}
             onClick={() => { setWeek(w); setPlaying(null); }}
-            className="rounded-full border border-line bg-card px-4 py-2 text-sm aria-selected:border-brand aria-selected:bg-brand aria-selected:text-white"
+            className="rounded-full border border-line bg-card px-4 py-2 text-sm aria-selected:border-brand aria-selected:bg-brand aria-selected:text-ink"
           >
             Week {w}
           </button>

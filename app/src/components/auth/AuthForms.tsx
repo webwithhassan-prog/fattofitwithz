@@ -8,7 +8,7 @@ import { forgotPasswordAction, logInAction, resetPasswordAction, signUpAction, t
 const START: AuthFormState = {};
 
 function Message({ state, id }: { state: AuthFormState; id: string }) {
-  if (state.error) return <p id={id} role="alert" className="mt-4 text-sm text-brand">{state.error}</p>;
+  if (state.error) return <p id={id} role="alert" className="mt-4 text-sm text-brand-dark">{state.error}</p>;
   if (state.info) return <p role="status" className="mt-4 rounded-lg bg-blush px-3 py-2 text-sm">{state.info}</p>;
   return null;
 }
@@ -41,7 +41,7 @@ function PasswordField({ id, name, label, autoComplete, invalid, describedBy }: 
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-pressed={visible}
-          className="absolute top-1/2 right-2 -translate-y-1/2 rounded px-2 py-1 text-sm text-muted hover:text-brand"
+          className="absolute top-1/2 right-2 -translate-y-1/2 rounded px-2 py-1 text-sm text-muted hover:text-brand-dark"
         >
           {visible ? "Hide" : "Show"}
         </button>
@@ -50,10 +50,11 @@ function PasswordField({ id, name, label, autoComplete, invalid, describedBy }: 
   );
 }
 
-export function LoginForm({ notice }: { notice?: string }) {
+export function LoginForm({ notice, next = "/dashboard" }: { notice?: string; next?: string }) {
   const [state, formAction, pending] = useActionState(logInAction, START);
   return (
     <form action={formAction} noValidate className="card mx-auto w-full max-w-[440px] p-7 sm:p-9">
+      <input type="hidden" name="next" value={next} />
       {notice && !state.error ? <p role="status" className="mb-4 rounded-lg bg-blush px-3 py-2 text-sm">{notice}</p> : null}
       <label htmlFor="login-email" className="field-label">Email address</label>
       <input
@@ -69,7 +70,7 @@ export function LoginForm({ notice }: { notice?: string }) {
       />
       <PasswordField id="login-password" name="password" label="Password" autoComplete="current-password" invalid={Boolean(state.error)} describedBy={state.error ? "login-error" : undefined} />
       <p className="mt-2 text-right text-sm">
-        <Link href="/forgot-password" className="text-brand underline">Forgot password?</Link>
+        <Link href="/forgot-password" className="text-brand-dark underline">Forgot password?</Link>
       </p>
       <Message state={state} id="login-error" />
       <button type="submit" className="btn mt-6 w-full" disabled={pending}>
@@ -104,7 +105,7 @@ export function ForgotPasswordForm() {
         {pending ? "Sending…" : "Email me a link"}
       </button>
       <p className="mt-4 text-center text-sm">
-        <Link href="/login" className="text-muted underline hover:text-brand">Back to login</Link>
+        <Link href="/login" className="text-muted underline hover:text-brand-dark">Back to login</Link>
       </p>
     </form>
   );
@@ -143,7 +144,7 @@ export function SignUpForm() {
         {pending ? "Creating your account…" : "Create my account"}
       </button>
       <p className="mt-4 text-center text-sm text-muted">
-        Already have an account? <Link href="/login" className="text-brand underline">Log in</Link>
+        Already have an account? <Link href="/login" className="text-brand-dark underline">Log in</Link>
       </p>
     </form>
   );

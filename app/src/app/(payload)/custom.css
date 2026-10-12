@@ -1,0 +1,438 @@
+/*
+ * ADMIN PANEL DESIGN (loaded by src/app/(payload)/layout.tsx)
+ * 1. Theme: Payload's own colour / font / corner variables, set to the website's look
+ *    (brand pink #FF65C5 with dark text, deep pink #D6339F for pink text, warm plum greys).
+ *    Payload's styles live in a CSS "layer", so these plain rules win without !important.
+ * 2. Our admin pages (Overview, Diet plans to send, Site photos): classes start with "ftf-".
+ */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:wght@500&display=swap");
+
+/* ---------- 1. Theme ---------- */
+:root {
+  --ftf-pink: #ff65c5;
+  --ftf-pink-hover: #f74db8;
+  --ftf-pink-dark: #d6339f;
+  --ftf-blush: #fff0f8;
+  --ftf-ink: #2b1a24;
+
+  /* Payload's grey scale, tinted towards the brand plum */
+  --color-base-0: #ffffff;
+  --color-base-50: #fdf8fb;
+  --color-base-100: #f8eef4;
+  --color-base-150: #f1e3ec;
+  --color-base-200: #e9d6e1;
+  --color-base-250: #dcc4d1;
+  --color-base-300: #ccb1c0;
+  --color-base-350: #b99caa;
+  --color-base-400: #a48896;
+  --color-base-450: #8f7482;
+  --color-base-500: #7a616f;
+  --color-base-550: #67515d;
+  --color-base-600: #57434e;
+  --color-base-650: #4a3842;
+  --color-base-700: #3f2f38;
+  --color-base-750: #36272f;
+  --color-base-800: #2b1a24;
+  --color-base-850: #22141c;
+  --color-base-900: #1a0f15;
+  --color-base-950: #12090e;
+  --color-base-1000: #0b0509;
+
+  --font-body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --style-radius-s: 8px;
+  --style-radius-m: 12px;
+  --style-radius-l: 16px;
+  --theme-bg: #fffbfd;
+}
+
+h1,
+.doc-header__title,
+.list-header__title,
+.collection-list__header h1 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Main buttons: pink with dark text (like the website) */
+.btn--style-primary {
+  --bg-color: var(--ftf-pink);
+  --color: var(--ftf-ink);
+  --hover-bg: var(--ftf-pink-hover);
+  --hover-color: var(--ftf-ink);
+  font-weight: 600;
+}
+.btn {
+  border-radius: 999px;
+}
+
+/* Menu: soft pink background */
+.nav {
+  background: var(--ftf-blush);
+  border-right: 1px solid var(--color-base-150);
+}
+.nav-group__toggle {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ftf-pink-dark);
+}
+.nav a[aria-current="page"],
+.nav .nav__link--active {
+  color: var(--ftf-pink-dark);
+  font-weight: 600;
+}
+
+/* Cards, inputs and tables a little softer */
+.field-type input,
+.field-type textarea,
+.react-select .rs__control {
+  border-radius: var(--style-radius-s);
+}
+.table table {
+  border-radius: var(--style-radius-m);
+}
+a {
+  text-underline-offset: 3px;
+}
+
+/* ---------- 2. Our admin pages ---------- */
+.ftf-page {
+  padding-top: 28px;
+  padding-bottom: 64px;
+}
+.ftf-page__head h1 {
+  margin: 0;
+  font-size: 32px;
+}
+.ftf-muted {
+  margin: 6px 0 0;
+  color: var(--color-base-500);
+}
+.ftf-sub {
+  display: block;
+  font-size: 12.5px;
+  color: var(--color-base-500);
+}
+.ftf-nowrap {
+  white-space: nowrap;
+}
+.ftf-num {
+  text-align: right;
+}
+.ftf-link {
+  color: var(--ftf-pink-dark);
+  font-weight: 500;
+  text-decoration: none;
+}
+.ftf-link:hover {
+  text-decoration: underline;
+}
+
+.ftf-section {
+  margin: 34px 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ftf-pink-dark);
+}
+
+/* Number cards */
+.ftf-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.ftf-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 1px solid var(--color-base-150);
+  background: #fff;
+  box-shadow: 0 10px 24px -20px rgba(43, 26, 36, 0.45);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.2s,
+    border-color 0.2s;
+}
+a.ftf-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ftf-pink);
+}
+.ftf-card--highlight {
+  background: linear-gradient(135deg, #fff0f8, #ffe0f2);
+  border-color: #ffc2e6;
+}
+.ftf-card__label {
+  font-size: 13.5px;
+  color: var(--color-base-600);
+}
+.ftf-card__value {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--ftf-ink);
+}
+.ftf-card--highlight .ftf-card__value {
+  color: var(--ftf-pink-dark);
+}
+.ftf-card__money {
+  display: block;
+  font-size: 22px;
+}
+.ftf-card__note {
+  font-size: 12px;
+  color: var(--color-base-500);
+}
+
+/* White panels */
+.ftf-panel {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid var(--color-base-150);
+  background: #fff;
+}
+.ftf-panel h3 {
+  margin: 0 0 14px;
+  font-size: 17px;
+}
+.ftf-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+}
+.ftf-panel__head h3 {
+  margin: 0;
+}
+
+/* Orders-per-day chart */
+.ftf-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 160px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--color-base-150);
+}
+.ftf-chart__col {
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  height: 100%;
+}
+.ftf-chart__bar {
+  width: 100%;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(180deg, var(--ftf-pink), #ffb2e2);
+  transition: filter 0.2s;
+}
+.ftf-chart__bar--empty {
+  background: var(--color-base-150);
+}
+.ftf-chart__col:hover .ftf-chart__bar {
+  filter: brightness(0.92);
+}
+.ftf-chart__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--color-base-500);
+}
+
+/* Sales log table */
+.ftf-table-wrap {
+  overflow-x: auto;
+}
+.ftf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.ftf-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-base-500);
+  padding: 4px 12px 10px 0;
+}
+.ftf-table td {
+  padding: 11px 12px 11px 0;
+  border-top: 1px solid var(--color-base-100);
+  vertical-align: top;
+}
+.ftf-table tbody tr:hover {
+  background: var(--color-base-50);
+}
+.ftf-table a {
+  color: inherit;
+  font-weight: 500;
+}
+
+/* Small coloured labels */
+.ftf-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-base-100);
+}
+.ftf-badge--good {
+  background: #e3f4ea;
+  color: #17643a;
+}
+.ftf-badge--warn {
+  background: #fcefd8;
+  color: #8a5300;
+}
+
+/* Buttons used on our pages */
+.ftf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid var(--color-base-200);
+  background: #fff;
+  color: var(--ftf-ink);
+  font: 500 14px/1.2 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.ftf-btn:hover {
+  border-color: var(--ftf-pink);
+  background: var(--ftf-blush);
+}
+.ftf-btn--primary {
+  background: var(--ftf-pink);
+  border-color: var(--ftf-pink);
+  font-weight: 600;
+}
+.ftf-btn--primary:hover {
+  background: var(--ftf-pink-hover);
+}
+.ftf-btn--whatsapp {
+  background: #1f9d55;
+  border-color: #1f9d55;
+  color: #fff;
+}
+.ftf-btn--whatsapp:hover {
+  background: #188146;
+  border-color: #188146;
+}
+.ftf-btn--small {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* Rows with actions (diet plans) */
+.ftf-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ftf-list__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--color-base-100);
+}
+.ftf-list__row:first-child {
+  border-top: 0;
+}
+.ftf-list__main {
+  min-width: 0;
+}
+.ftf-list__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Photo grid (site photos) */
+.ftf-photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ftf-photo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ftf-photo__img {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--ftf-blush);
+}
+.ftf-photo__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ftf-photo__label {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* Shortcuts at the top of the menu */
+.ftf-navlinks {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 18px;
+}
+.ftf-navlinks__link {
+  padding: 7px 10px;
+  border-radius: 10px;
+  color: var(--ftf-ink);
+  font-weight: 500;
+  text-decoration: none;
+}
+.ftf-navlinks__link:hover {
+  background: #ffe0f2;
+}
+.ftf-navlinks__link[aria-current="page"] {
+  background: var(--ftf-pink);
+}
+.ftf-navlinks__link--muted {
+  color: var(--color-base-500);
+  font-weight: 400;
+}
+
+/* Buttons at the top of a client's page */
+.ftf-client-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--ftf-blush);
+}

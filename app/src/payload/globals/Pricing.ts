@@ -23,7 +23,7 @@ export const Pricing: GlobalConfig = {
   slug: "pricing",
   label: "Prices",
   admin: {
-    group: "Website",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     description:
       "One entry per country. The price depends on the number of months, not the program. Every program duration (e.g. 2 or 4 months) needs a price in every country.",
   },

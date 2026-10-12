@@ -8,7 +8,7 @@ export const ContactMessages: CollectionConfig = {
   admin: {
     useAsTitle: "subject",
     defaultColumns: ["name", "email", "subject", "createdAt"],
-    group: "Inbox",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
   },
   fields: [
     { type: "row", fields: [{ name: "name", type: "text", required: true }, { name: "email", type: "email", required: true }] },

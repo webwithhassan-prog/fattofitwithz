@@ -31,7 +31,7 @@ export async function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${label} (opens in a new tab)`}
-                    className="grid h-10 w-10 place-items-center rounded-full border border-white/40 transition hover:bg-white hover:text-brand"
+                    className="grid h-10 w-10 place-items-center rounded-full border border-white/40 transition hover:bg-white hover:text-brand-dark"
                   >
                     <Icon className="h-4.5 w-4.5" />
                   </a>
@@ -74,7 +74,7 @@ export async function Footer() {
               href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-2 rounded bg-white px-4 py-2.5 text-xs font-semibold tracking-wide text-brand uppercase"
+              className="mt-3 inline-flex items-center gap-2 rounded bg-white px-4 py-2.5 text-xs font-semibold tracking-wide text-brand-dark uppercase"
             >
               <WhatsAppIcon className="h-4 w-4" /> Chat on WhatsApp
             </a>

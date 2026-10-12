@@ -15,6 +15,7 @@ import { logIn, MIN_PASSWORD_LENGTH, normalizeEmail, sendPasswordLink, setPasswo
 import { hashPassword } from "./crypto.server";
 import { getPayloadClient } from "../payload.server";
 import { endAllSessions, startSession } from "./session.server";
+import { safeNextPath } from "./safe-next";
 
 export type AuthFormState = { error?: string; info?: string; email?: string };
 
@@ -45,7 +46,7 @@ export async function logInAction(_previous: AuthFormState, formData: FormData):
     console.error("[login] Login failed:", error);
     return { email: emailText, error: "Something went wrong. Please try again in a minute." };
   }
-  redirect("/dashboard"); // outside try/catch: redirect() works by throwing
+  redirect(safeNextPath(formData.get("next"))); // outside try/catch: redirect() works by throwing
 }
 
 export async function forgotPasswordAction(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {

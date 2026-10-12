@@ -13,7 +13,7 @@ export function FaqList({ items }: { items: Item[] }) {
             {item.question}
             <span
               aria-hidden="true"
-              className="absolute top-1/2 right-1 -translate-y-1/2 font-body text-[26px] font-light text-brand transition-transform group-open:rotate-45"
+              className="absolute top-1/2 right-1 -translate-y-1/2 font-body text-[26px] font-light text-brand-dark transition-transform group-open:rotate-45"
             >
               +
             </span>

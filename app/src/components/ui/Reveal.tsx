@@ -11,7 +11,7 @@ import { useEffect, useRef } from "react";
 type Props = {
   children: React.ReactNode;
   className?: string;
-  as?: "div" | "section" | "li" | "article";
+  as?: "div" | "section" | "li" | "article" | "ol" | "ul";
   id?: string;
 };
 

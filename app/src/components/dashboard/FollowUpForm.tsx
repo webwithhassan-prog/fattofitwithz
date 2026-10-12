@@ -52,7 +52,7 @@ export function FollowUpForm({ whatsappUrl, name }: { whatsappUrl: string; name:
           <p className="text-[15px] text-muted">Send this whenever your coach asks for an update (usually once a week).</p>
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <label htmlFor="fu-weight" className="field-label">Your weight today (kg) <span className="text-brand">*</span></label>
+              <label htmlFor="fu-weight" className="field-label">Your weight today (kg) <span className="text-brand-dark">*</span></label>
               <input id="fu-weight" required type="number" min={30} max={250} step="0.1" inputMode="decimal" value={data.weightKg} onChange={(e) => set("weightKg", e.target.value)} className="field-input" />
             </div>
             <fieldset>
@@ -61,7 +61,7 @@ export function FollowUpForm({ whatsappUrl, name }: { whatsappUrl: string; name:
                 {MOODS.map((m) => (
                   <label key={m.id} className="flex cursor-pointer flex-col items-center gap-1 text-xs">
                     <input type="radio" name="fu-mood" value={m.id} checked={data.mood === m.id} onChange={() => set("mood", m.id)} className="peer sr-only" />
-                    <span className="grid h-12 w-12 place-items-center rounded-full border border-line bg-blush text-2xl transition peer-checked:border-brand peer-checked:shadow-[0_0_0_3px_rgba(163,21,79,0.2)] peer-focus-visible:outline-2 peer-focus-visible:outline-brand">
+                    <span className="grid h-12 w-12 place-items-center rounded-full border border-line bg-blush text-2xl transition peer-checked:border-brand peer-checked:shadow-[0_0_0_3px_rgba(214,51,159,0.2)] peer-focus-visible:outline-2 peer-focus-visible:outline-brand-dark">
                       {m.emoji}
                     </span>
                     {m.label}
@@ -85,7 +85,7 @@ export function FollowUpForm({ whatsappUrl, name }: { whatsappUrl: string; name:
 
           <div>
             <button type="submit" className="btn" disabled={saving}>{saving ? "Saving…" : "Send follow-up"}</button>
-            {error ? <p role="alert" className="mt-3 text-sm text-brand">{error}</p> : null}
+            {error ? <p role="alert" className="mt-3 text-sm text-brand-dark">{error}</p> : null}
           </div>
         </form>
       )}

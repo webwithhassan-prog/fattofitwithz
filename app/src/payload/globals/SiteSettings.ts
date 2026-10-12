@@ -24,7 +24,8 @@ const link = (name: string, label: string) => ({
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Contact & site settings",
-  admin: { group: "Website", description: "WhatsApp, emails, social links, menus and the coach's qualifications." },
+  admin: { group: false, // hidden from the menu (2026-10-13)
+    description: "WhatsApp, emails, social links, menus and the coach's qualifications." },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     {

@@ -68,16 +68,18 @@ export interface Config {
   blocks: {};
   collections: {
     members: Member;
-    memberships: Membership;
     'first-day-forms': FirstDayForm;
     'follow-up-forms': FollowUpForm;
-    orders: Order;
+    'client-issues': ClientIssue;
+    announcements: Announcement;
     'workout-sessions': WorkoutSession;
+    media: Media;
+    memberships: Membership;
+    orders: Order;
     programs: Program;
     testimonials: Testimonial;
     faqs: Faq;
     'legal-pages': LegalPage;
-    media: Media;
     'contact-messages': ContactMessage;
     subscribers: Subscriber;
     users: User;
@@ -100,16 +102,18 @@ export interface Config {
   };
   collectionsSelect: {
     members: MembersSelect<false> | MembersSelect<true>;
-    memberships: MembershipsSelect<false> | MembershipsSelect<true>;
     'first-day-forms': FirstDayFormsSelect<false> | FirstDayFormsSelect<true>;
     'follow-up-forms': FollowUpFormsSelect<false> | FollowUpFormsSelect<true>;
-    orders: OrdersSelect<false> | OrdersSelect<true>;
+    'client-issues': ClientIssuesSelect<false> | ClientIssuesSelect<true>;
+    announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'workout-sessions': WorkoutSessionsSelect<false> | WorkoutSessionsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    memberships: MembershipsSelect<false> | MembershipsSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -130,12 +134,14 @@ export interface Config {
     pricing: Pricing;
     ebook: Ebook;
     'site-settings': SiteSetting;
+    'page-photos': PagePhoto;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     pricing: PricingSelect<false> | PricingSelect<true>;
     ebook: EbookSelect<false> | EbookSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'page-photos': PagePhotosSelect<false> | PagePhotosSelect<true>;
   };
   locale: null;
   widgets: {
@@ -166,7 +172,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Client accounts. Open one to see her forms, memberships and orders in one place.
+ * Client accounts. Open one to see her details, forms, memberships and orders in one place.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "members".
@@ -229,7 +235,7 @@ export interface Member {
   createdAt: string;
 }
 /**
- * Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick "Reviewed".
+ * Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick "Diet plan sent".
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "first-day-forms".
@@ -238,7 +244,7 @@ export interface FirstDayForm {
   id: number;
   title?: string | null;
   /**
-   * Tick after you've read it and sent the diet plan.
+   * Tick after you've sent her diet plan on WhatsApp.
    */
   reviewed?: boolean | null;
   member: number | Member;
@@ -460,6 +466,45 @@ export interface MemberSession {
   createdAt: string;
 }
 /**
+ * Problems reported by clients. Write a reply (she sees it on her dashboard) and set the status.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-issues".
+ */
+export interface ClientIssue {
+  id: number;
+  title?: string | null;
+  status: 'open' | 'in-progress' | 'solved';
+  member: number | Member;
+  topic: 'Payment' | 'Login / account' | 'Forms' | 'Workout videos' | 'Diet plan' | 'Other';
+  message: string;
+  reply?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Shown on the client's dashboard. An announcement goes to every client; a reminder goes to one client.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements".
+ */
+export interface Announcement {
+  id: number;
+  audience: 'everyone' | 'one';
+  /**
+   * The client who sees this reminder.
+   */
+  member?: (number | null) | Member;
+  title: string;
+  message: string;
+  /**
+   * Optional. After this day it is hidden from the dashboard.
+   */
+  showUntil?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * The recorded YouTube workouts on the member dashboard. Six per week (Monday to Saturday); day 1 = Monday.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -476,6 +521,31 @@ export interface WorkoutSession {
   youtubeUrl: string;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * All photos used on the website. To change a picture, open it and upload a new file: it changes everywhere it is used. Admin > Site photos shows where each one appears.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the photo in a few words, e.g. "Zaineb Danish speaking at the Lahore Press Club".
+   */
+  alt: string;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Before/after photos and Instagram posts for the Testimonials page. Lower order numbers show first.
@@ -499,30 +569,6 @@ export interface Testimonial {
   onLiveSite?: boolean | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * All photos used on the website. Every photo needs a short description (alt text) for blind visitors and for Google.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the photo in a few words, e.g. "Zaineb Danish speaking at the Lahore Press Club".
-   */
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * Questions for the FAQ page and the homepage. Lower order numbers show first.
@@ -681,10 +727,6 @@ export interface PayloadLockedDocument {
         value: number | Member;
       } | null)
     | ({
-        relationTo: 'memberships';
-        value: number | Membership;
-      } | null)
-    | ({
         relationTo: 'first-day-forms';
         value: number | FirstDayForm;
       } | null)
@@ -693,12 +735,28 @@ export interface PayloadLockedDocument {
         value: number | FollowUpForm;
       } | null)
     | ({
-        relationTo: 'orders';
-        value: number | Order;
+        relationTo: 'client-issues';
+        value: number | ClientIssue;
+      } | null)
+    | ({
+        relationTo: 'announcements';
+        value: number | Announcement;
       } | null)
     | ({
         relationTo: 'workout-sessions';
         value: number | WorkoutSession;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'memberships';
+        value: number | Membership;
+      } | null)
+    | ({
+        relationTo: 'orders';
+        value: number | Order;
       } | null)
     | ({
         relationTo: 'programs';
@@ -715,10 +773,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'legal-pages';
         value: number | LegalPage;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
       } | null)
     | ({
         relationTo: 'contact-messages';
@@ -810,22 +864,6 @@ export interface MembersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "memberships_select".
- */
-export interface MembershipsSelect<T extends boolean = true> {
-  title?: T;
-  member?: T;
-  program?: T;
-  order?: T;
-  startDate?: T;
-  endDate?: T;
-  status?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "first-day-forms_select".
  */
 export interface FirstDayFormsSelect<T extends boolean = true> {
@@ -882,6 +920,80 @@ export interface FollowUpFormsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-issues_select".
+ */
+export interface ClientIssuesSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  member?: T;
+  topic?: T;
+  message?: T;
+  reply?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements_select".
+ */
+export interface AnnouncementsSelect<T extends boolean = true> {
+  audience?: T;
+  member?: T;
+  title?: T;
+  message?: T;
+  showUntil?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workout-sessions_select".
+ */
+export interface WorkoutSessionsSelect<T extends boolean = true> {
+  week?: T;
+  day?: T;
+  workout?: T;
+  youtubeUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memberships_select".
+ */
+export interface MembershipsSelect<T extends boolean = true> {
+  title?: T;
+  member?: T;
+  program?: T;
+  order?: T;
+  startDate?: T;
+  endDate?: T;
+  status?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders_select".
  */
 export interface OrdersSelect<T extends boolean = true> {
@@ -898,18 +1010,6 @@ export interface OrdersSelect<T extends boolean = true> {
   paymentMethod?: T;
   stripeSessionId?: T;
   stripePaymentIntentId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workout-sessions_select".
- */
-export interface WorkoutSessionsSelect<T extends boolean = true> {
-  week?: T;
-  day?: T;
-  workout?: T;
-  youtubeUrl?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1013,24 +1113,6 @@ export interface LegalPagesSelect<T extends boolean = true> {
   body?: T;
   updatedAt?: T;
   createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1204,6 +1286,7 @@ export interface Homepage {
   goals: {
     label: string;
     goalId: string;
+    healthConcern?: boolean | null;
     /**
      * Best match first. Give the first three a short reason.
      */
@@ -1362,6 +1445,27 @@ export interface SiteSetting {
   createdAt?: string | null;
 }
 /**
+ * About page photos and the before/after slider. All other photos: admin > Site photos.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-photos".
+ */
+export interface PagePhoto {
+  id: number;
+  aboutPhoto?: (number | null) | Media;
+  aboutEvents?:
+    | {
+        photo: number | Media;
+        caption: string;
+        id?: string | null;
+      }[]
+    | null;
+  beforePhoto?: (number | null) | Media;
+  afterPhoto?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
@@ -1415,6 +1519,7 @@ export interface HomepageSelect<T extends boolean = true> {
     | {
         label?: T;
         goalId?: T;
+        healthConcern?: T;
         programs?:
           | T
           | {
@@ -1536,6 +1641,25 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         text?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-photos_select".
+ */
+export interface PagePhotosSelect<T extends boolean = true> {
+  aboutPhoto?: T;
+  aboutEvents?:
+    | T
+    | {
+        photo?: T;
+        caption?: T;
+        id?: T;
+      };
+  beforePhoto?: T;
+  afterPhoto?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -1,7 +1,7 @@
 /** Thin row of highlights under the hero (static numbers - counters were not approved). */
 const ITEMS = [
   { big: "5+", small: "years coaching" },
-  { big: "8", small: "countries" },
+  { big: "Worldwide", small: "online coaching" },
   { big: "6", small: "programs" },
   { big: "68", small: "desi recipes" },
   { big: "−36 kg", small: "top result" },

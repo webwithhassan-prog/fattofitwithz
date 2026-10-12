@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 /* =========================================================================
-   BLOSSOM DESIGN TOKENS (approved 2026-10-06, see docs/13-approved-design-decisions.md)
+   DESIGN TOKENS (colours updated 2026-10-12 to the brand pink #FF65C5)
    Tailwind turns each --color-* into utilities: bg-brand, text-ink, border-line ...
+
+   Colour rules (keep text readable):
+   - bg-brand (#FF65C5) is for FILLS: buttons, chips, badges. Put DARK text on it (text-ink),
+     because white text on this pink is too light to read.
+   - text-brand-dark (#D6339F) is the same pink, a bit deeper, for pink TEXT on light backgrounds.
    ========================================================================= */
 @theme {
-  --color-bg: #fffbf8; /* page background */
-  --color-blush: #fbeff1; /* soft section background */
-  --color-blush-2: #f5e2e7;
+  --color-bg: #fffbfd; /* page background */
+  --color-blush: #fff0f8; /* soft pink section background */
+  --color-blush-2: #ffe0f2; /* slightly stronger pink background */
   --color-card: #ffffff;
-  --color-brand: #a3154f; /* buttons, links - passes WCAG AA with white text */
-  --color-brand-hover: #851041;
-  --color-rose: #e8a0b8; /* decoration only (petals, bullets, underlines) */
-  --color-pink: #ff65c5; /* original brand pink - accents only, never text on white */
+  --color-brand: #ff65c5; /* brand pink: buttons and highlights (dark text on top) */
+  --color-brand-hover: #f74db8;
+  --color-brand-dark: #d6339f; /* pink text, links, icons on light backgrounds */
+  --color-rose: #ffb2e2; /* light pink, decoration only (petals, underlines) */
   --color-gold: #a57b4f; /* thin outlines and dividers */
-  --color-ink: #2b1a1f; /* main text */
-  --color-muted: #6b585d; /* secondary text */
-  --color-line: #ebdcde; /* borders */
+  --color-ink: #2b1a24; /* main text (dark plum) */
+  --color-muted: #5f4b57; /* secondary text */
+  --color-line: #f1dde8; /* borders */
   --color-whatsapp: #1f9d55;
 
   --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --font-body: var(--font-jost), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-sans), "Segoe UI", system-ui, sans-serif;
 
   --radius-card: 12px;
   --radius-arch: 999px 999px 14px 14px;
@@ -29,13 +34,18 @@
 /* ---------- base ---------- */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 84px; /* links to #sections stop below the sticky header, not behind it */
+}
+/* While a popup (<dialog>) is open, the page behind it doesn't scroll */
+html:has(dialog[open]) {
+  overflow: hidden;
 }
 body {
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 h1,
 h2,
@@ -43,12 +53,20 @@ h3,
 h4 {
   font-family: var(--font-display);
   font-weight: 500;
-  line-height: 1.12;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
+p {
+  text-wrap: pretty; /* avoids a single word alone on the last line */
+}
 :focus-visible {
-  outline: 2.5px solid var(--color-brand);
+  outline: 2.5px solid var(--color-brand-dark);
   outline-offset: 3px;
+}
+::selection {
+  background: var(--color-rose);
+  color: var(--color-ink);
 }
 
 /* ---------- reusable component classes (keep names readable for debugging) ---------- */
@@ -63,43 +81,62 @@ h4 {
   }
   .kicker {
     font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--color-brand);
+    color: var(--color-brand-dark);
   }
   .script {
     font-style: italic;
-    color: var(--color-brand);
+    color: var(--color-brand-dark);
   }
   .lead {
     color: var(--color-muted);
-    font-size: clamp(16px, 1.6vw, 18px);
-    max-width: 52ch;
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.7;
+    max-width: 54ch;
   }
 
-  /* Buttons: .btn (filled), .btn-ghost (outline), .btn-sm (smaller) */
+  /* Buttons: .btn (filled pink), .btn-ghost (outline), .btn-sm (smaller) */
   .btn {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    border-radius: 4px;
+    border-radius: 999px;
     background: var(--color-brand);
-    color: #fff;
-    padding: 13px 22px;
+    color: var(--color-ink);
+    padding: 13px 24px;
     font-size: 14px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
+    box-shadow: 0 10px 22px -14px rgba(214, 51, 159, 0.9);
     transition:
       background 0.2s,
-      transform 0.2s;
+      transform 0.2s,
+      box-shadow 0.2s;
     cursor: pointer;
   }
   .btn:hover {
     background: var(--color-brand-hover);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px -14px rgba(214, 51, 159, 1);
+  }
+  /* Light shine that sweeps across a filled button on hover */
+  .btn:not(.btn-ghost)::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+  .btn:not(.btn-ghost):hover::after {
+    transform: translateX(120%);
   }
   .btn:disabled {
     opacity: 0.6;
@@ -138,7 +175,7 @@ h4 {
   .icon-btn:hover:not(:disabled) {
     background: var(--color-brand);
     border-color: var(--color-brand);
-    color: #fff;
+    color: var(--color-ink);
   }
   .icon-btn:disabled {
     opacity: 0.35;
@@ -197,7 +234,7 @@ h4 {
   }
   .card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 26px 44px -26px rgba(120, 20, 60, 0.45);
+    box-shadow: 0 26px 44px -26px rgba(214, 51, 159, 0.45);
   }
 
   .chip {
@@ -245,7 +282,7 @@ h4 {
   .field-input:focus {
     border-color: var(--color-brand);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(163, 21, 79, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 101, 197, 0.25);
   }
 }
 
@@ -382,12 +419,145 @@ h4 {
   animation-play-state: paused;
 }
 
-/* Hide scrollbars on swipe tracks but keep them scrollable */
-.no-scrollbar {
-  scrollbar-width: none;
+/* =========================================================================
+   EXTRA LIGHT ANIMATIONS (added 2026-10-12). CSS only, no JavaScript libraries.
+   ========================================================================= */
+
+/* 9. Hero text: kicker, heading, text and buttons fade up one after another */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.no-scrollbar::-webkit-scrollbar {
+.hero-enter > * {
+  animation: fade-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.hero-enter > :nth-child(2) {
+  animation-delay: 0.08s;
+}
+.hero-enter > :nth-child(3) {
+  animation-delay: 0.16s;
+}
+.hero-enter > :nth-child(4) {
+  animation-delay: 0.24s;
+}
+.hero-enter > :nth-child(5) {
+  animation-delay: 0.32s;
+}
+
+/* 10. Hero photo: very slow zoom while the banner is showing */
+@keyframes slow-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.07);
+  }
+}
+.slow-zoom {
+  animation: slow-zoom 9s ease-out both;
+}
+
+/* 11. Gentle floating (hero badge) */
+@keyframes float-soft {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-7px);
+  }
+}
+.float-soft {
+  animation: float-soft 3.2s ease-in-out infinite alternate;
+}
+
+/* 12. Cards in a grid appear one after another when scrolled into view (use with <Reveal className="stagger">) */
+.stagger.reveal-play {
+  animation: none;
+}
+.stagger.reveal-play > * {
+  animation: reveal-up 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+.stagger.reveal-play > :nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stagger.reveal-play > :nth-child(3) {
+  animation-delay: 0.2s;
+}
+.stagger.reveal-play > :nth-child(4) {
+  animation-delay: 0.3s;
+}
+.stagger.reveal-play > :nth-child(n + 5) {
+  animation-delay: 0.4s;
+}
+
+/* 13. Soft fade when content is swapped (e.g. a new goal picked) */
+/* "backwards" = only the start state is applied, so hover effects still work after the fade */
+.fade-in {
+  animation: fade-up 0.45s ease backwards;
+}
+
+/* 14. FAQ answers slide in when opened */
+details[open] > :not(summary) {
+  animation: fade-up 0.35s ease both;
+}
+
+/* 15. Reading progress bar under the header and header shadow after scrolling.
+   Uses CSS scroll-driven animations: browsers without support simply don't show them. */
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes header-shadow {
+  to {
+    box-shadow: 0 10px 24px -18px rgba(43, 26, 36, 0.45);
+  }
+}
+.scroll-progress {
   display: none;
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background: var(--color-brand);
+    transform-origin: left;
+    animation: grow-x linear both;
+    animation-timeline: scroll(root);
+  }
+  .header-scroll {
+    animation: header-shadow linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120px;
+  }
+}
+
+/* 16. E-book offer popup pops in */
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ebook-dialog[open] {
+  animation: pop-in 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -399,7 +569,12 @@ h4 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  .petal {
+  .petal,
+  .scroll-progress {
     display: none;
+  }
+  .slow-zoom,
+  .float-soft {
+    animation: none;
   }
 }

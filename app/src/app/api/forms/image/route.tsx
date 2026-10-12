@@ -10,8 +10,9 @@ import { getCurrentMember } from "@/lib/auth/session.server";
 import { getPayloadClient } from "@/lib/payload.server";
 import { getSettings } from "@/lib/content";
 import { MEASUREMENT_FIELDS, MOODS } from "@/lib/member";
+import { formatDate } from "@/lib/dates";
 
-const BRAND = "#a3154f";
+const BRAND = "#d6339f"; // deep brand pink (readable as text)
 const INK = "#2b1a1f";
 const MUTED = "#6b585d";
 const WIDTH = 1080;
@@ -19,7 +20,7 @@ const WIDTH = 1080;
 type Row = { label: string; value: string };
 
 const show = (value: unknown, unit = "") => (value === null || value === undefined || value === "" ? "" : `${value}${unit}`);
-const date = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const date = (iso: string) => formatDate(iso, "long");
 
 export async function GET(request: Request) {
   const member = await getCurrentMember();
@@ -82,7 +83,7 @@ export async function GET(request: Request) {
   );
 
   const image = (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: "#fbeff1", padding: "48px 56px" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: "#fff0f8", padding: "48px 56px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 30, color: BRAND, fontWeight: 700 }}>Fat To Fit With Z</span>
         <span style={{ fontSize: 22, color: MUTED }}>{date(doc.updatedAt)}</span>

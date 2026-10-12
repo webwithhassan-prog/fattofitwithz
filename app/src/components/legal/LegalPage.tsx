@@ -28,7 +28,7 @@ export function LegalPage({ doc }: { doc: LegalDoc }) {
             <ol className="space-y-2 text-muted">
               {headings.map((h) => (
                 <li key={h.text}>
-                  <a href={`#${anchorId(h.text)}`} className="hover:text-brand">
+                  <a href={`#${anchorId(h.text)}`} className="hover:text-brand-dark">
                     {h.text}
                   </a>
                 </li>

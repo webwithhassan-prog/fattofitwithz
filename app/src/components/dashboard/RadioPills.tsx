@@ -15,7 +15,7 @@ export function RadioPills({ legend, name, options, value, onChange, required }:
     <fieldset>
       <legend className="field-label">
         {legend}
-        {required ? <span className="text-brand"> *</span> : null}
+        {required ? <span className="text-brand-dark"> *</span> : null}
       </legend>
       <div className="flex flex-wrap gap-4">
         {options.map((option) => (

@@ -2,7 +2,7 @@
  * Simple, private visit counting for the admin dashboard (no cookies, no personal data).
  *
  *   countPageView("/programs")         called by /api/track for every page a visitor opens
- *   countEvent("checkout-started")     called by /api/checkout
+ *   countEvent("checkout-started")     called by lib/checkout.server.ts
  *   await flushStats()                 writes the counts to the database (admin > site-stats)
  *
  * Counts are kept in memory and written in ONE query at most every STATS_FLUSH_MINUTES

@@ -3,11 +3,9 @@ import { getDashboardData } from "@/lib/members.server";
 import { getEbook } from "@/lib/content";
 import { durationLabel } from "@/lib/pricing";
 import { logOut } from "../actions";
+import { formatDate } from "@/lib/dates";
 
 export const metadata = { title: "Settings" };
-
-const formatDate = (isoDay: string) =>
-  new Date(`${isoDay}T12:00:00`).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 export default async function SettingsPage() {
   const [{ member, program, hasEbook }, ebook] = await Promise.all([getDashboardData(), getEbook()]);
@@ -15,7 +13,7 @@ export default async function SettingsPage() {
     <div className="mx-auto flex max-w-[800px] flex-col gap-5">
       <h1 className="text-3xl">Settings</h1>
       <section className="card p-6">
-        <h2 className="mb-3 text-xl text-brand">Membership</h2>
+        <h2 className="mb-3 text-xl text-brand-dark">Membership</h2>
         {program ? (
           <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-[15px]">
             <dt className="text-muted">Program</dt>
@@ -23,22 +21,22 @@ export default async function SettingsPage() {
             <dt className="text-muted">Duration</dt>
             <dd>{durationLabel(program.months)}</dd>
             <dt className="text-muted">Started</dt>
-            <dd>{formatDate(program.startDate)}</dd>
+            <dd>{formatDate(program.startDate, "long")}</dd>
             <dt className="text-muted">{program.active ? "Ends" : "Ended"}</dt>
-            <dd>{formatDate(program.endDate)}</dd>
+            <dd>{formatDate(program.endDate, "long")}</dd>
           </dl>
         ) : (
           <p className="text-[15px] text-muted">
-            You haven&apos;t joined a program yet. <Link href="/programs" className="text-brand underline">Choose a program</Link>.
+            You haven&apos;t joined a program yet. <Link href="/programs" className="text-brand-dark underline">Choose a program</Link>.
           </p>
         )}
         <p className="mt-4 text-sm text-muted">
-          Need to pause? Freezes follow our <Link href="/refund-policy" className="text-brand underline">Refund, Cancellation &amp; Freeze Policy</Link>. Message us on WhatsApp.
+          Need to pause? Freezes follow our <Link href="/refund-policy" className="text-brand-dark underline">Refund, Cancellation &amp; Freeze Policy</Link>. Message us on WhatsApp.
         </p>
       </section>
       {hasEbook ? (
         <section className="card p-6">
-          <h2 className="mb-3 text-xl text-brand">E-book</h2>
+          <h2 className="mb-3 text-xl text-brand-dark">E-book</h2>
           {ebook.driveLink ? (
             <a href={ebook.driveLink} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Open {ebook.title}</a>
           ) : (
@@ -47,7 +45,7 @@ export default async function SettingsPage() {
         </section>
       ) : null}
       <section className="card p-6">
-        <h2 className="mb-3 text-xl text-brand">Account</h2>
+        <h2 className="mb-3 text-xl text-brand-dark">Account</h2>
         <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-[15px]">
           <dt className="text-muted">Email</dt>
           <dd className="break-all">{member.email}</dd>

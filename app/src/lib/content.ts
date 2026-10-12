@@ -17,7 +17,7 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { getPayloadClient } from "./payload.server";
 import { CONTENT_CACHE_TAG } from "./cache-tags";
-import { durationLabel } from "./pricing";
+import { durationLabel, type Rates } from "./pricing";
 import type { Media } from "@/payload-types";
 import type {
   BeforeAfter,
@@ -111,6 +111,7 @@ export async function getGoals(): Promise<Goal[]> {
     return {
       id: g.goalId,
       label: g.label,
+      healthConcern: Boolean(g.healthConcern),
       order: rows.map(slugOf),
       why: Object.fromEntries(rows.filter((row) => row.why).map((row) => [slugOf(row), row.why as string])),
     };
@@ -146,6 +147,30 @@ export async function getPriceTable(): Promise<PriceTable> {
     regions.map((r) => [r.code, Object.fromEntries(r.prices.map((p) => [String(p.months), { amount: p.amount, compareAt: p.compareAt }]))]),
   ) as PriceTable;
 }
+
+// ---------- exchange rates (for countries without their own price list) ----------
+
+/**
+ * How much of each currency 1 US dollar buys, from ExchangeRate-API's free service
+ * (no account or key; updated daily; they ask for a "Rates By Exchange Rate API" link, shown under the
+ * country picker). Cached for 12 hours. If the service is down, returns {} and everyone sees
+ * their own price list or USD, so a payment never uses a made-up rate.
+ */
+export const getExchangeRates = unstable_cache(
+  async (): Promise<Rates> => {
+    try {
+      const res = await fetch("https://open.er-api.com/v6/latest/USD", { cache: "no-store" });
+      const data = (await res.json()) as { result?: string; rates?: Rates };
+      if (data.result !== "success" || !data.rates) throw new Error(`unexpected answer: ${data.result}`);
+      return data.rates;
+    } catch (error) {
+      console.error("[rates] Could not load exchange rates, showing USD for other countries:", error);
+      return {};
+    }
+  },
+  ["exchange-rates-usd"],
+  { revalidate: 12 * 60 * 60 },
+);
 
 // ---------- homepage ----------
 
@@ -271,6 +296,48 @@ export const getEbook = cachedContent("ebook", async (): Promise<EbookOffer> => 
     description: e.description,
     cover,
     driveLink: e.driveLink?.trim() ?? "",
+  };
+});
+
+// ---------- page photos (About page + before/after slider) ----------
+
+export type SimplePhoto = { src: string; alt: string };
+export type PagePhotos = {
+  aboutPhoto: SimplePhoto;
+  aboutEvents: (SimplePhoto & { caption: string })[];
+  before: SimplePhoto;
+  after: SimplePhoto;
+};
+
+/** Used when a photo hasn't been chosen in admin > Page photos (the original files in public/images). */
+const PAGE_PHOTO_FALLBACKS: PagePhotos = {
+  aboutPhoto: { src: "/images/coach/coach-p03.jpg", alt: "Portrait of Zaineb Danish" },
+  aboutEvents: [
+    { src: "/images/coach/coach-p09.jpg", alt: "Zaineb Danish speaking at a women's health session", caption: "Women's health session" },
+    { src: "/images/coach/coach-p11.jpg", alt: "Zaineb Danish speaking at the Lahore Press Club podium", caption: "Lahore Press Club" },
+    { src: "/images/coach/coach-p10.jpg", alt: "Zaineb Danish receiving recognition on stage", caption: "Recognition ceremony" },
+    { src: "/images/coach/coach-p12.jpg", alt: "Zaineb Danish receiving an award with the organisers", caption: "Recognition ceremony" },
+  ],
+  before: { src: "/images/results/before-71kg.jpg", alt: "Client before the program, 71 kg" },
+  after: { src: "/images/results/after-61kg.jpg", alt: "The same client after the program, 61 kg" },
+};
+
+/** A chosen photo, or the fallback when the field is empty. */
+function photoOr(media: number | Media | null | undefined, fallback: SimplePhoto): SimplePhoto {
+  return media && typeof media === "object" && media.url ? { src: media.url, alt: media.alt } : fallback;
+}
+
+export const getPagePhotos = cachedContent("page-photos", async (): Promise<PagePhotos> => {
+  const payload = await getPayloadClient();
+  const p = await payload.findGlobal({ slug: "page-photos", depth: 1 });
+  const events = (p.aboutEvents ?? [])
+    .filter((e) => typeof e.photo === "object" && e.photo?.url)
+    .map((e) => ({ ...photoOr(e.photo, PAGE_PHOTO_FALLBACKS.aboutPhoto), caption: e.caption }));
+  return {
+    aboutPhoto: photoOr(p.aboutPhoto, PAGE_PHOTO_FALLBACKS.aboutPhoto),
+    aboutEvents: events.length ? events : PAGE_PHOTO_FALLBACKS.aboutEvents,
+    before: photoOr(p.beforePhoto, PAGE_PHOTO_FALLBACKS.before),
+    after: photoOr(p.afterPhoto, PAGE_PHOTO_FALLBACKS.after),
   };
 });
 

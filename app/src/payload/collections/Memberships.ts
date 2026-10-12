@@ -11,7 +11,7 @@ export const Memberships: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["member", "title", "status"],
-    group: "Clients",
+    group: false, // hidden from the menu (2026-10-13): the page still works at its address
     description: "Which program each member is on, and until when. To freeze a membership, move the end date and add a note.",
   },
   hooks: {
