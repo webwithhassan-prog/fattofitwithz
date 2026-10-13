@@ -304,7 +304,6 @@ export const getEbook = cachedContent("ebook", async (): Promise<EbookOffer> => 
 export type SimplePhoto = { src: string; alt: string };
 export type PagePhotos = {
   aboutPhoto: SimplePhoto;
-  aboutEvents: (SimplePhoto & { caption: string })[];
   before: SimplePhoto;
   after: SimplePhoto;
 };
@@ -312,12 +311,6 @@ export type PagePhotos = {
 /** Used when a photo hasn't been chosen in admin > Page photos (the original files in public/images). */
 const PAGE_PHOTO_FALLBACKS: PagePhotos = {
   aboutPhoto: { src: "/images/coach/coach-p03.jpg", alt: "Portrait of Zaineb Danish" },
-  aboutEvents: [
-    { src: "/images/coach/coach-p09.jpg", alt: "Zaineb Danish speaking at a women's health session", caption: "Women's health session" },
-    { src: "/images/coach/coach-p11.jpg", alt: "Zaineb Danish speaking at the Lahore Press Club podium", caption: "Lahore Press Club" },
-    { src: "/images/coach/coach-p10.jpg", alt: "Zaineb Danish receiving recognition on stage", caption: "Recognition ceremony" },
-    { src: "/images/coach/coach-p12.jpg", alt: "Zaineb Danish receiving an award with the organisers", caption: "Recognition ceremony" },
-  ],
   before: { src: "/images/results/before-71kg.jpg", alt: "Client before the program, 71 kg" },
   after: { src: "/images/results/after-61kg.jpg", alt: "The same client after the program, 61 kg" },
 };
@@ -330,12 +323,8 @@ function photoOr(media: number | Media | null | undefined, fallback: SimplePhoto
 export const getPagePhotos = cachedContent("page-photos", async (): Promise<PagePhotos> => {
   const payload = await getPayloadClient();
   const p = await payload.findGlobal({ slug: "page-photos", depth: 1 });
-  const events = (p.aboutEvents ?? [])
-    .filter((e) => typeof e.photo === "object" && e.photo?.url)
-    .map((e) => ({ ...photoOr(e.photo, PAGE_PHOTO_FALLBACKS.aboutPhoto), caption: e.caption }));
   return {
     aboutPhoto: photoOr(p.aboutPhoto, PAGE_PHOTO_FALLBACKS.aboutPhoto),
-    aboutEvents: events.length ? events : PAGE_PHOTO_FALLBACKS.aboutEvents,
     before: photoOr(p.beforePhoto, PAGE_PHOTO_FALLBACKS.before),
     after: photoOr(p.afterPhoto, PAGE_PHOTO_FALLBACKS.after),
   };

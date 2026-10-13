@@ -20,7 +20,7 @@
   --color-rose: #ffb2e2; /* light pink, decoration only (petals, underlines) */
   --color-gold: #a57b4f; /* thin outlines and dividers */
   --color-ink: #2b1a24; /* main text (dark plum) */
-  --color-muted: #5f4b57; /* secondary text */
+  --color-muted: #4f3c47; /* secondary text (darker = easier to read) */
   --color-line: #f1dde8; /* borders */
   --color-whatsapp: #1f9d55;
 
@@ -93,6 +93,7 @@ p {
   .lead {
     color: var(--color-muted);
     font-size: clamp(16px, 1.5vw, 18px);
+    font-weight: 450;
     line-height: 1.7;
     max-width: 54ch;
   }
@@ -401,22 +402,6 @@ p {
   border-radius: 999px;
   box-shadow: 0 0 0 0 rgba(31, 157, 85, 0.5);
   animation: pulse-ring 2.6s ease-out infinite;
-}
-
-/* Hero progress bar (doubles as the autoplay timer) */
-@keyframes progress-fill {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-.progress-run {
-  animation: progress-fill var(--autoplay-ms, 6500ms) linear forwards;
-}
-.progress-paused {
-  animation-play-state: paused;
 }
 
 /* =========================================================================

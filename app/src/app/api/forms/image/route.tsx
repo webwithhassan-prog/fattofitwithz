@@ -7,6 +7,7 @@
  */
 import { ImageResponse } from "next/og";
 import { getCurrentMember } from "@/lib/auth/session.server";
+import { LIMITS, rateLimit, tooManyRequests } from "@/lib/rate-limit.server";
 import { getPayloadClient } from "@/lib/payload.server";
 import { getSettings } from "@/lib/content";
 import { MEASUREMENT_FIELDS, MOODS } from "@/lib/member";
@@ -25,6 +26,9 @@ const date = (iso: string) => formatDate(iso, "long");
 export async function GET(request: Request) {
   const member = await getCurrentMember();
   if (!member) return new Response("Please log in", { status: 401 });
+  // Drawing an image is heavy work: limit how often one member can ask for it.
+  const limited = await rateLimit(LIMITS.formImage, `member:${member.id}`);
+  if (!limited.ok) return tooManyRequests(limited);
 
   const url = new URL(request.url);
   const kind = url.searchParams.get("form");

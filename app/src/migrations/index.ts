@@ -11,6 +11,8 @@ import * as migration_20261012_182146_goal_health_concern from './20261012_18214
 import * as migration_20261012_184719_media_files from './20261012_184719_media_files';
 import * as migration_20261012_193109_admin_tasks_issues_photos from './20261012_193109_admin_tasks_issues_photos';
 import * as migration_20261013_090000_ebook_menu_and_faq from './20261013_090000_ebook_menu_and_faq';
+import * as migration_20261013_163631_remove_about_events from './20261013_163631_remove_about_events';
+import * as migration_20261013_170000_rate_limits from './20261013_170000_rate_limits';
 
 export const migrations = [
   {
@@ -76,6 +78,16 @@ export const migrations = [
   {
     up: migration_20261013_090000_ebook_menu_and_faq.up,
     down: migration_20261013_090000_ebook_menu_and_faq.down,
-    name: '20261013_090000_ebook_menu_and_faq'
+    name: '20261013_090000_ebook_menu_and_faq',
+  },
+  {
+    up: migration_20261013_163631_remove_about_events.up,
+    down: migration_20261013_163631_remove_about_events.down,
+    name: '20261013_163631_remove_about_events'
+  },
+  {
+    up: migration_20261013_170000_rate_limits.up,
+    down: migration_20261013_170000_rate_limits.down,
+    name: '20261013_170000_rate_limits',
   },
 ];

@@ -114,27 +114,6 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container-site">
-          <SectionHeading
-            kicker="Talks & recognition"
-            title="Out in the"
-            highlight="community"
-            lead="Zaineb speaks on women's health and has been recognised for her work at events in Lahore."
-          />
-          <ul className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {photos.aboutEvents.map((e) => (
-              <li key={e.src}>
-                <figure>
-                  <Image src={e.src} alt={e.alt} width={720} height={900} sizes="(min-width: 1024px) 270px, 45vw" className="aspect-[4/5] w-full rounded-[12px] object-cover" />
-                  <figcaption className="mt-2 text-center text-sm text-muted italic">{e.caption}</figcaption>
-                </figure>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
       <section className="section bg-blush text-center">
         <div className="container-site">
           <h2 className="text-[clamp(28px,4vw,42px)]">

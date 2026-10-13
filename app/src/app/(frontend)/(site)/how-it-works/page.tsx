@@ -1,8 +1,8 @@
 /** /how-it-works - the five-step member journey as a vertical timeline. */
-import Image from "next/image";
 import Link from "next/link";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { Clipboard, Headset, PlayCircle, Target, Utensils } from "@/components/ui/Icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, buildMetadata } from "@/lib/seo";
 
@@ -18,31 +18,31 @@ const STEPS = [
     title: "Choose your program",
     lead: "Select the program that best fits your goals.",
     text: "Pick from our programs according to your health, fitness, nutrition and lifestyle goals. Not sure? Use the goal picker on the homepage or ask us on WhatsApp.",
-    image: "/images/illustrations/how-step-01-choose-plan.png",
+    Icon: Target,
   },
   {
     title: "Join Fat To Fit With Z",
     lead: "Complete registration and payment.",
     text: "Create your account and pay securely online. You get a welcome email straight away and your member area opens.",
-    image: "/images/illustrations/how-step-02-get-plan.png",
+    Icon: Clipboard,
   },
   {
     title: "Get your plan",
     lead: "Fill in your first day form, get your diet plan on WhatsApp.",
     text: "Tell your coach about your goals, routine, food and health in the first day form. Your personalized diet plan is sent to you on WhatsApp, and your recorded workouts are ready in your member area.",
-    image: "/images/illustrations/how-step-03-follow-track.png",
+    Icon: Utensils,
   },
   {
     title: "Follow & stay consistent",
     lead: "Follow your nutrition, fitness and lifestyle guidance.",
     text: "Train with the recorded home workouts and send a follow-up form whenever your coach asks.",
-    image: "/images/illustrations/how-step-04-see-results.png",
+    Icon: PlayCircle,
   },
   {
     title: "Get ongoing support",
     lead: "Stay connected with the team throughout your journey.",
     text: "Your coach reviews your follow-ups and adjusts your plan on WhatsApp as you progress, so you keep moving toward your goals.",
-    image: null,
+    Icon: Headset,
   },
 ];
 
@@ -65,15 +65,16 @@ export default function HowItWorksPage() {
                 <span className="absolute top-0 -left-[49px] grid h-11 w-11 place-items-center rounded-full border border-gold bg-bg font-display text-lg text-brand-dark md:-left-[65px]">
                   {i + 1}
                 </span>
-                <div className="grid items-center gap-6 sm:grid-cols-[1fr_180px]">
+                <div className="grid items-center gap-6 sm:grid-cols-[1fr_140px]">
                   <div>
                     <h2 className="text-[clamp(24px,3vw,32px)]">{step.title}</h2>
-                    <p className="mt-1 text-brand-dark">{step.lead}</p>
-                    <p className="mt-3 text-muted">{step.text}</p>
+                    <p className="mt-1 font-semibold text-brand-dark">{step.lead}</p>
+                    <p className="mt-3 font-medium text-ink/80">{step.text}</p>
                   </div>
-                  {step.image ? (
-                    <Image src={step.image} alt="" width={360} height={360} className="hidden w-[180px] sm:block" />
-                  ) : null}
+                  {/* Icon (replaced the cartoon illustrations, 2026-10-13) */}
+                  <span aria-hidden="true" className="hidden h-[120px] w-[120px] place-items-center justify-self-center rounded-[32px] bg-gradient-to-br from-brand/25 to-blush text-brand-dark shadow-[0_18px_36px_-22px_rgba(214,51,159,0.8)] sm:grid">
+                    <step.Icon className="h-14 w-14" />
+                  </span>
                 </div>
               </Reveal>
             ))}

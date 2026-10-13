@@ -25,7 +25,7 @@ function countryFromNetlifyGeo(value: string | null): string | null {
   }
 }
 
-function countryFromHeaders(headers: Headers): string | null {
+export function countryFromHeaders(headers: Headers): string | null {
   const found =
     countryFromNetlifyGeo(headers.get("x-nf-geo")) ??
     headers.get("x-country") ??

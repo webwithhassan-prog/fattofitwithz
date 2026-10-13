@@ -15,6 +15,7 @@ import { z } from "zod";
 import { getPayloadClient } from "@/lib/payload.server";
 import { endSession, getCurrentMember } from "@/lib/auth/session.server";
 import { MEASUREMENT_FIELDS } from "@/lib/member";
+import { LIMITS, rateLimit } from "@/lib/rate-limit.server";
 
 export type SaveFormResult = { ok: true; id: number } | { ok: false; error: string };
 
@@ -41,6 +42,8 @@ type MemberContext =
 async function memberWithProgram(): Promise<MemberContext> {
   const member = await getCurrentMember();
   if (!member) return { error: NOT_LOGGED_IN };
+  const limited = await rateLimit(LIMITS.saveForm, `member:${member.id}`);
+  if (!limited.ok) return { error: { ok: false, error: limited.message } };
   const payload = await getPayloadClient();
   const memberships = await payload.count({ collection: "memberships", where: { and: [{ member: { equals: member.id } }, { status: { not_equals: "cancelled" } }] } });
   if (memberships.totalDocs === 0) return { error: NO_PROGRAM };

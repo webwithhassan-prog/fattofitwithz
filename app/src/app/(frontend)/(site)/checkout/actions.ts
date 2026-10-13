@@ -14,6 +14,7 @@ import { getPayloadClient } from "@/lib/payload.server";
 import { getCurrentMember, startSession } from "@/lib/auth/session.server";
 import { hashPassword } from "@/lib/auth/crypto.server";
 import { MIN_PASSWORD_LENGTH, normalizeEmail } from "@/lib/auth/passwords.server";
+import { clientIp, LIMITS, rateLimit } from "@/lib/rate-limit.server";
 
 export type CheckoutFormState = { error?: string; loginLink?: string; values?: Record<string, string> };
 
@@ -41,6 +42,9 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
   const checkoutPath = `/checkout?program=${encodeURIComponent(programSlug)}&months=${months}&ebook=${ebook ? 1 : 0}`;
   // Typed values are sent back on an error, so she doesn't have to type them again (never the password).
   const values = { fullName: get("fullName"), email: get("email"), phone: get("phone") };
+
+  const limited = await rateLimit(LIMITS.checkout, await clientIp());
+  if (!limited.ok) return { error: limited.message, values };
 
   let member = await getCurrentMember();
 
@@ -96,6 +100,8 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
 }
 
 export async function buyEbookAction(_previous: CheckoutFormState, formData: FormData): Promise<CheckoutFormState> {
+  const limited = await rateLimit(LIMITS.checkout, await clientIp());
+  if (!limited.ok) return { error: limited.message };
   const member = await getCurrentMember(); // optional: logged-in buyers are linked to their account
   const result = await createCheckoutSession({
     ebook: true,

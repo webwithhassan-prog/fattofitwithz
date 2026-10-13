@@ -9,6 +9,8 @@ import { RegionProvider } from "@/components/pricing/RegionProvider";
 import { FaqList } from "@/components/home/FaqList";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CheckBullet } from "@/components/ui/CheckBullet";
+import { Sparkle, Target } from "@/components/ui/Icons";
+import { Reveal } from "@/components/ui/Reveal";
 import { getEbook, getExchangeRates, getFaqs, getPriceTable, getProgram, getPrograms, getRegions } from "@/lib/content";
 import { getPrice } from "@/lib/pricing";
 import { breadcrumbSchema, buildMetadata, programSchema } from "@/lib/seo";
@@ -74,44 +76,55 @@ export default async function ProgramPage({ params }: PageProps) {
 
           <div className="grid gap-10 md:grid-cols-[1.3fr_1fr]">
             <div>
-              <span className="rounded-full border border-gold px-2.5 py-0.5 text-[11px] tracking-[0.12em] text-gold uppercase">{program.tag}</span>
-              <h1 className="mt-4 text-[clamp(36px,5vw,56px)]">{program.name}</h1>
-              <p className="mt-2 text-brand-dark">{program.focus}</p>
-              <p className="lead mt-5">{program.summary}</p>
+              <span className="rounded-full bg-brand px-3 py-1 text-[11px] font-semibold tracking-[0.12em] text-ink uppercase">{program.tag}</span>
+              <h1 className="mt-4 text-[clamp(36px,5vw,56px)] font-semibold">{program.name}</h1>
+              <p className="mt-2 text-lg font-semibold text-brand-dark">{program.focus}</p>
+              <p className="mt-5 text-[17px] leading-relaxed font-medium text-ink/85">{program.summary}</p>
 
               {program.covers.length ? (
                 <>
-                  <h2 className="mt-9 text-2xl">Covers</h2>
+                  <h2 className="mt-10 text-2xl font-semibold">Covers</h2>
                   <ul className="mt-3 flex flex-wrap gap-2">
                     {program.covers.map((c) => (
-                      <li key={c} className="chip">{c}</li>
+                      <li key={c} className="rounded-full border border-brand/30 bg-brand/10 px-3.5 py-1.5 text-sm font-semibold text-brand-dark">{c}</li>
                     ))}
                   </ul>
                 </>
               ) : null}
 
-              <h2 className="mt-9 text-2xl">Main benefits</h2>
-              <ul className="mt-3 flex flex-col gap-2.5">
+              <h2 className="mt-10 text-2xl font-semibold">Main benefits</h2>
+              <Reveal as="ul" className="stagger mt-4 grid gap-3 sm:grid-cols-2">
                 {program.fullBenefits.map((b) => (
-                  <li key={b} className="flex gap-3 leading-snug">
+                  <li key={b} className="card card-hover flex gap-3 p-4 leading-snug font-medium text-ink">
                     <CheckBullet />
                     <span>{b}</span>
                   </li>
                 ))}
-              </ul>
+              </Reveal>
 
-              <h2 className="mt-9 text-2xl">Who is this program for?</h2>
-              <p className="mt-3 text-muted">{program.whoIsItFor}</p>
+              <div className="mt-10 grid gap-4">
+                <div className="card p-5">
+                  <h2 className="flex items-center gap-3 text-2xl font-semibold">
+                    <span className="grid h-10 w-10 flex-none place-items-center rounded-full bg-brand/15 text-brand-dark"><Target className="h-5 w-5" /></span>
+                    Who is this program for?
+                  </h2>
+                  <p className="mt-3 leading-relaxed font-medium text-ink/80">{program.whoIsItFor}</p>
+                </div>
+                <div className="card p-5">
+                  <h2 className="flex items-center gap-3 text-2xl font-semibold">
+                    <span className="grid h-10 w-10 flex-none place-items-center rounded-full bg-brand/15 text-brand-dark"><Sparkle className="h-5 w-5" /></span>
+                    How the program works
+                  </h2>
+                  <p className="mt-3 leading-relaxed font-medium text-ink/80">{program.howItWorks}</p>
+                </div>
+              </div>
 
-              <h2 className="mt-9 text-2xl">How the program works</h2>
-              <p className="mt-3 text-muted">{program.howItWorks}</p>
-
-              <h2 className="mt-9 text-2xl">What happens after you pay</h2>
-              <ol className="mt-3 flex flex-col gap-3">
+              <h2 className="mt-10 text-2xl font-semibold">What happens after you pay</h2>
+              <ol className="mt-4 flex flex-col gap-3">
                 {AFTER_PAYMENT.map((step, i) => (
-                  <li key={step} className="flex gap-3">
-                    <span className="grid h-7 w-7 flex-none place-items-center rounded-full border border-gold font-display text-brand-dark">{i + 1}</span>
-                    <span className="text-muted">{step}</span>
+                  <li key={step} className="flex items-start gap-3.5 rounded-[14px] bg-blush/70 p-3.5">
+                    <span className="grid h-8 w-8 flex-none place-items-center rounded-full bg-brand font-display text-base font-semibold text-ink">{i + 1}</span>
+                    <span className="pt-1 font-medium text-ink/85">{step}</span>
                   </li>
                 ))}
               </ol>

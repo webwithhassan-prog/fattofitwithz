@@ -7,6 +7,7 @@ import { z } from "zod";
 import { getSettings } from "@/lib/content";
 import { getPayloadClient } from "@/lib/payload.server";
 import { sendEmail } from "@/lib/email.server";
+import { ipFromHeaders, LIMITS, rateLimit, tooManyRequests } from "@/lib/rate-limit.server";
 
 const ContactRequest = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(100),
@@ -27,6 +28,8 @@ export async function POST(request: Request) {
 
   // Bot filled the hidden field: pretend success, send nothing.
   if (data.website) return Response.json({ ok: true });
+  const limited = await rateLimit(LIMITS.contact, ipFromHeaders(request.headers));
+  if (!limited.ok) return tooManyRequests(limited);
 
   try {
     // Saved first, so the message is never lost even if the email fails.

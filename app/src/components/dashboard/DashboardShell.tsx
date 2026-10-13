@@ -8,7 +8,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertCircle, Clipboard, Close, Heart, Home, LogOut, Menu, PlayCircle, Settings } from "@/components/ui/Icons";
 import { logOut } from "@/app/(frontend)/dashboard/actions";
 
@@ -29,6 +29,12 @@ export function DashboardShell({ firstName, initial, children }: Props) {
   const [drawerOpenOn, setDrawerOpenOn] = useState<string | null>(null);
   const drawerOpen = drawerOpenOn === pathname;
   const setDrawerOpen = (open: boolean) => setDrawerOpenOn(open ? pathname : null);
+
+  // Keep the harmless "logged in" hint cookie up to date (it shows her initial on the public pages,
+  // see MEMBER_HINT_COOKIE in lib/auth/session.server.ts). Also covers logins from before the cookie existed.
+  useEffect(() => {
+    document.cookie = `ftf_member=${encodeURIComponent(initial)}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=lax`;
+  }, [initial]);
 
   const sidebar = (
     <nav aria-label="Member area" className="flex h-full flex-col gap-1.5 p-4">

@@ -19,6 +19,12 @@ import { hashToken, newToken } from "./crypto.server";
 import type { Member as MemberDoc } from "@/payload-types";
 
 export const SESSION_COOKIE = "ftf_session";
+/**
+ * A second, harmless cookie the BROWSER can read (the session cookie can't be read by scripts):
+ * it only holds her first initial, so the static pages can show a "My account" button / profile icon.
+ * It proves nothing: the member pages always check the real session.
+ */
+export const MEMBER_HINT_COOKIE = "ftf_member";
 const SESSION_DAYS = 30;
 
 export async function startSession(memberId: number): Promise<void> {
@@ -39,6 +45,10 @@ export async function startSession(memberId: number): Promise<void> {
     path: "/",
     expires: expiresAt,
   });
+
+  const member = await payload.findByID({ collection: "members", id: memberId, depth: 0 }).catch(() => null);
+  const initial = (member?.fullName || member?.email || "M").trim().charAt(0).toUpperCase();
+  (await cookies()).set(MEMBER_HINT_COOKIE, initial, { httpOnly: false, sameSite: "lax", path: "/", expires: expiresAt });
 }
 
 /** The logged-in member's database row, or null. Looked up once per request. */
@@ -78,6 +88,7 @@ export async function endSession(): Promise<void> {
     await payload.delete({ collection: "member-sessions", where: { tokenHash: { equals: hashToken(token) } } });
   }
   cookieStore.delete(SESSION_COOKIE);
+  cookieStore.delete(MEMBER_HINT_COOKIE);
 }
 
 /** Logs the member out on every device (used after her password is reset). */

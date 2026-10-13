@@ -28,3 +28,11 @@ export function usePrefersReducedMotion(): boolean {
     () => false,
   );
 }
+
+/**
+ * The logged-in member's first initial ("A"), or "" when nobody is logged in.
+ * Read from the harmless "ftf_member" cookie set at login (see MEMBER_HINT_COOKIE in lib/auth/session.server.ts).
+ */
+export function useMemberInitial(): string {
+  return useClientValue(() => document.cookie.split("; ").find((c) => c.startsWith("ftf_member="))?.split("=")[1] ?? "", "");
+}

@@ -67,10 +67,9 @@ export async function SitePhotos(view: AdminViewServerProps) {
     {
       title: "About page",
       editHref: "/admin/globals/page-photos",
-      editLabel: "Edit About page photos and captions",
+      editLabel: "Choose the About page photo",
       slots: [
         { label: "Main photo", media: asMedia(pagePhotos.aboutPhoto), fallback: "/images/coach/coach-p03.jpg" },
-        ...(pagePhotos.aboutEvents ?? []).map((e) => ({ label: e.caption, media: asMedia(e.photo) })),
       ],
     },
     {

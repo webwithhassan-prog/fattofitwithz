@@ -74,6 +74,25 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
 - **Audit:** unused code removed; links checked; scroll, layout and date bugs fixed (doc 13).
 - **Privacy note for the policy page:** the site looks up the visitor's country from her IP address (Netlify, or country.is as a fallback) only to show prices in her currency. Nothing is stored except a cookie with the country code.
 
+## Done ✅ (2026-10-13, evening): domain + email
+
+- **Domain:** fattofitwithz.com is live on Netlify with SSL.
+  - GoDaddy DNS: `A @ → 75.2.60.5` and `CNAME www → fattofitwithz.netlify.app`; www redirects to the root domain.
+  - GoDaddy email records (MX, SPF, DKIM, DMARC, autodiscover) are untouched.
+  - Cloudflare is not used (not needed; a Cloudflare proxy would hide visitors' locations).
+  - Netlify `NEXT_PUBLIC_SITE_URL` = `https://fattofitwithz.com`.
+- **Email (Resend, free plan):** domain verified (us-east-1).
+  - GoDaddy records: `TXT resend._domainkey`, `CNAME rsend → rsend.forge.rmta.net`, `CNAME send → send.forge.rmta.net`. Resend's inbound MX was deliberately NOT added, so the GoDaddy inbox keeps working.
+  - Netlify: `RESEND_API_KEY` (secret) and `EMAIL_FROM` = `Fat To Fit With Z <info@fattofitwithz.com>`.
+  - A test contact-form email to info@ was delivered. The test message ("TEST - email setup check") is in admin › Contact messages and can be deleted.
+
+## ⚠️ Next deploy (2026-10-13 evening changes)
+
+1. Push to `main` and wait until Netlify shows the deploy as Published.
+2. THEN run `npm run migrate` (from `app/`). It applies:
+   - `20261013_163631_remove_about_events`: drops the old About photo list. **Running it before the deploy breaks the live About and home pages.**
+   - `20261013_170000_rate_limits`: the table already exists, so this does nothing.
+
 ## 🚀 Deploy steps (do these in order)
 
 1. **Push the code** to GitHub `main` (Netlify builds it automatically, about 3 minutes).

@@ -244,12 +244,6 @@ async function seedGlobals(
     context,
     data: {
       aboutPhoto: await photo("/images/coach/coach-p03.jpg", "Portrait of Zaineb Danish"),
-      aboutEvents: [
-        { photo: await photo("/images/coach/coach-p09.jpg", "Zaineb Danish speaking at a women's health session"), caption: "Women's health session" },
-        { photo: await photo("/images/coach/coach-p11.jpg", "Zaineb Danish speaking at the Lahore Press Club podium"), caption: "Lahore Press Club" },
-        { photo: await photo("/images/coach/coach-p10.jpg", "Zaineb Danish receiving recognition on stage"), caption: "Recognition ceremony" },
-        { photo: await photo("/images/coach/coach-p12.jpg", "Zaineb Danish receiving an award with the organisers"), caption: "Recognition ceremony" },
-      ],
       beforePhoto: await photo("/images/results/before-71kg.jpg", "Client before the program, 71 kg"),
       afterPhoto: await photo("/images/results/after-61kg.jpg", "The same client after the program, 61 kg"),
     },

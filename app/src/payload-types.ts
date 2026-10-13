@@ -1453,13 +1453,6 @@ export interface SiteSetting {
 export interface PagePhoto {
   id: number;
   aboutPhoto?: (number | null) | Media;
-  aboutEvents?:
-    | {
-        photo: number | Media;
-        caption: string;
-        id?: string | null;
-      }[]
-    | null;
   beforePhoto?: (number | null) | Media;
   afterPhoto?: (number | null) | Media;
   updatedAt?: string | null;
@@ -1651,13 +1644,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
  */
 export interface PagePhotosSelect<T extends boolean = true> {
   aboutPhoto?: T;
-  aboutEvents?:
-    | T
-    | {
-        photo?: T;
-        caption?: T;
-        id?: T;
-      };
   beforePhoto?: T;
   afterPhoto?: T;
   updatedAt?: T;

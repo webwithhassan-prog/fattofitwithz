@@ -1,5 +1,5 @@
 /**
- * Photos on the About page and the before/after slider (homepage + testimonials page).
+ * The About page photo and the before/after slider photos (homepage + testimonials page).
  * Not in the menu: open it from admin > Site photos, which shows every picture on the site.
  * Read by src/lib/content.ts -> getPagePhotos() (falls back to the original files if a photo is empty).
  */
@@ -13,16 +13,6 @@ export const PagePhotos: GlobalConfig = {
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
     { name: "aboutPhoto", type: "upload", relationTo: "media", label: "About page: main photo" },
-    {
-      name: "aboutEvents",
-      type: "array",
-      label: "About page: talks & recognition",
-      labels: { singular: "Photo", plural: "Photos" },
-      fields: [
-        { name: "photo", type: "upload", relationTo: "media", required: true },
-        { name: "caption", type: "text", required: true, admin: { placeholder: "Lahore Press Club" } },
-      ],
-    },
     {
       type: "row",
       fields: [

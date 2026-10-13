@@ -2,6 +2,46 @@
 
 Decision log. The newest entries are at the top. These override earlier recommendations in 10 and 12.
 
+## 2026-10-13 (evening): Content polish, rate limiting, account buttons
+
+- **Stats strip:** the five numbers count up when scrolled into view (`CountUp`):
+  - 5 Years of experience
+  - Global wellness community
+  - 6 Signature programs
+  - 2000+ Real transformations
+  - −36 kg best result
+- **Hero:** the progress bars are removed (a timer changes banners; a small pause button sits in the top-right corner).
+- **Founder section:** the photo thumbnails were replaced by icon badges: 24/7 Support, 10k+ Success Stories, Desi-Food Plans. The title is now "Founder, Clinical Nutritionist & Certified Fitness Expert".
+  - Note: "10k+ success stories" next to "2000+ transformations" can look inconsistent; the owner should confirm the figures.
+- **Program pages:** bolder, darker text; benefit cards; icon cards for "Who it's for" and "How it works"; filled step numbers. Site-wide secondary text is darker.
+- **E-book:**
+  - "68" removed everywhere: text, the database description, and the cover image (the bottom line was cropped; a new photo was uploaded).
+  - New "What's inside" index: the 7 chapters with highlight recipes, plus the guides.
+- **About page:** the "Out in the community" section was removed, along with its photo list in Page photos. Migration `20261013_163631_remove_about_events` must run AFTER deploy.
+- **How it works:** the cartoon illustrations were replaced with icons, and the 4 image files deleted.
+- **Rate limiting** (`src/lib/rate-limit.server.ts`, table `rate_limits`): database-backed, with hashed visitor ids, and it fails open.
+
+  | Action | Limit |
+  |---|---|
+  | Login | 20 per 15 min per IP (plus the 5-try account lock) |
+  | Forgot password | 5 per 15 min per IP (plus 3 per email per hour) |
+  | Reset password | 10 per 15 min per IP |
+  | Sign-up | 5 per hour per IP |
+  | Checkout / e-book | 15 per hour per IP |
+  | Contact | 5 per hour per IP |
+  | Newsletter | 5 per hour per IP |
+  | Location IP lookup | 60 per hour per IP |
+  | Report an issue | 5 per hour per member |
+  | Form saves | 30 per hour per member |
+  | Form images | 60 per hour per member |
+
+  The admin login already locks after 5 tries.
+- **Account buttons:**
+  - Phones get a login icon in the header (her initial when logged in). The desktop link reads "Member login" or "My account". The mobile menu has a clear login button at the top.
+  - Floating stack bottom-right: profile (when logged in), back to top, WhatsApp.
+  - Logged-in state comes from a harmless `ftf_member` cookie (initial only); member pages still check the real session.
+- **Demo client:** `npx payload run src/payload/seed/demo-client.ts` (or `... remove`). The login is written to `app/demo-client-login.txt` (git-ignored).
+
 ## 2026-10-13 (later): Admin panel rebuilt, worldwide prices, full audit
 
 **Admin panel.** The owner's list; everything else is hidden from the menu (`admin.group: false`), not deleted.

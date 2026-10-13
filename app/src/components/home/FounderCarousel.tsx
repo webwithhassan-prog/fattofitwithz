@@ -2,30 +2,27 @@
 
 /**
  * Founder message carousel: all 12 photos of Zaineb, each paired with a real line
- * from her own material (approved). Photos crossfade; arrows, thumbnails, keyboard
- * arrows and swipe all change the slide. Data: admin > Homepage > Founder messages.
+ * from her own material (approved). Photos crossfade; arrows, keyboard arrows and swipe
+ * change the slide. Below: three highlight badges. Data: admin > Homepage > Founder messages.
  */
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "@/components/ui/Icons";
+import { useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Headset, Star, Utensils } from "@/components/ui/Icons";
+import { Reveal } from "@/components/ui/Reveal";
 import type { FounderSlide } from "@/lib/types";
 
 type Props = { slides: FounderSlide[]; author: string; authorTitle: string };
 
+const BADGES = [
+  { Icon: Headset, title: "24/7 Support", text: "Expert help on WhatsApp" },
+  { Icon: Star, title: "10k+ Success Stories", text: "Women who changed their lives" },
+  { Icon: Utensils, title: "Desi-Food Plans", text: "Built around what you eat" },
+];
+
 export function FounderCarousel({ slides, author, authorTitle }: Props) {
   const [index, setIndex] = useState(0);
-  const thumbsRef = useRef<HTMLDivElement>(null);
   const swipeStartX = useRef<number | null>(null);
   const go = (i: number) => setIndex((i + slides.length) % slides.length);
-
-  // Keep the active thumbnail visible in the thumbnail strip.
-  useEffect(() => {
-    const strip = thumbsRef.current;
-    const thumb = strip?.children[index] as HTMLElement | undefined;
-    if (strip && thumb) {
-      strip.scrollTo({ left: thumb.offsetLeft - strip.clientWidth / 2 + thumb.clientWidth / 2, behavior: "smooth" });
-    }
-  }, [index]);
 
   const current = slides[index];
 
@@ -114,21 +111,20 @@ export function FounderCarousel({ slides, author, authorTitle }: Props) {
           </div>
         </div>
 
-        {/* Thumbnails: all photos */}
-        <div ref={thumbsRef} className="relative mt-7 flex gap-2.5 overflow-x-auto px-1 pt-1.5 pb-2.5" aria-label="Choose a photo">
-          {slides.map((slide, i) => (
-            <button
-              key={slide.photo}
-              type="button"
-              onClick={() => go(i)}
-              aria-label={`Photo ${i + 1}: ${slide.caption}`}
-              aria-current={i === index}
-              className="h-[105px] w-[84px] flex-none overflow-hidden rounded-[999px_999px_8px_8px] bg-blush opacity-55 transition hover:opacity-90 aria-[current=true]:-translate-y-0.5 aria-[current=true]:opacity-100 aria-[current=true]:shadow-[0_0_0_2px_var(--color-bg),0_0_0_3.5px_var(--color-brand)]"
-            >
-              <Image src={slide.photo} alt="" width={168} height={210} sizes="84px" className="h-full w-full object-cover" />
-            </button>
+        {/* Badges (replaced the photo thumbnails, 2026-10-13) */}
+        <Reveal as="ul" className="stagger mt-10 grid gap-3 sm:grid-cols-3">
+          {BADGES.map(({ Icon, title, text }) => (
+            <li key={title} className="card card-hover flex items-center gap-3.5 p-4.5">
+              <span className="grid h-12 w-12 flex-none place-items-center rounded-full bg-brand text-ink shadow-[0_10px_20px_-12px_rgba(214,51,159,0.9)]">
+                <Icon className="h-6 w-6" />
+              </span>
+              <span>
+                <b className="block font-display text-[22px] leading-tight font-semibold">{title}</b>
+                <span className="text-sm font-medium text-muted">{text}</span>
+              </span>
+            </li>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

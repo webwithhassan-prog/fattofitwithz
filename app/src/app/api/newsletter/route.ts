@@ -7,10 +7,13 @@ import { z } from "zod";
 import { getSettings } from "@/lib/content";
 import { getPayloadClient } from "@/lib/payload.server";
 import { sendEmail } from "@/lib/email.server";
+import { ipFromHeaders, LIMITS, rateLimit, tooManyRequests } from "@/lib/rate-limit.server";
 
 const NewsletterRequest = z.object({ email: z.email("Please enter a valid email address") });
 
 export async function POST(request: Request) {
+  const limited = await rateLimit(LIMITS.newsletter, ipFromHeaders(request.headers));
+  if (!limited.ok) return tooManyRequests(limited);
   const parsed = NewsletterRequest.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {
     return Response.json({ error: parsed.error.issues[0]?.message ?? "Invalid email" }, { status: 400 });

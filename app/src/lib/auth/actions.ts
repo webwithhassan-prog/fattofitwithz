@@ -8,7 +8,6 @@
  *   signUpAction          /signup           creates an account (no purchase needed)
  * The rules (lockout, link lifetime, rate limits) live in ./passwords.server.ts.
  */
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { logIn, MIN_PASSWORD_LENGTH, normalizeEmail, sendPasswordLink, setPasswordWithLink } from "./passwords.server";
@@ -16,6 +15,7 @@ import { hashPassword } from "./crypto.server";
 import { getPayloadClient } from "../payload.server";
 import { endAllSessions, startSession } from "./session.server";
 import { safeNextPath } from "./safe-next";
+import { clientIp, LIMITS, rateLimit } from "../rate-limit.server";
 
 export type AuthFormState = { error?: string; info?: string; email?: string };
 
@@ -25,18 +25,14 @@ const NewPassword = z
   .min(MIN_PASSWORD_LENGTH, `Use at least ${MIN_PASSWORD_LENGTH} characters`)
   .max(128, "That password is too long (128 characters max)");
 
-/** Visitor's internet address, used only for rate limiting. */
-async function clientIp(): Promise<string> {
-  const h = await headers();
-  return h.get("x-forwarded-for")?.split(",")[0].trim() || h.get("x-real-ip") || "unknown";
-}
-
 export async function logInAction(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
   const emailText = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const email = Email.safeParse(emailText);
   if (!email.success) return { email: emailText, error: email.error.issues[0].message };
   if (!password) return { email: emailText, error: "Please enter your password" };
+  const limited = await rateLimit(LIMITS.login, await clientIp());
+  if (!limited.ok) return { email: emailText, error: limited.message };
 
   try {
     const result = await logIn(email.data, password);
@@ -53,9 +49,13 @@ export async function forgotPasswordAction(_previous: AuthFormState, formData: F
   const emailText = String(formData.get("email") ?? "").trim();
   const email = Email.safeParse(emailText);
   if (!email.success) return { email: emailText, error: email.error.issues[0].message };
+  // Counts EVERY request (also for emails that aren't members), on top of the per-email limits.
+  const ip = await clientIp();
+  const limited = await rateLimit(LIMITS.forgotPassword, ip);
+  if (!limited.ok) return { email: emailText, error: limited.message };
 
   try {
-    const result = await sendPasswordLink(email.data, await clientIp());
+    const result = await sendPasswordLink(email.data, ip);
     if (!result.ok) return { email: emailText, error: result.error };
   } catch (error) {
     console.error("[forgot-password] Could not send the link:", error);
@@ -68,6 +68,8 @@ export async function forgotPasswordAction(_previous: AuthFormState, formData: F
 }
 
 export async function resetPasswordAction(_previous: AuthFormState, formData: FormData): Promise<AuthFormState> {
+  const limited = await rateLimit(LIMITS.resetPassword, await clientIp());
+  if (!limited.ok) return { error: limited.message };
   const token = String(formData.get("token") ?? "");
   const password = NewPassword.safeParse(String(formData.get("password") ?? ""));
   if (!password.success) return { error: password.error.issues[0].message };
@@ -102,6 +104,8 @@ export async function signUpAction(_previous: AuthFormState, formData: FormData)
     password: formData.get("password") ?? "",
   });
   if (!parsed.success) return { email: emailText, error: parsed.error.issues[0].message };
+  const limited = await rateLimit(LIMITS.signup, await clientIp());
+  if (!limited.ok) return { email: emailText, error: limited.message };
   const { fullName, phone, password } = parsed.data;
   const email = normalizeEmail(parsed.data.email);
 

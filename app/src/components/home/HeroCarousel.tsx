@@ -4,14 +4,13 @@
  * Homepage hero: 5 banners, ONE shared layout (approved) - only photo, text and badge change.
  *
  * How autoplay works (easy to debug):
- *  - The active tab's progress bar runs a CSS animation lasting `autoplayMs`.
- *  - When that animation ends (onAnimationEnd), we move to the next banner.
- *  - Hovering or focusing the hero pauses the bar, so the timer pauses with it.
- *  - Visitors with "reduce motion" get no autoplay; they use the arrows/tabs.
+ *  - A timer (useEffect + setTimeout) moves to the next banner after `autoplayMs`.
+ *  - Hovering or focusing the hero, or the pause button, stops the timer.
+ *  - Visitors with "reduce motion" get no autoplay; they use the arrows or swipe.
  */
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePrefersReducedMotion } from "@/components/ui/hooks";
 import { ChevronLeft, ChevronRight, Pause, Play, WhatsAppIcon } from "@/components/ui/Icons";
 import type { HeroBanner } from "@/lib/types";
@@ -37,6 +36,17 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
   const swipeStartX = useRef<number | null>(null);
 
   const autoplayOn = !paused && !reducedMotion;
+
+  // Automatic banner change: after `autoplayMs`, show the next banner.
+  // Paused while the mouse is over the hero (or keyboard focus is inside it) and by the pause button.
+  useEffect(() => {
+    if (!autoplayOn || hovering) return;
+    const timer = setTimeout(() => {
+      setActive((a) => (a + 1) % banners.length);
+      setTick((t) => t + 1);
+    }, autoplayMs);
+    return () => clearTimeout(timer);
+  }, [active, autoplayOn, hovering, autoplayMs, banners.length]);
 
   function goTo(index: number) {
     setActive((index + banners.length) % banners.length);
@@ -172,48 +182,18 @@ export function HeroCarousel({ banners, autoplayMs, whatsappHref }: Props) {
           })}
         </div>
 
-        {/* Controls: progress tabs (also the timer) and pause */}
-        <div className="relative z-20 flex flex-wrap items-center gap-3.5 pb-6.5">
-          <div role="tablist" aria-label="Choose banner" className="flex min-w-0 flex-1 gap-2.5">
-            {banners.map((banner, index) => {
-              const isActive = index === active;
-              return (
-                <button
-                  key={banner.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-label={`Banner ${index + 1}: ${banner.kicker}`}
-                  onClick={() => goTo(index)}
-                  className="min-w-0 flex-1 py-1.5 text-left text-[12.5px] tracking-wide text-muted aria-selected:text-ink"
-                >
-                  <span className="mb-2 block h-0.5 overflow-hidden rounded bg-line">
-                    <i
-                      key={isActive ? `p-${tick}` : "p-off"}
-                      className={`block h-full bg-brand ${isActive && autoplayOn ? "progress-run" : ""} ${isActive && autoplayOn && hovering ? "progress-paused" : ""} ${isActive && !autoplayOn ? "w-full" : ""}`}
-                      style={{ "--autoplay-ms": `${autoplayMs}ms` } as React.CSSProperties}
-                      onAnimationEnd={() => {
-                        if (isActive && autoplayOn) goTo(active + 1);
-                      }}
-                    />
-                  </span>
-                  <span className="hidden truncate sm:block">{banner.kicker}</span>
-                </button>
-              );
-            })}
-          </div>
-          {!reducedMotion ? (
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={() => setPaused((p) => !p)}
-              aria-pressed={paused}
-              aria-label={paused ? "Play banner rotation" : "Pause banner rotation"}
-            >
-              {paused ? <Play className="h-4.5 w-4.5" /> : <Pause className="h-4.5 w-4.5" />}
-            </button>
-          ) : null}
-        </div>
+        {/* Pause / play for the automatic banner change: a small button in the top-right corner (no progress bars) */}
+        {!reducedMotion ? (
+          <button
+            type="button"
+            className="icon-btn absolute top-3 right-1 z-20 h-9 w-9 bg-card/90"
+            onClick={() => setPaused((p) => !p)}
+            aria-pressed={paused}
+            aria-label={paused ? "Play banner rotation" : "Pause banner rotation"}
+          >
+            {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+          </button>
+        ) : null}
       </div>
     </section>
   );
