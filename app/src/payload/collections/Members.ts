@@ -94,6 +94,13 @@ export const Members: CollectionConfig = {
               defaultSort: "-createdAt",
               admin: { defaultColumns: ["title", "mood", "reviewed", "createdAt"], allowCreate: false },
             },
+            {
+              // Saved by the "Done" badges in her Recorded library (setWorkoutDone in app/(frontend)/dashboard/library/actions.ts)
+              name: "workoutsDone",
+              type: "json",
+              label: "Workout videos done",
+              admin: { readOnly: true, description: 'Filled in automatically when she finishes a workout video. "1-3" = week 1, day 3.' },
+            },
           ],
         },
         {

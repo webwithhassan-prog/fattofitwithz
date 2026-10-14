@@ -5,7 +5,7 @@
  *
  * Each save:
  *   1. checks who is logged in (never trusts an id sent by the browser),
- *   2. checks she has a program (the forms are part of every program),
+ *   2. checks her program is running (not ended, not paused by the coach),
  *   3. validates the answers with zod and writes them to the database,
  *   4. returns the saved form's id, so the page can show the "save image / send on WhatsApp" step.
  */
@@ -14,26 +14,38 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { getPayloadClient } from "@/lib/payload.server";
 import { endSession, getCurrentMember } from "@/lib/auth/session.server";
-import { MEASUREMENT_FIELDS } from "@/lib/member";
+import { MEASUREMENT_FIELDS, SLEEP_HOURS, WATER_INTAKE } from "@/lib/member";
 import { LIMITS, rateLimit } from "@/lib/rate-limit.server";
+import { loadMemberProgram } from "@/lib/members.server";
+import { formatDate } from "@/lib/dates";
 
 export type SaveFormResult = { ok: true; id: number } | { ok: false; error: string };
 
 const NOT_LOGGED_IN: SaveFormResult = { ok: false, error: "Your login has expired. Please refresh the page and log in again." };
 const SAVE_FAILED: SaveFormResult = { ok: false, error: "We couldn't save your form. Please check your connection and try again." };
 const NO_PROGRAM: SaveFormResult = { ok: false, error: "The forms open after you join a program." };
+const ENDED: SaveFormResult = { ok: false, error: "Your program has ended. Choose a program to continue." };
+const paused = (until: string | null): SaveFormResult => ({
+  ok: false,
+  error: `Your program is paused${until ? ` until ${formatDate(until, "long")}` : ""}. Message your coach on WhatsApp to restart it.`,
+});
 
 const invalid = (error: z.ZodError): SaveFormResult => ({ ok: false, error: error.issues[0]?.message ?? "Please check the form." });
 
 // ---------- shared field rules ----------
 
-const cm = z.union([z.literal(""), z.coerce.number().min(10, "Measurements are in cm (10–250)").max(250, "Measurements are in cm (10–250)")]);
+// All 7 measurements are required (owner's request, 2026-10-13).
+const cm = z
+  .string()
+  .trim()
+  .min(1, "Please fill in all your measurements (in cm)")
+  .transform(Number)
+  .pipe(z.number({ error: "Measurements are in cm (10–250)" }).min(10, "Measurements are in cm (10–250)").max(250, "Measurements are in cm (10–250)"));
 const Measurements = z.object(Object.fromEntries(MEASUREMENT_FIELDS.map(({ key }) => [key, cm])) as Record<(typeof MEASUREMENT_FIELDS)[number]["key"], typeof cm>);
 const kg = (label: string) => z.coerce.number({ error: `Please enter your ${label}` }).min(30, `${label} looks wrong (30–250 kg)`).max(250, `${label} looks wrong (30–250 kg)`);
 const yesNo = z.enum(["Yes", "No"], { error: "Please answer every Yes / No question" });
-
-/** "" -> null for the database, numbers stay numbers */
-const measurementsForDb = (m: z.infer<typeof Measurements>) => Object.fromEntries(Object.entries(m).map(([k, v]) => [k, v === "" ? null : v]));
+const waterIntake = z.enum(WATER_INTAKE, { error: "Please choose how much water you drink a day" });
+const sleepHours = z.enum(SLEEP_HOURS, { error: "Please choose how many hours you sleep" });
 
 type MemberContext =
   | { error: SaveFormResult }
@@ -45,8 +57,10 @@ async function memberWithProgram(): Promise<MemberContext> {
   const limited = await rateLimit(LIMITS.saveForm, `member:${member.id}`);
   if (!limited.ok) return { error: { ok: false, error: limited.message } };
   const payload = await getPayloadClient();
-  const memberships = await payload.count({ collection: "memberships", where: { and: [{ member: { equals: member.id } }, { status: { not_equals: "cancelled" } }] } });
-  if (memberships.totalDocs === 0) return { error: NO_PROGRAM };
+  const program = await loadMemberProgram(payload, member.id);
+  if (!program) return { error: NO_PROGRAM };
+  if (program.paused) return { error: paused(program.pausedUntil) };
+  if (!program.active) return { error: ENDED };
   return { member, payload };
 }
 
@@ -69,6 +83,8 @@ const FirstDayInput = z.object({
   allergyDetails: z.string().trim().max(300),
   likes: z.string().trim().min(1, "Please tell us foods you like").max(300),
   dislikes: z.string().trim().min(1, "Please tell us foods you dislike").max(300),
+  waterIntake,
+  sleepHours,
   measurements: Measurements,
   notes: z.string().trim().max(2000, "Notes are too long (2000 characters max)"),
 });
@@ -81,7 +97,7 @@ export async function saveFirstDayForm(input: unknown): Promise<SaveFormResult> 
   const { member, payload } = ctx;
 
   const { measurements, goalWeightKg, ...rest } = parsed.data;
-  const data = { ...rest, goalWeightKg: goalWeightKg === "" ? null : goalWeightKg, ...measurementsForDb(measurements), member: member.id };
+  const data = { ...rest, goalWeightKg: goalWeightKg === "" ? null : goalWeightKg, ...measurements, member: member.id };
 
   try {
     // One first day form per member: update it if she fills it in again.
@@ -104,6 +120,8 @@ export async function saveFirstDayForm(input: unknown): Promise<SaveFormResult> 
 const FollowUpInput = z.object({
   weightKg: kg("weight"),
   mood: z.enum(["great", "good", "okay", "tired", "low", ""]),
+  waterIntake,
+  sleepHours,
   measurements: Measurements,
   notes: z.string().trim().max(2000, "Notes are too long (2000 characters max)"),
 });
@@ -119,7 +137,7 @@ export async function saveFollowUpForm(input: unknown): Promise<SaveFormResult> 
   try {
     const saved = await payload.create({
       collection: "follow-up-forms",
-      data: { ...rest, mood: mood || null, ...measurementsForDb(measurements), member: member.id },
+      data: { ...rest, mood: mood || null, ...measurements, member: member.id },
     });
     revalidatePath("/dashboard", "layout");
     return { ok: true, id: saved.id };

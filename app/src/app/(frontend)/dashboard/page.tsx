@@ -5,26 +5,31 @@
 import Link from "next/link";
 import { getClientMessages, getDashboardData } from "@/lib/members.server";
 import { getEbook, whatsappLink } from "@/lib/content";
-import { Lock, Megaphone, WhatsAppIcon } from "@/components/ui/Icons";
+import { Lock, Megaphone, Pause, WhatsAppIcon } from "@/components/ui/Icons";
 import { formatDate } from "@/lib/dates";
 
 export const metadata = { title: "Home" };
 
 const longDate = (iso: string) => formatDate(iso, "long");
 
-function Card({ title, text, href, cta, locked }: { title: string; text: string; href: string; cta: string; locked?: boolean }) {
+/** lock: "join" = no running program, "paused" = the coach froze it (opens again on restart) */
+type CardProps = { title: string; text: string; href: string; cta: string; lock?: "join" | "paused" | null; coachHref: string };
+
+function Card({ title, text, href, cta, lock, coachHref }: CardProps) {
   return (
-    <div className={`card flex flex-col gap-3 p-6 ${locked ? "bg-blush/40" : ""}`}>
+    <div className={`card flex flex-col gap-3 p-6 ${lock ? "bg-blush/40" : ""}`}>
       <h2 className="flex items-center justify-between gap-2 text-2xl text-brand-dark">
         {title}
-        {locked ? (
+        {lock ? (
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-white px-2.5 py-1 font-sans text-xs font-medium text-muted">
-            <Lock className="h-3.5 w-3.5" /> Locked
+            {lock === "paused" ? <Pause className="h-3.5 w-3.5" /> : <Lock className="h-3.5 w-3.5" />} {lock === "paused" ? "Paused" : "Locked"}
           </span>
         ) : null}
       </h2>
       <p className="text-[15px] text-muted">{text}</p>
-      {locked ? (
+      {lock === "paused" ? (
+        <a href={coachHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost btn-sm mt-auto w-max">Message your coach to restart</a>
+      ) : lock === "join" ? (
         <Link href="/programs" className="btn btn-ghost btn-sm mt-auto w-max">Choose a program to unlock</Link>
       ) : (
         <Link href={href} className="btn btn-sm mt-auto w-max">{cta}</Link>
@@ -40,7 +45,8 @@ export default async function DashboardHome() {
     whatsappLink("Hi coach! I have a question."),
   ]);
   const messages = await getClientMessages(member.id); // admin > Reminders & announcements
-  const locked = !program?.active;
+  const paused = program?.paused ?? false;
+  const lock = program?.active ? null : paused ? "paused" : "join";
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-5">
@@ -49,11 +55,18 @@ export default async function DashboardHome() {
       <section className="card flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-blush to-blush-2 p-6">
         {program ? (
           <div>
-            <p className="kicker">{program.active ? "Your program" : "Your last program"}</p>
-            <p className="mt-1 font-display text-3xl">{program.name}</p>
+            <p className="kicker">{program.active || paused ? "Your program" : "Your last program"}</p>
+            <p className="mt-1 flex flex-wrap items-center gap-2 font-display text-3xl">
+              {program.name}
+              {paused ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-brand px-2.5 py-1 font-sans text-xs font-semibold text-ink">
+                  <Pause className="h-3.5 w-3.5" /> Paused
+                </span>
+              ) : null}
+            </p>
             <p className="mt-1 text-sm text-muted">
               {longDate(program.startDate)} – {longDate(program.endDate)}
-              {program.active ? "" : " (ended)"}
+              {program.active || paused ? "" : " (ended)"}
             </p>
           </div>
         ) : (
@@ -63,12 +76,29 @@ export default async function DashboardHome() {
           </div>
         )}
         <div className="flex flex-wrap gap-3">
-          {!program?.active ? <Link href="/programs" className="btn">Choose a program</Link> : null}
+          {lock === "join" ? <Link href="/programs" className="btn">Choose a program</Link> : null}
           <a href={coachHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
             <WhatsAppIcon className="h-4.5 w-4.5" /> Message your coach
           </a>
         </div>
       </section>
+
+      {paused ? (
+        <section role="status" className="card flex items-start gap-4 border-brand bg-blush p-5">
+          <span className="grid h-11 w-11 flex-none place-items-center rounded-full bg-brand text-ink">
+            <Pause className="h-5 w-5" />
+          </span>
+          <div>
+            <p className="font-display text-xl">Your program is paused</p>
+            <p className="mt-1 text-[15px] text-muted">
+              {program?.pausedUntil
+                ? `It restarts by itself on ${longDate(program.pausedUntil)}, and your end date has moved forward, so you don't lose any days.`
+                : "It restarts when your coach turns it back on. The paused days are added to your end date, so you don't lose any days."}{" "}
+              Your forms and workouts open again then. Want to restart sooner? Message your coach.
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       {messages.length ? (
         <section aria-labelledby="coach-messages" className="card p-6">
@@ -91,20 +121,22 @@ export default async function DashboardHome() {
 
       <div className="grid gap-5 md:grid-cols-2">
         <Card
-          title="First day form"
+          title="Personal Wellness Profile"
           text={firstDayForm ? `Sent on ${longDate(firstDayForm.updatedAt)}. You can update it any time.` : "Tell your coach about you, your food and your health, so she can prepare your diet plan."}
           href="/dashboard/first-day"
           cta={firstDayForm ? "View or update" : "Fill it in now"}
-          locked={locked}
+          lock={lock}
+          coachHref={coachHref}
         />
         <Card
           title="Follow-up form"
           text={followUps[0] ? `Last sent on ${longDate(followUps[0].createdAt)} (${followUps[0].weightKg} kg).` : "Send your progress whenever your coach asks (usually weekly)."}
           href="/dashboard/follow-up"
           cta="Send a follow-up"
-          locked={locked}
+          lock={lock}
+          coachHref={coachHref}
         />
-        <Card title="Recorded library" text="Your 4-week home workout plan: six sessions a week." href="/dashboard/library" cta="Watch workouts" locked={locked} />
+        <Card title="Recorded library" text="Your 4-week home workout plan: six sessions a week." href="/dashboard/library" cta="Watch workouts" lock={lock} coachHref={coachHref} />
         {ebook.enabled || hasEbook ? (
           <div className="card flex flex-col gap-3 p-6">
             <h2 className="text-2xl text-brand-dark">E-book</h2>

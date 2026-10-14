@@ -9,6 +9,7 @@ import { useState, useTransition } from "react";
 import { DashCard } from "./DashCard";
 import { RadioPills } from "./RadioPills";
 import { MeasurementFields } from "./MeasurementFields";
+import { WaterSleepFields } from "./WaterSleepFields";
 import { FormSharePanel } from "./FormSharePanel";
 import { Clipboard } from "@/components/ui/Icons";
 import { saveFirstDayForm } from "@/app/(frontend)/dashboard/actions";
@@ -57,16 +58,16 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
   return (
     <DashCard
       id="first-day-form"
-      title="First day form"
+      title="Personal Wellness Profile"
       icon={<Clipboard className="h-5 w-5" />}
       action={!editing ? <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setEditing(true); setShareId(null); }}>Update my answers</button> : null}
     >
       {!editing && imageId ? (
         <FormSharePanel
           imageUrl={`/api/forms/image?form=first-day&id=${imageId}&v=${version}`}
-          fileName="first-day-form.png"
+          fileName="personal-wellness-profile.png"
           whatsappUrl={whatsappUrl}
-          message={`Hi! I've filled in my first day form. Name: ${data.fullName}`}
+          message={`Hi! I've filled in my Personal Wellness Profile. Name: ${data.fullName}`}
         />
       ) : (
         <form onSubmit={onSubmit} className="flex flex-col gap-7">
@@ -115,6 +116,7 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
             <legend className="mb-3 font-display text-xl text-ink">Food &amp; health</legend>
             <RadioPills legend="Diet preference" name="fd-diet" required options={["Vegetarian", "Non-Vegetarian"]} value={data.diet} onChange={(v) => set("diet", v as FirstDayFormData["diet"])} />
             <RadioPills legend="Smoking" name="fd-smoking" required options={["Yes", "No"]} value={data.smoking} onChange={(v) => set("smoking", v as FirstDayFormData["smoking"])} />
+            <WaterSleepFields idPrefix="fd" waterIntake={data.waterIntake} sleepHours={data.sleepHours} onChange={set} />
             <div>
               <RadioPills legend="Any medical conditions?" name="fd-medical" required options={["Yes", "No"]} value={data.medicalConditions} onChange={(v) => set("medicalConditions", v as FirstDayFormData["medicalConditions"])} />
               {data.medicalConditions === "Yes" ? (
@@ -145,17 +147,17 @@ export function FirstDayForm({ initial, savedId, whatsappUrl }: Props) {
 
           <fieldset>
             <legend className="mb-1 font-display text-xl text-ink">Measurements</legend>
-            <p className="mb-3 text-sm text-muted">Optional. Measure in centimetres; leave a box empty to skip it.</p>
+            <p className="mb-3 text-sm text-muted">Measure in centimetres with a soft measuring tape.</p>
             <MeasurementFields idPrefix="fd" value={data.measurements} onChange={(m) => set("measurements", m)} />
           </fieldset>
 
           <div>
             <label htmlFor="fd-notes" className="field-label">Anything else your coach should know?</label>
-            <textarea id="fd-notes" rows={3} value={data.notes} onChange={(e) => set("notes", e.target.value)} className="field-input" placeholder="Your routine, sleep, medicines, goals..." />
+            <textarea id="fd-notes" rows={3} value={data.notes} onChange={(e) => set("notes", e.target.value)} className="field-input" placeholder="Your routine, medicines, goals..." />
           </div>
 
           <div>
-            <button type="submit" className="btn" disabled={saving}>{saving ? "Saving…" : "Save my first day form"}</button>
+            <button type="submit" className="btn" disabled={saving}>{saving ? "Saving…" : "Save my profile"}</button>
             {error ? <p role="alert" className="mt-3 text-sm text-brand-dark">{error}</p> : null}
           </div>
         </form>

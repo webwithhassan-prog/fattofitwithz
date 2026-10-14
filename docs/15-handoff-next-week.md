@@ -86,6 +86,35 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
   - Netlify: `RESEND_API_KEY` (secret) and `EMAIL_FROM` = `Fat To Fit With Z <info@fattofitwithz.com>`.
   - A test contact-form email to info@ was delivered. The test message ("TEST - email setup check") is in admin › Contact messages and can be deleted.
 
+## Done ✅ (2026-10-13, night)
+
+- **Stats strip:** compact on phones (3 small cards on top, 2 below). The numbers count up from 0 when they scroll into view, and so does "10k+ Success Stories" in the founder section (`components/ui/CountUp.tsx`).
+- **Forms:**
+  - All 7 measurements are now required in both forms.
+  - Both forms ask "Water you drink a day" and "Sleep a night" (answer lists in `lib/member.ts`).
+  - The new answers show on the WhatsApp image and in admin.
+  - Migration `20261013_171400_water_sleep` (already applied).
+- **Send on WhatsApp:** the image is downloaded when the panel opens, so a tap opens the phone's share sheet at once. If sharing fails, an "Open WhatsApp chat" link is shown.
+- **Workout "Done" badge:**
+  - A video is marked done automatically when she finishes it (or watches 90%), using YouTube's official player. She can also tap "Mark as done" / "Undo".
+  - Saved on her account (`members.workoutsDone`, read-only in admin › Clients › Forms).
+  - Migration `20261013_171959_workouts_done` (already applied).
+- **Demo client:**
+  - `npx payload run src/payload/seed/demo-client.ts fix-form` refreshes its sample forms without changing the password.
+  - Week 1 "Upper Body" is marked done to show the badge.
+
+## Done ✅ (2026-10-14): freezes + renamed form
+
+- **Freezing a package.** The client asks on WhatsApp; the coach freezes it in admin. All rules are in `src/lib/freeze.ts`.
+  - **To freeze:** admin › Clients › the client › Membership tab › open the membership › Status = **Frozen (paused)** › pick **Resume on** (optional) › Save.
+  - The freeze starts today. The end date moves forward by the frozen days.
+  - While frozen, her forms and workouts are locked. Her dashboard and Settings say "Your program is paused until …", with a WhatsApp button to the coach. Form saves are refused.
+  - **Restart:** it restarts by itself on the "Resume on" day (checked when she opens her dashboard and when admin opens the Overview). To restart early, set Status = Active; the unused days come off the end date again.
+  - Every freeze and restart is written in the membership's notes. "Days added by freezes" keeps the program length correct (a 3-month program still shows "3 Months").
+  - Admin Overview shows a **Paused clients** count.
+  - Migrations `20261013_174046_membership_freeze` and `20261014_143605_membership_days_frozen` (already applied).
+- **Renamed for clients:** "First day form" is now **"Personal Wellness Profile"**: page heading, form title, sidebar, dashboard card, browser tab title, the WhatsApp image and message, and the save button ("Save my profile"). The admin panel still calls it "First day form". Some body text still says "first day form": checkout success page, How it works, program pages.
+
 ## ⚠️ Next deploy (2026-10-13 evening changes)
 
 1. Push to `main` and wait until Netlify shows the deploy as Published.
@@ -129,8 +158,7 @@ Netlify's free plan runs the server in **Ohio, USA**, but the database is in **S
    - In Stripe add a webhook to `https://<site>/api/webhooks/stripe` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`.
    - Until then, checkout says "Payments are not set up yet".
 3. **E-book Drive link** in admin › Website › E-book. Confirm the e-book prices in admin › Prices.
-4. **Resend key** for emails (until then emails are only written to the server log).
-5. Doc 14 sections 3+ still describe the old weekly check-ins; rewrite them when the admin list is final.
+4. Doc 14 sections 3+ still describe the old weekly check-ins; rewrite them when the admin list is final.
 
 ## How to test locally
 

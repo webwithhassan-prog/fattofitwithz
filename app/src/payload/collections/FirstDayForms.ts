@@ -60,6 +60,7 @@ export const FirstDayForms: CollectionConfig = {
       label: "Food & health",
       fields: [
         { type: "row", fields: [text("diet", "Diet"), text("smoking", "Smoking")] },
+        { type: "row", fields: [text("waterIntake", "Water a day"), text("sleepHours", "Sleep a night")] },
         { type: "row", fields: [text("medicalConditions", "Medical conditions?"), text("medicalDetails", "Details")] },
         { type: "row", fields: [text("allergies", "Allergies?"), text("allergyDetails", "Details")] },
         { type: "row", fields: [text("likes", "Foods she likes"), text("dislikes", "Foods she dislikes")] },

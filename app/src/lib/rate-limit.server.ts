@@ -37,6 +37,7 @@ export const LIMITS = {
   reportIssue: { name: "report-issue", max: 5, windowMinutes: 60 },
   saveForm: { name: "save-form", max: 30, windowMinutes: 60 },
   formImage: { name: "form-image", max: 60, windowMinutes: 60 },
+  workoutDone: { name: "workout-done", max: 120, windowMinutes: 60 },
 } satisfies Record<string, Limit>;
 
 export type RateLimitResult = { ok: true } | { ok: false; retryAfterSeconds: number; message: string };

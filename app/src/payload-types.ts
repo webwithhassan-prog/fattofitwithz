@@ -201,6 +201,18 @@ export interface Member {
     totalDocs?: number;
   };
   /**
+   * Filled in automatically when she finishes a workout video. "1-3" = week 1, day 3.
+   */
+  workoutsDone?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
    * Add one here for clients who paid another way.
    */
   memberships?: {
@@ -258,6 +270,8 @@ export interface FirstDayForm {
   student?: string | null;
   diet?: string | null;
   smoking?: string | null;
+  waterIntake?: string | null;
+  sleepHours?: string | null;
   medicalConditions?: string | null;
   medicalDetails?: string | null;
   allergies?: string | null;
@@ -291,6 +305,8 @@ export interface FollowUpForm {
   member: number | Member;
   weightKg: number;
   mood?: ('great' | 'good' | 'okay' | 'tired' | 'low') | null;
+  waterIntake?: string | null;
+  sleepHours?: string | null;
   chest?: number | null;
   waist?: number | null;
   hips?: number | null;
@@ -303,7 +319,7 @@ export interface FollowUpForm {
   createdAt: string;
 }
 /**
- * Which program each member is on, and until when. To freeze a membership, move the end date and add a note.
+ * Which program each member is on, and until when. To freeze: open the membership, set Status to Frozen, pick "Resume on" and save.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "memberships".
@@ -319,9 +335,18 @@ export interface Membership {
   order?: (number | null) | Order;
   startDate: string;
   endDate: string;
+  /**
+   * Frozen: her forms and workouts lock and the end date moves forward. Set Active to restart early.
+   */
   status: 'active' | 'frozen' | 'cancelled';
   /**
-   * e.g. frozen 2 weeks for travel, end date moved.
+   * Her program restarts by itself on this day. Leave empty if you don't know yet.
+   */
+  frozenUntil?: string | null;
+  frozenFrom?: string | null;
+  daysFrozen?: number | null;
+  /**
+   * Freezes and restarts are noted here automatically.
    */
   notes?: string | null;
   updatedAt: string;
@@ -852,6 +877,7 @@ export interface MembersSelect<T extends boolean = true> {
   coachNotes?: T;
   firstDayForm?: T;
   followUpForms?: T;
+  workoutsDone?: T;
   memberships?: T;
   orders?: T;
   passwordSetAt?: T;
@@ -880,6 +906,8 @@ export interface FirstDayFormsSelect<T extends boolean = true> {
   student?: T;
   diet?: T;
   smoking?: T;
+  waterIntake?: T;
+  sleepHours?: T;
   medicalConditions?: T;
   medicalDetails?: T;
   allergies?: T;
@@ -907,6 +935,8 @@ export interface FollowUpFormsSelect<T extends boolean = true> {
   member?: T;
   weightKg?: T;
   mood?: T;
+  waterIntake?: T;
+  sleepHours?: T;
   chest?: T;
   waist?: T;
   hips?: T;
@@ -988,6 +1018,9 @@ export interface MembershipsSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   status?: T;
+  frozenUntil?: T;
+  frozenFrom?: T;
+  daysFrozen?: T;
   notes?: T;
   updatedAt?: T;
   createdAt?: T;

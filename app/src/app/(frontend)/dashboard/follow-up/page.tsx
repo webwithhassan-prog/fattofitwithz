@@ -13,7 +13,7 @@ export default async function FollowUpPage() {
     return (
       <div className="mx-auto flex max-w-[1100px] flex-col gap-5">
         <h1 className="text-3xl">Follow-up form</h1>
-        <LockedPreview>
+        <LockedPreview program={program}>
           <FollowUpForm whatsappUrl={settings.contact.whatsappUrl} name={member.fullName || member.email} />
         </LockedPreview>
       </div>

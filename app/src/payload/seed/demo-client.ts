@@ -3,6 +3,7 @@
  *
  *   npx payload run src/payload/seed/demo-client.ts          create (or reset) the demo client
  *   npx payload run src/payload/seed/demo-client.ts remove   delete it and everything it has
+ *   npx payload run src/payload/seed/demo-client.ts fix-form refresh only the sample forms (keeps the password)
  *
  * Creates demo.client@fattofitwithz.com with an active 6-month Total Transformation membership,
  * a filled first day form, one follow-up and a welcome reminder. A new random password is made
@@ -28,8 +29,34 @@ async function hashPassword(password: string) {
   return `scrypt$${salt.toString("base64url")}$${hash.toString("base64url")}`;
 }
 
+/** Sample answers. Option values must match the form exactly (src/components/dashboard/FirstDayForm.tsx). */
+const DEMO_FIRST_DAY_FORM = {
+  reviewed: true, fullName: "Demo Client", age: "29", height: "5'4\" (163 cm)", currentWeightKg: 74, goalWeightKg: 62,
+  gender: "Female", maritalStatus: "Married", student: "No", diet: "Non-Vegetarian", smoking: "No",
+  medicalConditions: "Yes", medicalDetails: "PCOS", allergies: "No", allergyDetails: "", likes: "Daal, chicken karahi, fruit chaat", dislikes: "Karela",
+  waterIntake: "1 to 2 litres", sleepHours: "5 to 6 hours",
+  chest: 96, waist: 86, hips: 102, thigh: 58, arm: 30, shoulder: 39, calf: 36,
+  notes: "This is a demo form: these answers show how the first day form looks once a client fills it in.",
+};
+
+const DEMO_FOLLOW_UP = {
+  weightKg: 72.5, mood: "good" as const, waterIntake: "2 to 3 litres", sleepHours: "7 to 8 hours", reviewed: true,
+  chest: 95, waist: 84, hips: 100, thigh: 57, arm: 29.5, shoulder: 39, calf: 35.5,
+  notes: "Demo follow-up: feeling more energetic.",
+};
+
 const payload = await getPayload({ config });
 const existing = await payload.find({ collection: "members", where: { email: { equals: EMAIL } }, limit: 1, depth: 0 });
+
+// "fix-form": only refresh the demo forms (keeps the account and its password)
+if (process.argv.includes("fix-form")) {
+  const demo = existing.docs[0];
+  if (!demo) throw new Error("[demo-client] No demo client yet: run without arguments first.");
+  await payload.update({ collection: "first-day-forms", where: { member: { equals: demo.id } }, data: DEMO_FIRST_DAY_FORM });
+  await payload.update({ collection: "follow-up-forms", where: { member: { equals: demo.id } }, data: DEMO_FOLLOW_UP });
+  console.log("[demo-client] demo forms refreshed");
+  process.exit(0);
+}
 // Deleting the member also deletes her forms, memberships, issues and reminders (Members beforeDelete hook).
 if (existing.docs[0]) await payload.delete({ collection: "members", id: existing.docs[0].id });
 
@@ -55,13 +82,11 @@ await payload.create({ collection: "memberships", data: { member: member.id, pro
 await payload.create({
   collection: "first-day-forms",
   data: {
-    member: member.id, reviewed: true, fullName: "Demo Client", age: "29", height: "5'4\"", currentWeightKg: 74, goalWeightKg: 62,
-    gender: "Female", maritalStatus: "Married", student: "No", diet: "Non-vegetarian", smoking: "No",
-    medicalConditions: "Yes", medicalDetails: "PCOS", allergies: "No", likes: "Daal, chicken karahi, fruit chaat", dislikes: "Karela",
-    waist: 86, hips: 102, notes: "This is a demo form.",
+    ...DEMO_FIRST_DAY_FORM,
+    member: member.id,
   },
 });
-await payload.create({ collection: "follow-up-forms", data: { member: member.id, weightKg: 72.5, mood: "good", reviewed: true, notes: "Demo follow-up: feeling more energetic." } });
+await payload.create({ collection: "follow-up-forms", data: { ...DEMO_FOLLOW_UP, member: member.id } });
 await payload.create({ collection: "announcements", data: { audience: "one", member: member.id, title: "Welcome to your member area", message: "This is a demo account: everything here is unlocked so you can see what clients get." } });
 
 fs.writeFileSync(OUT, `Demo client login (member area)\nWebsite: https://fattofitwithz.com/login\nEmail: ${EMAIL}\nPassword: ${password}\n`);

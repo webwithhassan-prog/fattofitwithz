@@ -5,13 +5,13 @@ import { getDashboardData } from "@/lib/members.server";
 import { getSettings } from "@/lib/content";
 import { EMPTY_FIRST_DAY_FORM } from "@/lib/member";
 
-export const metadata = { title: "First day form" };
+export const metadata = { title: "Personal Wellness Profile" };
 
 export default async function FirstDayPage() {
   const [{ member, program, firstDayForm }, settings] = await Promise.all([getDashboardData(), getSettings()]);
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-5">
-      <h1 className="text-3xl">First day form</h1>
+      <h1 className="text-3xl">Personal Wellness Profile</h1>
       {program?.active ? (
         <FirstDayForm
           initial={firstDayForm?.data ?? { ...EMPTY_FIRST_DAY_FORM, fullName: member.fullName }}
@@ -19,7 +19,7 @@ export default async function FirstDayPage() {
           whatsappUrl={settings.contact.whatsappUrl}
         />
       ) : (
-        <LockedPreview>
+        <LockedPreview program={program}>
           <FirstDayForm
           initial={firstDayForm?.data ?? { ...EMPTY_FIRST_DAY_FORM, fullName: member.fullName }}
           savedId={firstDayForm?.id ?? null}

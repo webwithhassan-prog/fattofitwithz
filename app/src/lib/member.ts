@@ -14,9 +14,15 @@ export const MEASUREMENT_FIELDS = [
   { key: "calf", label: "Calf" },
 ] as const;
 
+/** Answers for "How much water do you drink a day?" (both forms). 1 glass is about 250 ml. */
+export const WATER_INTAKE = ["Less than 1 litre", "1 to 2 litres", "2 to 3 litres", "More than 3 litres"] as const;
+
+/** Answers for "How many hours do you sleep?" (both forms). */
+export const SLEEP_HOURS = ["Less than 5 hours", "5 to 6 hours", "7 to 8 hours", "More than 8 hours"] as const;
+
 export type MeasurementKey = (typeof MEASUREMENT_FIELDS)[number]["key"];
 
-/** Body measurements in cm, as strings while being typed ("" = not filled in). */
+/** Body measurements in cm, as strings while being typed ("" = not filled in yet). All 7 are required. */
 export type Measurements = Record<MeasurementKey, string>;
 
 /** The first day form (filled in once after joining; can be updated). */
@@ -37,6 +43,8 @@ export type FirstDayFormData = {
   allergyDetails: string;
   likes: string;
   dislikes: string;
+  waterIntake: string;
+  sleepHours: string;
   measurements: Measurements;
   notes: string;
 };
@@ -45,6 +53,8 @@ export type FirstDayFormData = {
 export type FollowUpFormData = {
   weightKg: string;
   mood: "great" | "good" | "okay" | "tired" | "low" | "";
+  waterIntake: string;
+  sleepHours: string;
   measurements: Measurements;
   notes: string;
 };
@@ -65,8 +75,12 @@ export type MemberProgram = {
   /** YYYY-MM-DD */
   endDate: string;
   months: number;
-  /** true while today is between the start and end date (and it isn't cancelled) */
+  /** true while her program is running today: between the start and end date, not cancelled, not paused */
   active: boolean;
+  /** true while the coach has frozen (paused) it; her forms and workouts are locked meanwhile (lib/freeze.ts) */
+  paused: boolean;
+  /** YYYY-MM-DD the paused program restarts by itself, or null (no date yet / not paused) */
+  pausedUntil: string | null;
 };
 
 export type DashboardData = {
@@ -77,7 +91,12 @@ export type DashboardData = {
   followUps: { id: number; createdAt: string; weightKg: number; mood: string }[];
   /** Did she buy the e-book? (the link itself comes from getEbook()) */
   hasEbook: boolean;
+  /** Workout videos she has finished, as "week-day" keys, e.g. "1-3" = week 1, day 3 */
+  workoutsDone: string[];
 };
+
+/** Key for one workout video in workoutsDone: "1-3" = week 1, day 3. */
+export const workoutKey = (week: number, day: number) => `${week}-${day}`;
 
 export const EMPTY_MEASUREMENTS: Measurements = { chest: "", waist: "", hips: "", thigh: "", arm: "", shoulder: "", calf: "" };
 
@@ -98,11 +117,13 @@ export const EMPTY_FIRST_DAY_FORM: FirstDayFormData = {
   allergyDetails: "",
   likes: "",
   dislikes: "",
+  waterIntake: "",
+  sleepHours: "",
   measurements: EMPTY_MEASUREMENTS,
   notes: "",
 };
 
-export const EMPTY_FOLLOW_UP_FORM: FollowUpFormData = { weightKg: "", mood: "", measurements: EMPTY_MEASUREMENTS, notes: "" };
+export const EMPTY_FOLLOW_UP_FORM: FollowUpFormData = { weightKg: "", mood: "", waterIntake: "", sleepHours: "", measurements: EMPTY_MEASUREMENTS, notes: "" };
 
 /** Topics a client can choose on "Report an issue" (also the options in admin > Client issues). */
 export const ISSUE_TOPICS = ["Payment", "Login / account", "Forms", "Workout videos", "Diet plan", "Other"] as const;

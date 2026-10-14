@@ -1,7 +1,7 @@
 /**
  * The admin home page (/admin): SALES OF THE LAST 30 DAYS + the coach's to-do list.
  *
- *   To do:  diet plans to send, follow-ups to review, open client issues, website messages, active clients
+ *   To do:  diet plans to send, follow-ups to review, open client issues, website messages, active and paused clients
  *   Sales:  revenue (per currency), paid orders, programs and e-books sold, website visits
  *           a daily orders chart and the full sales log (every order of the 30 days)
  *
@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Gutter } from "@payloadcms/ui";
 import type { AdminViewServerProps } from "payload";
 import { flushStats, statsDay } from "../../lib/stats.server";
+import { restartEndedFreezes } from "../../lib/members.server";
 
 const DAYS = 30;
 const DAY = 24 * 60 * 60 * 1000;
@@ -41,8 +42,9 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
   const todayIso = new Date(now).toISOString();
 
   await flushStats(); // include visits counted since the last save
+  await restartEndedFreezes(payload); // freezes whose "Resume on" day has come go back to Active
 
-  const [orders, stats, dietPlans, followUps, issues, activeClients, messages] = await Promise.all([
+  const [orders, stats, dietPlans, followUps, issues, activeClients, pausedClients, messages] = await Promise.all([
     payload.find({
       collection: "orders",
       where: { and: [{ status: { in: ["paid", "refunded"] } }, { createdAt: { greater_than_equal: sinceIso } }] },
@@ -55,6 +57,7 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
     payload.count({ collection: "follow-up-forms", where: { reviewed: { not_equals: true } } }),
     payload.count({ collection: "client-issues", where: { status: { not_equals: "solved" } } }),
     payload.count({ collection: "memberships", where: { and: [{ status: { equals: "active" } }, { endDate: { greater_than_equal: todayIso } }] } }),
+    payload.count({ collection: "memberships", where: { status: { equals: "frozen" } } }),
     payload.count({ collection: "contact-messages", where: { createdAt: { greater_than_equal: sinceIso } } }),
   ]);
 
@@ -85,7 +88,7 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
     perDay,
     maxDay,
     visits,
-    todo: { dietPlans: dietPlans.totalDocs, followUps: followUps.totalDocs, issues: issues.totalDocs, messages: messages.totalDocs, activeClients: activeClients.totalDocs },
+    todo: { dietPlans: dietPlans.totalDocs, followUps: followUps.totalDocs, issues: issues.totalDocs, messages: messages.totalDocs, activeClients: activeClients.totalDocs, pausedClients: pausedClients.totalDocs },
   };
 }
 
@@ -108,6 +111,7 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
         <StatCard label="Open client issues" value={o.todo.issues} href="/admin/collections/client-issues?where[status][not_equals]=solved" highlight={o.todo.issues > 0} />
         <StatCard label="Website messages" value={o.todo.messages} note={`contact form, last ${DAYS} days`} href="/admin/collections/contact-messages" />
         <StatCard label="Active clients" value={o.todo.activeClients} note="with a running program" href="/admin/collections/members" />
+        <StatCard label="Paused clients" value={o.todo.pausedClients} note="frozen programs" href="/admin/collections/memberships?where[status][equals]=frozen" />
       </div>
 
       <h2 className="ftf-section">Sales · last {DAYS} days</h2>

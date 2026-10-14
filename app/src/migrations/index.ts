@@ -13,6 +13,10 @@ import * as migration_20261012_193109_admin_tasks_issues_photos from './20261012
 import * as migration_20261013_090000_ebook_menu_and_faq from './20261013_090000_ebook_menu_and_faq';
 import * as migration_20261013_163631_remove_about_events from './20261013_163631_remove_about_events';
 import * as migration_20261013_170000_rate_limits from './20261013_170000_rate_limits';
+import * as migration_20261013_171400_water_sleep from './20261013_171400_water_sleep';
+import * as migration_20261013_171959_workouts_done from './20261013_171959_workouts_done';
+import * as migration_20261013_174046_membership_freeze from './20261013_174046_membership_freeze';
+import * as migration_20261014_143605_membership_days_frozen from './20261014_143605_membership_days_frozen';
 
 export const migrations = [
   {
@@ -83,11 +87,31 @@ export const migrations = [
   {
     up: migration_20261013_163631_remove_about_events.up,
     down: migration_20261013_163631_remove_about_events.down,
-    name: '20261013_163631_remove_about_events'
+    name: '20261013_163631_remove_about_events',
   },
   {
     up: migration_20261013_170000_rate_limits.up,
     down: migration_20261013_170000_rate_limits.down,
     name: '20261013_170000_rate_limits',
+  },
+  {
+    up: migration_20261013_171400_water_sleep.up,
+    down: migration_20261013_171400_water_sleep.down,
+    name: '20261013_171400_water_sleep',
+  },
+  {
+    up: migration_20261013_171959_workouts_done.up,
+    down: migration_20261013_171959_workouts_done.down,
+    name: '20261013_171959_workouts_done',
+  },
+  {
+    up: migration_20261013_174046_membership_freeze.up,
+    down: migration_20261013_174046_membership_freeze.down,
+    name: '20261013_174046_membership_freeze',
+  },
+  {
+    up: migration_20261014_143605_membership_days_frozen.up,
+    down: migration_20261014_143605_membership_days_frozen.down,
+    name: '20261014_143605_membership_days_frozen'
   },
 ];

@@ -1,13 +1,14 @@
 "use client";
 
 /**
- * The follow-up form: weight, how she feels, optional measurements and notes.
+ * The follow-up form: weight, how she feels, water, sleep, measurements and notes.
  * Each submission is saved as a new follow-up (saveFollowUpForm). Afterwards she can
  * save it as an image and send it on WhatsApp (FormSharePanel).
  */
 import { useState, useTransition } from "react";
 import { DashCard } from "./DashCard";
 import { MeasurementFields } from "./MeasurementFields";
+import { WaterSleepFields } from "./WaterSleepFields";
 import { FormSharePanel } from "./FormSharePanel";
 import { Clipboard } from "@/components/ui/Icons";
 import { saveFollowUpForm } from "@/app/(frontend)/dashboard/actions";
@@ -69,14 +70,14 @@ export function FollowUpForm({ whatsappUrl, name }: { whatsappUrl: string; name:
                 ))}
               </div>
             </fieldset>
+            <WaterSleepFields idPrefix="fu" waterIntake={data.waterIntake} sleepHours={data.sleepHours} onChange={set} />
           </div>
 
-          <details className="rounded-[12px] border border-line p-4">
-            <summary className="cursor-pointer font-medium">Measurements (optional)</summary>
-            <div className="mt-4">
-              <MeasurementFields idPrefix="fu" value={data.measurements} onChange={(m) => set("measurements", m)} />
-            </div>
-          </details>
+          <fieldset className="rounded-[12px] border border-line p-4">
+            <legend className="px-1 font-medium">Measurements</legend>
+            <p className="mb-3 text-sm text-muted">Measure in centimetres with a soft measuring tape.</p>
+            <MeasurementFields idPrefix="fu" value={data.measurements} onChange={(m) => set("measurements", m)} />
+          </fieldset>
 
           <div>
             <label htmlFor="fu-notes" className="field-label">How did it go? Any questions?</label>

@@ -14,7 +14,7 @@ import { logOut } from "@/app/(frontend)/dashboard/actions";
 
 const NAV = [
   { href: "/dashboard", label: "Home", Icon: Home },
-  { href: "/dashboard/first-day", label: "First day form", Icon: Clipboard },
+  { href: "/dashboard/first-day", label: "Personal Wellness Profile", Icon: Clipboard },
   { href: "/dashboard/follow-up", label: "Follow-up form", Icon: Clipboard },
   { href: "/dashboard/library", label: "Recorded library", Icon: PlayCircle },
   { href: "/dashboard/issues", label: "Report an issue", Icon: AlertCircle },

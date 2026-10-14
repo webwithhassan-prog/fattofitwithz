@@ -11,6 +11,8 @@ import { getPayloadClient } from "./payload.server";
 import { requireMember } from "./auth/session.server";
 import { EMPTY_FIRST_DAY_FORM, MEASUREMENT_FIELDS } from "./member";
 import type { DashboardData, FirstDayFormData, Measurements, MemberProgram } from "./member";
+import { dayOf, freezeHasEnded, isPausedToday, todayIso } from "./freeze";
+import type { Payload, Where } from "payload";
 import type { FirstDayForm, Membership } from "@/payload-types";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -38,18 +40,23 @@ export function toFirstDayFormData(row: FirstDayForm): FirstDayFormData {
     allergyDetails: str(row.allergyDetails),
     likes: str(row.likes),
     dislikes: str(row.dislikes),
+    waterIntake: str(row.waterIntake),
+    sleepHours: str(row.sleepHours),
     measurements,
     notes: str(row.notes),
   };
 }
 
-/** The membership running today, else her most recent one, else null. */
+/** The membership running (or paused) today, else her most recent one, else null. */
 function toProgram(memberships: Membership[]): MemberProgram | null {
-  const today = isoDay(new Date());
+  const today = todayIso();
   const withProgram = memberships.filter((m) => typeof m.program === "object");
-  const isCurrent = (m: Membership) => m.status !== "cancelled" && isoDay(m.startDate) <= today && isoDay(m.endDate) >= today;
+  // A paused program without a restart date stays "current" even past its end date (the days are added back on restart).
+  const isCurrent = (m: Membership) =>
+    m.status !== "cancelled" && dayOf(m.startDate) <= today && (dayOf(m.endDate) >= today || isPausedToday(m, today));
   const chosen = withProgram.find(isCurrent) ?? withProgram[0];
   if (!chosen || typeof chosen.program !== "object") return null;
+  const paused = isCurrent(chosen) && isPausedToday(chosen, today);
 
   const startDate = isoDay(chosen.startDate);
   const endDate = isoDay(chosen.endDate);
@@ -58,17 +65,42 @@ function toProgram(memberships: Membership[]): MemberProgram | null {
     slug: chosen.program.slug,
     startDate,
     endDate,
-    months: Math.max(1, Math.round((Date.parse(endDate) - Date.parse(startDate)) / (30.4 * DAY))),
-    active: isCurrent(chosen),
+    // Program length without the days added by freezes (a 3-month program stays "3 months")
+    months: Math.max(1, Math.round((Date.parse(endDate) - Date.parse(startDate) - (chosen.daysFrozen ?? 0) * DAY) / (30.4 * DAY))),
+    active: isCurrent(chosen) && !paused,
+    paused,
+    pausedUntil: paused && chosen.frozenUntil ? dayOf(chosen.frozenUntil) : null,
   };
+}
+
+/** Sets frozen memberships whose "Resume on" day has come back to Active (the Memberships hook fixes the end date). */
+export async function restartEndedFreezes(payload: Payload, memberId?: number) {
+  const where: Where = { and: [{ status: { equals: "frozen" } }, { frozenUntil: { less_than_equal: new Date().toISOString() } }, ...(memberId ? [{ member: { equals: memberId } }] : [])] };
+  const { docs } = await payload.find({ collection: "memberships", where, limit: 100, depth: 0 });
+  for (const m of docs) {
+    if (!freezeHasEnded(m)) continue;
+    await payload.update({ collection: "memberships", id: m.id, data: { status: "active" } });
+    console.log(`[freeze] membership ${m.id} restarted automatically`);
+  }
+}
+
+/** Her program today (running, paused, ended) or null if she never bought one. Used by pages and the form actions. */
+export async function loadMemberProgram(payload: Payload, memberId: number): Promise<MemberProgram | null> {
+  const find = () => payload.find({ collection: "memberships", where: { member: { equals: memberId } }, sort: "-startDate", limit: 20, depth: 1 });
+  let memberships = await find();
+  if (memberships.docs.some((m) => freezeHasEnded(m))) {
+    await restartEndedFreezes(payload, memberId);
+    memberships = await find();
+  }
+  return toProgram(memberships.docs);
 }
 
 export const getDashboardData = cache(async (): Promise<DashboardData> => {
   const doc = await requireMember(); // not logged in -> redirected to /login
   const payload = await getPayloadClient();
 
-  const [memberships, firstDay, followUps, ebookOrders] = await Promise.all([
-    payload.find({ collection: "memberships", where: { member: { equals: doc.id } }, sort: "-startDate", limit: 20, depth: 1 }),
+  const [program, firstDay, followUps, ebookOrders] = await Promise.all([
+    loadMemberProgram(payload, doc.id),
     payload.find({ collection: "first-day-forms", where: { member: { equals: doc.id } }, limit: 1, depth: 0 }),
     payload.find({ collection: "follow-up-forms", where: { member: { equals: doc.id } }, sort: "-createdAt", limit: 50, depth: 0 }),
     payload.count({
@@ -81,10 +113,11 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
   const form = firstDay.docs[0];
   return {
     member: { id: doc.id, email: doc.email, firstName: fullName.split(" ")[0] || "there", fullName, phone: doc.phone ?? "" },
-    program: toProgram(memberships.docs),
+    program,
     firstDayForm: form ? { id: form.id, updatedAt: form.updatedAt, data: toFirstDayFormData(form) } : null,
     followUps: followUps.docs.map((f) => ({ id: f.id, createdAt: f.createdAt, weightKg: f.weightKg, mood: f.mood ?? "" })),
     hasEbook: ebookOrders.totalDocs > 0,
+    workoutsDone: Array.isArray(doc.workoutsDone) ? doc.workoutsDone.filter((k): k is string => typeof k === "string") : [],
   };
 });
 

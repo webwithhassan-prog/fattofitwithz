@@ -7,6 +7,7 @@
  */
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { CountUp } from "@/components/ui/CountUp";
 import { ChevronLeft, ChevronRight, Headset, Star, Utensils } from "@/components/ui/Icons";
 import { Reveal } from "@/components/ui/Reveal";
 import type { FounderSlide } from "@/lib/types";
@@ -14,9 +15,9 @@ import type { FounderSlide } from "@/lib/types";
 type Props = { slides: FounderSlide[]; author: string; authorTitle: string };
 
 const BADGES = [
-  { Icon: Headset, title: "24/7 Support", text: "Expert help on WhatsApp" },
-  { Icon: Star, title: "10k+ Success Stories", text: "Women who changed their lives" },
-  { Icon: Utensils, title: "Desi-Food Plans", text: "Built around what you eat" },
+  { Icon: Headset, title: "24/7 Support", count: 0, text: "Expert help on WhatsApp" },
+  { Icon: Star, title: "Success Stories", count: 10, text: "Women who changed their lives" }, // count: 10 -> "10k+" (counts up)
+  { Icon: Utensils, title: "Desi-Food Plans", count: 0, text: "Built around what you eat" },
 ];
 
 export function FounderCarousel({ slides, author, authorTitle }: Props) {
@@ -112,15 +113,17 @@ export function FounderCarousel({ slides, author, authorTitle }: Props) {
         </div>
 
         {/* Badges (replaced the photo thumbnails, 2026-10-13) */}
-        <Reveal as="ul" className="stagger mt-10 grid gap-3 sm:grid-cols-3">
-          {BADGES.map(({ Icon, title, text }) => (
-            <li key={title} className="card card-hover flex items-center gap-3.5 p-4.5">
-              <span className="grid h-12 w-12 flex-none place-items-center rounded-full bg-brand text-ink shadow-[0_10px_20px_-12px_rgba(214,51,159,0.9)]">
-                <Icon className="h-6 w-6" />
+        <Reveal as="ul" className="stagger mt-8 grid gap-2.5 sm:mt-10 sm:grid-cols-3 sm:gap-3">
+          {BADGES.map(({ Icon, title, count, text }) => (
+            <li key={title} className="card card-hover flex items-center gap-3 p-3 sm:gap-3.5 sm:p-4.5">
+              <span className="grid h-10 w-10 flex-none place-items-center rounded-full bg-brand text-ink shadow-[0_10px_20px_-12px_rgba(214,51,159,0.9)] sm:h-12 sm:w-12">
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </span>
               <span>
-                <b className="block font-display text-[22px] leading-tight font-semibold">{title}</b>
-                <span className="text-sm font-medium text-muted">{text}</span>
+                <b className="block font-display text-[19px] leading-tight font-semibold sm:text-[22px]">
+                  {count ? <CountUp value={count} suffix="k+" /> : null} {title}
+                </b>
+                <span className="text-[13px] font-medium text-muted sm:text-sm">{text}</span>
               </span>
             </li>
           ))}

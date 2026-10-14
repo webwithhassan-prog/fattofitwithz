@@ -18,11 +18,19 @@ export default async function SettingsPage() {
           <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-[15px]">
             <dt className="text-muted">Program</dt>
             <dd>{program.name}</dd>
+            <dt className="text-muted">Status</dt>
+            <dd>
+              {program.paused
+                ? `Paused${program.pausedUntil ? ` until ${formatDate(program.pausedUntil, "long")}` : ""}`
+                : program.active
+                  ? "Active"
+                  : "Ended"}
+            </dd>
             <dt className="text-muted">Duration</dt>
             <dd>{durationLabel(program.months)}</dd>
             <dt className="text-muted">Started</dt>
             <dd>{formatDate(program.startDate, "long")}</dd>
-            <dt className="text-muted">{program.active ? "Ends" : "Ended"}</dt>
+            <dt className="text-muted">{program.active || program.paused ? "Ends" : "Ended"}</dt>
             <dd>{formatDate(program.endDate, "long")}</dd>
           </dl>
         ) : (
@@ -31,7 +39,7 @@ export default async function SettingsPage() {
           </p>
         )}
         <p className="mt-4 text-sm text-muted">
-          Need to pause? Freezes follow our <Link href="/refund-policy" className="text-brand-dark underline">Refund, Cancellation &amp; Freeze Policy</Link>. Message us on WhatsApp.
+          Need to pause? Message us on WhatsApp and your coach will freeze your program. Freezes follow our <Link href="/refund-policy" className="text-brand-dark underline">Refund, Cancellation &amp; Freeze Policy</Link>.
         </p>
       </section>
       {hasEbook ? (

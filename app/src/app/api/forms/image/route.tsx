@@ -45,7 +45,7 @@ export async function GET(request: Request) {
   let title: string;
   let rows: Row[];
   if (kind === "first-day" && "fullName" in doc) {
-    title = "First day form";
+    title = "Personal Wellness Profile";
     rows = [
       { label: "Age", value: show(doc.age) },
       { label: "Height", value: show(doc.height) },
@@ -56,6 +56,8 @@ export async function GET(request: Request) {
       { label: "Student", value: show(doc.student) },
       { label: "Diet", value: show(doc.diet) },
       { label: "Smoking", value: show(doc.smoking) },
+      { label: "Water a day", value: show(doc.waterIntake) },
+      { label: "Sleep a night", value: show(doc.sleepHours) },
       { label: "Medical conditions", value: [doc.medicalConditions, doc.medicalDetails].filter(Boolean).join(": ") },
       { label: "Allergies", value: [doc.allergies, doc.allergyDetails].filter(Boolean).join(": ") },
       { label: "Likes", value: show(doc.likes) },
@@ -67,6 +69,8 @@ export async function GET(request: Request) {
     rows = [
       { label: "Weight", value: show("weightKg" in doc ? doc.weightKg : "", " kg") },
       { label: "How I feel", value: mood },
+      { label: "Water a day", value: show("waterIntake" in doc ? doc.waterIntake : "") },
+      { label: "Sleep a night", value: show("sleepHours" in doc ? doc.sleepHours : "") },
     ];
   }
   const measurements = MEASUREMENT_FIELDS.map(({ key, label }) => ({ label, value: show(doc[key], " cm") })).filter((r) => r.value);

@@ -1,10 +1,11 @@
 /**
  * Follow-up forms: the client sends one whenever the coach asks (usually weekly):
- * her weight, how she feels, optional measurements and notes.
+ * her weight, how she feels, water, sleep, measurements and notes.
  * Filled in on the website (/dashboard/follow-up). The coach reads it here and replies on WhatsApp.
  */
 import type { CollectionConfig } from "payload";
 
+const text = (name: string, label: string) => ({ name, label, type: "text" as const });
 const cm = (name: string, label: string) => ({ name, label, type: "number" as const, min: 0, max: 300 });
 
 export const FollowUpForms: CollectionConfig = {
@@ -57,10 +58,10 @@ export const FollowUpForms: CollectionConfig = {
         },
       ],
     },
+    { type: "row", fields: [text("waterIntake", "Water a day"), text("sleepHours", "Sleep a night")] },
     {
       type: "collapsible",
-      label: "Measurements (cm, optional)",
-      admin: { initCollapsed: true },
+      label: "Measurements (cm)",
       fields: [
         { type: "row", fields: [cm("chest", "Chest"), cm("waist", "Waist"), cm("hips", "Hips"), cm("thigh", "Thigh")] },
         { type: "row", fields: [cm("arm", "Arm"), cm("shoulder", "Shoulder"), cm("calf", "Calf")] },
