@@ -122,7 +122,7 @@ export const Members: CollectionConfig = {
               on: "member",
               label: "Orders",
               defaultSort: "-createdAt",
-              admin: { defaultColumns: ["orderLabel", "amount", "currency", "status", "createdAt"], allowCreate: true },
+              admin: { defaultColumns: ["reference", "orderLabel", "amount", "currency", "status", "createdAt"], allowCreate: true },
             },
           ],
         },

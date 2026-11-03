@@ -39,6 +39,7 @@ import { Pricing } from "./payload/globals/Pricing";
 import { Homepage } from "./payload/globals/Homepage";
 import { Ebook } from "./payload/globals/Ebook";
 import { PagePhotos } from "./payload/globals/PagePhotos";
+import { Payments } from "./payload/globals/Payments";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -69,9 +70,9 @@ export default buildConfig({
   },
 
   // THE ADMIN MENU (owner's list, 2026-10-13). Groups appear in the order below; each file sets its group.
-  //   Clients:             Clients, First day forms, Follow-up forms, Client issues
+  //   Clients:             Clients, First day forms, Follow-up forms, Client issues, Orders & payments
   //   Messages to clients: Reminders & announcements
-  //   Website:             Workout recordings, All photos
+  //   Website:             Workout recordings, All photos, Payment details
   // Everything else has `admin.group: false`: hidden from the menu, but the pages and data still work
   // (open them from a client's page, the Overview, Site photos, or by address, e.g. /admin/globals/pricing).
   collections: [
@@ -79,12 +80,12 @@ export default buildConfig({
     FirstDayForms,
     FollowUpForms,
     ClientIssues,
+    Orders,
     Announcements,
     WorkoutSessions,
     Media,
     // Hidden from the menu
     Memberships,
-    Orders,
     Programs,
     Testimonials,
     Faqs,
@@ -96,9 +97,17 @@ export default buildConfig({
     PasswordResets,
     SiteStats,
   ],
-  globals: [Homepage, Pricing, Ebook, SiteSettings, PagePhotos], // all hidden from the menu
+  globals: [Payments, Homepage, Pricing, Ebook, SiteSettings, PagePhotos], // only Payment details is in the menu
 
   secret: process.env.PAYLOAD_SECRET ?? "",
+  // The admin login is only accepted from these addresses (protection against cross-site requests)
+  csrf: [
+    (process.env.NEXT_PUBLIC_SITE_URL ?? "https://fattofitwithz.com").replace(/\/$/, ""),
+    "https://fattofitwithz.com",
+    "https://www.fattofitwithz.com",
+    "https://fattofitwithz.netlify.app",
+    "http://localhost:3000",
+  ],
   db: postgresAdapter({
     pool: { connectionString: process.env.DATABASE_URL ?? "" },
     // Tables are changed ONLY through migration files in src/migrations (never automatically),

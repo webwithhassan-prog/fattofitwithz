@@ -12,6 +12,8 @@ export const Users: CollectionConfig = {
   auth: {
     maxLoginAttempts: 5, // then the account is locked for lockTime
     lockTime: 15 * 60 * 1000,
+    // The admin login cookie: HTTPS only on the live site, never sent with requests from other websites
+    cookies: { secure: process.env.NODE_ENV === "production", sameSite: "Lax" },
   },
   fields: [{ name: "name", type: "text" }],
 };

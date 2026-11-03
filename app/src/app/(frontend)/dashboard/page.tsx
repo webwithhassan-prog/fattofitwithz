@@ -39,7 +39,7 @@ function Card({ title, text, href, cta, lock, coachHref }: CardProps) {
 }
 
 export default async function DashboardHome() {
-  const [{ member, program, firstDayForm, followUps, hasEbook }, ebook, coachHref] = await Promise.all([
+  const [{ member, program, firstDayForm, followUps, hasEbook, pendingOrder }, ebook, coachHref] = await Promise.all([
     getDashboardData(),
     getEbook(),
     whatsappLink("Hi coach! I have a question."),
@@ -69,6 +69,12 @@ export default async function DashboardHome() {
               {program.active || paused ? "" : " (ended)"}
             </p>
           </div>
+        ) : pendingOrder ? (
+          <div>
+            <p className="kicker">Your order</p>
+            <p className="mt-1 font-display text-3xl">{pendingOrder.label}</p>
+            <p className="mt-1 text-sm text-muted">Everything below unlocks as soon as your payment is confirmed.</p>
+          </div>
         ) : (
           <div>
             <p className="font-display text-3xl">You haven&apos;t joined a program yet</p>
@@ -76,12 +82,24 @@ export default async function DashboardHome() {
           </div>
         )}
         <div className="flex flex-wrap gap-3">
-          {lock === "join" ? <Link href="/programs" className="btn">Choose a program</Link> : null}
+          {lock === "join" && !pendingOrder ? <Link href="/programs" className="btn">Choose a program</Link> : null}
           <a href={coachHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
             <WhatsAppIcon className="h-4.5 w-4.5" /> Message your coach
           </a>
         </div>
       </section>
+
+      {pendingOrder ? (
+        <section role="status" className="card flex flex-wrap items-center justify-between gap-4 border-brand bg-blush p-5">
+          <div>
+            <p className="font-display text-xl">Waiting for your payment</p>
+            <p className="mt-1 text-[15px] text-muted">
+              Order {pendingOrder.reference} · {pendingOrder.label} · {pendingOrder.total}. Everything unlocks as soon as the payment is confirmed.
+            </p>
+          </div>
+          <Link href={pendingOrder.path} className="btn btn-sm">See how to pay</Link>
+        </section>
+      ) : null}
 
       {paused ? (
         <section role="status" className="card flex items-start gap-4 border-brand bg-blush p-5">

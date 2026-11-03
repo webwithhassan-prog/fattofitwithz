@@ -71,11 +71,11 @@ export interface Config {
     'first-day-forms': FirstDayForm;
     'follow-up-forms': FollowUpForm;
     'client-issues': ClientIssue;
+    orders: Order;
     announcements: Announcement;
     'workout-sessions': WorkoutSession;
     media: Media;
     memberships: Membership;
-    orders: Order;
     programs: Program;
     testimonials: Testimonial;
     faqs: Faq;
@@ -105,11 +105,11 @@ export interface Config {
     'first-day-forms': FirstDayFormsSelect<false> | FirstDayFormsSelect<true>;
     'follow-up-forms': FollowUpFormsSelect<false> | FollowUpFormsSelect<true>;
     'client-issues': ClientIssuesSelect<false> | ClientIssuesSelect<true>;
+    orders: OrdersSelect<false> | OrdersSelect<true>;
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'workout-sessions': WorkoutSessionsSelect<false> | WorkoutSessionsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     memberships: MembershipsSelect<false> | MembershipsSelect<true>;
-    orders: OrdersSelect<false> | OrdersSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
@@ -130,6 +130,7 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    payments: Payment;
     homepage: Homepage;
     pricing: Pricing;
     ebook: Ebook;
@@ -137,6 +138,7 @@ export interface Config {
     'page-photos': PagePhoto;
   };
   globalsSelect: {
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     pricing: PricingSelect<false> | PricingSelect<true>;
     ebook: EbookSelect<false> | EbookSelect<true>;
@@ -433,21 +435,35 @@ export interface Program {
   createdAt: string;
 }
 /**
+ * Payment arrived? Open the order, set Status to "Paid" and save: her program starts and she gets a welcome email.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders".
  */
 export interface Order {
   id: number;
   /**
+   * She writes this in the payment reference.
+   */
+  reference?: string | null;
+  /**
    * Filled in automatically, e.g. "Fat Loss Program - 2 months + e-book"
    */
   orderLabel?: string | null;
   /**
+   * Paid: her program starts and she gets a welcome email. Refunded / Cancelled: the program from this order stops.
+   */
+  status: 'pending' | 'paid' | 'refunded' | 'cancelled';
+  paymentMethod: 'bank-transfer' | 'jazzcash-easypaisa' | 'whatsapp' | 'stripe' | 'other';
+  paidAt?: string | null;
+  buyerName?: string | null;
+  /**
    * Buyer's email
    */
   email: string;
+  phone?: string | null;
   /**
-   * Empty for e-book buyers without an account
+   * Her account. Empty for e-book buyers without an account.
    */
   member?: (number | null) | Member;
   /**
@@ -457,7 +473,7 @@ export interface Order {
   months?: number | null;
   ebook?: boolean | null;
   /**
-   * Total paid, e.g. 7000
+   * Total, e.g. 7000
    */
   amount: number;
   /**
@@ -465,8 +481,15 @@ export interface Order {
    */
   currency: string;
   region?: ('usa' | 'canada' | 'uae' | 'saudi' | 'qatar' | 'india' | 'pakistan' | 'australia') | null;
-  status: 'paid' | 'refunded';
-  paymentMethod: 'stripe' | 'bank-transfer' | 'other';
+  /**
+   * Two letters, e.g. PK
+   */
+  country?: string | null;
+  /**
+   * Your notes, e.g. the bank transaction ID.
+   */
+  notes?: string | null;
+  accessKey?: string | null;
   /**
    * Stripe Checkout session (cs_...). Search for it in the Stripe dashboard.
    */
@@ -764,6 +787,10 @@ export interface PayloadLockedDocument {
         value: number | ClientIssue;
       } | null)
     | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
         relationTo: 'announcements';
         value: number | Announcement;
       } | null)
@@ -778,10 +805,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'memberships';
         value: number | Membership;
-      } | null)
-    | ({
-        relationTo: 'orders';
-        value: number | Order;
       } | null)
     | ({
         relationTo: 'programs';
@@ -964,6 +987,34 @@ export interface ClientIssuesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders_select".
+ */
+export interface OrdersSelect<T extends boolean = true> {
+  reference?: T;
+  orderLabel?: T;
+  status?: T;
+  paymentMethod?: T;
+  paidAt?: T;
+  buyerName?: T;
+  email?: T;
+  phone?: T;
+  member?: T;
+  program?: T;
+  months?: T;
+  ebook?: T;
+  amount?: T;
+  currency?: T;
+  region?: T;
+  country?: T;
+  notes?: T;
+  accessKey?: T;
+  stripeSessionId?: T;
+  stripePaymentIntentId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "announcements_select".
  */
 export interface AnnouncementsSelect<T extends boolean = true> {
@@ -1022,27 +1073,6 @@ export interface MembershipsSelect<T extends boolean = true> {
   frozenFrom?: T;
   daysFrozen?: T;
   notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders_select".
- */
-export interface OrdersSelect<T extends boolean = true> {
-  orderLabel?: T;
-  email?: T;
-  member?: T;
-  program?: T;
-  months?: T;
-  ebook?: T;
-  amount?: T;
-  currency?: T;
-  region?: T;
-  status?: T;
-  paymentMethod?: T;
-  stripeSessionId?: T;
-  stripePaymentIntentId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1271,6 +1301,32 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * The bank and JazzCash / Easypaisa details clients see after placing an order. Changes show on the website straight away.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: number;
+  /**
+   * Leave unticked until Stripe is set up (it also needs the Stripe keys in Netlify). While off, everyone pays with the options below.
+   */
+  cardPayments?: boolean | null;
+  bankEnabled?: boolean | null;
+  bankName?: string | null;
+  bankAccountTitle?: string | null;
+  bankBranch?: string | null;
+  bankAccountNumber?: string | null;
+  bankIban?: string | null;
+  walletEnabled?: boolean | null;
+  walletNumber?: string | null;
+  walletAccountName?: string | null;
+  instructions?: string | null;
+  otherCountriesText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * The big banners at the top, Zaineb's messages, and the goal picker.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1490,6 +1546,27 @@ export interface PagePhoto {
   afterPhoto?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  cardPayments?: T;
+  bankEnabled?: T;
+  bankName?: T;
+  bankAccountTitle?: T;
+  bankBranch?: T;
+  bankAccountNumber?: T;
+  bankIban?: T;
+  walletEnabled?: T;
+  walletNumber?: T;
+  walletAccountName?: T;
+  instructions?: T;
+  otherCountriesText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

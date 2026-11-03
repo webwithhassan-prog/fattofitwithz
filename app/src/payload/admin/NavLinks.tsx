@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Shortcuts at the top of the admin menu: Overview, Diet plans to send, Site photos, and the website.
+ * Shortcuts at the top of the admin menu: Overview, Payments to confirm, Diet plans to send, Site photos, and the website.
  * (The lists below them come from each collection's `admin.group`.)
  */
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/admin", label: "Overview" },
+  { href: "/admin/collections/orders?where[status][equals]=pending", label: "Payments to confirm" },
   { href: "/admin/diet-plans", label: "Diet plans to send" },
   { href: "/admin/site-photos", label: "Site photos" },
 ];

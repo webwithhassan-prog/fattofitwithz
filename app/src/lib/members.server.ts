@@ -12,6 +12,8 @@ import { requireMember } from "./auth/session.server";
 import { EMPTY_FIRST_DAY_FORM, MEASUREMENT_FIELDS } from "./member";
 import type { DashboardData, FirstDayFormData, Measurements, MemberProgram } from "./member";
 import { dayOf, freezeHasEnded, isPausedToday, todayIso } from "./freeze";
+import { getPendingOrderForMember } from "./orders.server";
+import { formatOrderAmount } from "./pricing";
 import type { Payload, Where } from "payload";
 import type { FirstDayForm, Membership } from "@/payload-types";
 
@@ -99,7 +101,7 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
   const doc = await requireMember(); // not logged in -> redirected to /login
   const payload = await getPayloadClient();
 
-  const [program, firstDay, followUps, ebookOrders] = await Promise.all([
+  const [program, firstDay, followUps, ebookOrders, pending] = await Promise.all([
     loadMemberProgram(payload, doc.id),
     payload.find({ collection: "first-day-forms", where: { member: { equals: doc.id } }, limit: 1, depth: 0 }),
     payload.find({ collection: "follow-up-forms", where: { member: { equals: doc.id } }, sort: "-createdAt", limit: 50, depth: 0 }),
@@ -107,6 +109,7 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
       collection: "orders",
       where: { and: [{ ebook: { equals: true } }, { status: { equals: "paid" } }, { or: [{ member: { equals: doc.id } }, { email: { equals: doc.email } }] }] },
     }),
+    getPendingOrderForMember(doc.id),
   ]);
 
   const fullName = doc.fullName ?? "";
@@ -117,6 +120,14 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
     firstDayForm: form ? { id: form.id, updatedAt: form.updatedAt, data: toFirstDayFormData(form) } : null,
     followUps: followUps.docs.map((f) => ({ id: f.id, createdAt: f.createdAt, weightKg: f.weightKg, mood: f.mood ?? "" })),
     hasEbook: ebookOrders.totalDocs > 0,
+    pendingOrder: pending?.reference
+      ? {
+          reference: pending.reference,
+          label: pending.orderLabel ?? "Your order",
+          total: formatOrderAmount(pending.amount, pending.currency),
+          path: `/checkout/pay/${pending.reference}?key=${encodeURIComponent(pending.accessKey ?? "")}`,
+        }
+      : null,
     workoutsDone: Array.isArray(doc.workoutsDone) ? doc.workoutsDone.filter((k): k is string => typeof k === "string") : [],
   };
 });

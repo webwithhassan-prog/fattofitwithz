@@ -27,6 +27,7 @@ import type {
   Goal,
   HeroBanner,
   InstagramItem,
+  PaymentSettings,
   PriceCell,
   Program,
   Region,
@@ -76,6 +77,7 @@ export const getPrograms = cachedContent("programs", async (): Promise<Program[]
   const payload = await getPayloadClient();
   const { docs } = await payload.find({ collection: "programs", sort: "order", limit: 100, depth: 0 });
   return docs.map((p) => ({
+    id: p.id,
     slug: p.slug,
     name: p.name,
     tag: p.tag ?? "",
@@ -364,6 +366,28 @@ export const getSettings = cachedContent("settings", async (): Promise<SiteSetti
     contactSubjects: texts(s.contactSubjects),
     qualifications: texts(s.qualifications),
     expertise: texts(s.expertise),
+  };
+});
+
+// ---------- payment details ----------
+
+export const getPaymentSettings = cachedContent("payments", async (): Promise<PaymentSettings> => {
+  const payload = await getPayloadClient();
+  const p = await payload.findGlobal({ slug: "payments", depth: 0 });
+  const t = (value: string | null | undefined) => value?.trim() ?? "";
+  return {
+    cardPayments: Boolean(p.cardPayments),
+    bank: {
+      enabled: p.bankEnabled !== false && Boolean(t(p.bankAccountNumber) || t(p.bankIban)),
+      bankName: t(p.bankName),
+      accountTitle: t(p.bankAccountTitle),
+      accountNumber: t(p.bankAccountNumber),
+      iban: t(p.bankIban),
+      branch: t(p.bankBranch),
+    },
+    wallet: { enabled: p.walletEnabled !== false && Boolean(t(p.walletNumber)), number: t(p.walletNumber), accountName: t(p.walletAccountName) },
+    instructions: t(p.instructions),
+    otherCountriesText: t(p.otherCountriesText),
   };
 });
 

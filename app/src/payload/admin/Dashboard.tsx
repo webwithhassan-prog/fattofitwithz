@@ -1,7 +1,8 @@
 /**
  * The admin home page (/admin): SALES OF THE LAST 30 DAYS + the coach's to-do list.
  *
- *   To do:  diet plans to send, follow-ups to review, open client issues, website messages, active and paused clients
+ *   To do:  payments to confirm, diet plans to send, follow-ups to review, open client issues, website messages,
+ *           active and paused clients
  *   Sales:  revenue (per currency), paid orders, programs and e-books sold, website visits
  *           a daily orders chart and the full sales log (every order of the 30 days)
  *
@@ -44,7 +45,7 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
   await flushStats(); // include visits counted since the last save
   await restartEndedFreezes(payload); // freezes whose "Resume on" day has come go back to Active
 
-  const [orders, stats, dietPlans, followUps, issues, activeClients, pausedClients, messages] = await Promise.all([
+  const [orders, stats, dietPlans, followUps, issues, activeClients, pausedClients, messages, unpaid] = await Promise.all([
     payload.find({
       collection: "orders",
       where: { and: [{ status: { in: ["paid", "refunded"] } }, { createdAt: { greater_than_equal: sinceIso } }] },
@@ -59,6 +60,7 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
     payload.count({ collection: "memberships", where: { and: [{ status: { equals: "active" } }, { endDate: { greater_than_equal: todayIso } }] } }),
     payload.count({ collection: "memberships", where: { status: { equals: "frozen" } } }),
     payload.count({ collection: "contact-messages", where: { createdAt: { greater_than_equal: sinceIso } } }),
+    payload.count({ collection: "orders", where: { status: { equals: "pending" } } }),
   ]);
 
   const paidOrders = orders.docs.filter((o) => o.status === "paid");
@@ -88,7 +90,7 @@ async function loadOverview(payload: AdminViewServerProps["payload"]) {
     perDay,
     maxDay,
     visits,
-    todo: { dietPlans: dietPlans.totalDocs, followUps: followUps.totalDocs, issues: issues.totalDocs, messages: messages.totalDocs, activeClients: activeClients.totalDocs, pausedClients: pausedClients.totalDocs },
+    todo: { dietPlans: dietPlans.totalDocs, followUps: followUps.totalDocs, issues: issues.totalDocs, messages: messages.totalDocs, activeClients: activeClients.totalDocs, pausedClients: pausedClients.totalDocs, unpaid: unpaid.totalDocs },
   };
 }
 
@@ -106,6 +108,7 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
 
       <h2 className="ftf-section">To do</h2>
       <div className="ftf-cards">
+        <StatCard label="Payments to confirm" value={o.todo.unpaid} note="orders waiting for payment" href="/admin/collections/orders?where[status][equals]=pending" highlight={o.todo.unpaid > 0} />
         <StatCard label="Diet plans to send" value={o.todo.dietPlans} note="first day forms waiting" href="/admin/diet-plans" highlight={o.todo.dietPlans > 0} />
         <StatCard label="Follow-ups to review" value={o.todo.followUps} href="/admin/collections/follow-up-forms?where[reviewed][not_equals]=true" highlight={o.todo.followUps > 0} />
         <StatCard label="Open client issues" value={o.todo.issues} href="/admin/collections/client-issues?where[status][not_equals]=solved" highlight={o.todo.issues > 0} />

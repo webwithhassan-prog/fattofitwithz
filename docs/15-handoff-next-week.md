@@ -115,24 +115,37 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
   - Migrations `20261013_174046_membership_freeze` and `20261014_143605_membership_days_frozen` (already applied).
 - **Renamed for clients:** "First day form" is now **"Personal Wellness Profile"**: page heading, form title, sidebar, dashboard card, browser tab title, the WhatsApp image and message, and the save button ("Save my profile"). The admin panel still calls it "First day form". Some body text still says "first day form": checkout success page, How it works, program pages.
 
-## ⚠️ Next deploy (2026-10-13 evening changes)
+## Done ✅ (2026-11-03): payments without Stripe + production hardening
 
-1. Push to `main` and wait until Netlify shows the deploy as Published.
-2. THEN run `npm run migrate` (from `app/`). It applies:
-   - `20261013_163631_remove_about_events`: drops the old About photo list. **Running it before the deploy breaks the live About and home pages.**
-   - `20261013_170000_rate_limits`: the table already exists, so this does nothing.
+- **How clients pay now (card payments off):**
+  - Checkout saves the order as **Waiting for payment** with an order number like `FTF-7K2Q9M`, then opens her order page `/checkout/pay/FTF-...?key=...`.
+  - **Pakistan only:** the page shows the Meezan Bank and JazzCash / Easypaisa details with Copy buttons, plus a "Send payment screenshot on WhatsApp" button (the message includes the order number, program and amount).
+  - **Every other country:** the page opens WhatsApp by itself ("I'd like to pay for order FTF-...") and the coach arranges the payment there.
+  - Emails: she gets "Your order FTF-…: how to pay"; the coach (the Public email in Site settings) gets "New order … waiting for payment".
+  - Her dashboard shows "Waiting for your payment" with a link back to the order page.
+  - E-book only (`/ebook`): asks name, email and WhatsApp (no account needed) and works the same way.
+- **Editable:** admin › Website › **Payment details**: bank name, account title, account number, IBAN, branch code, JazzCash / Easypaisa number and name, the steps text, and the text for other countries. Each method can be hidden. Saving updates the website straight away.
+- **Confirming a payment (coach):** admin › **Payments to confirm** (menu shortcut, also on the Overview) › open the order › Status = **Paid** › "Paid with" = bank / JazzCash › Save.
+  - Her program starts (renewals start after her current one) and she gets the welcome email (with the e-book link if bought).
+  - **Cancelled (not paid)** / **Refunded** stops the program from that order.
+  - Saving "Paid" twice never creates two programs. All of it is in `src/payload/collections/Orders.ts` (hook) and `src/lib/orders.server.ts`.
+- **Card payments later:** add the Stripe keys in Netlify, then tick "Card payments with Stripe" in Payment details. Both are needed (`paymentMode()` in `src/lib/checkout.server.ts`).
+- **Hardening:**
+  - Next.js 16.3.8 → **16.4.3**: fixes two critical remote-code-execution issues and a server-action denial-of-service issue.
+  - `sharp` 0.35.5 and `zod` 4.6.7 updated.
+  - `undici` 7.30.1 and `dompurify` 3.4.17 forced with `overrides` in package.json (Payload pins older versions).
+  - `npm audit --omit=dev`: 0 critical, 0 high. The remaining moderate/low ones are in the migration tool (dev only) and inside Payload. Update Payload (3.92.x) when convenient.
+  - No `X-Powered-By` header. A safe Content-Security-Policy (no embedding in other sites, no plugins, no `<base>`). Wider Permissions-Policy.
+  - Admin login cookie: HTTPS-only + SameSite. Payload `csrf` allow-list (the site's own addresses only).
+  - Friendly error pages (`error.tsx` in the site and the member area, `global-error.tsx`). robots.txt also blocks `/admin` and the order pages. Visit counting only counts real pages.
+  - Checked every main page: one H1, no image without alt text, every field labelled, no duplicate ids, meta description, canonical, share image and structured data present.
+- Migration `20261103_005116_manual_payments` (already applied: new Orders fields, the Payment details table).
 
 ## 🚀 Deploy steps (do these in order)
 
-1. **Push the code** to GitHub `main` (Netlify builds it automatically, about 3 minutes).
-2. **After the deploy is live**, run the content migration from your computer (it adds "E-book" to the menu and updates one FAQ answer):
-   ```
-   cd app
-   npm run migrate
-   ```
-   Don't run it before the deploy: the old live site has no /ebook page yet.
-3. Open https://fattofitwithz.netlify.app/admin, open any item and press **Save**. This refreshes the live site's cache straight away; otherwise it refreshes within an hour.
-4. Check:
+1. **Push the code** to GitHub `main` (Netlify builds it automatically, about 3 minutes). Migrations are already applied (they only add fields), so nothing to run after.
+2. Open https://fattofitwithz.com/admin, open any item and press **Save**. This refreshes the live site's cache straight away; otherwise it refreshes within an hour.
+3. Check:
    - photos on the homepage
    - `/ebook`
    - a program → Join now → popup → checkout
@@ -152,11 +165,11 @@ Netlify's free plan runs the server in **Ohio, USA**, but the database is in **S
 ## Still to do
 
 1. **Owner's list for the admin panel** (the owner will send what to add or remove).
-2. **Stripe test keys** in `app/.env.local` and in Netlify env vars:
-   - `STRIPE_SECRET_KEY` (sk_test_...)
+2. **Card payments (optional, later):** Stripe keys in Netlify env vars, then tick "Card payments with Stripe" in admin › Website › Payment details:
+   - `STRIPE_SECRET_KEY` (sk_test_... first; live keys also need `ALLOW_LIVE_PAYMENTS=true`)
    - `STRIPE_WEBHOOK_SECRET`
-   - In Stripe add a webhook to `https://<site>/api/webhooks/stripe` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`.
-   - Until then, checkout says "Payments are not set up yet".
+   - In Stripe add a webhook to `https://fattofitwithz.com/api/webhooks/stripe` with the events `checkout.session.completed`, `checkout.session.async_payment_succeeded` and `charge.refunded`.
+   - Until then, clients pay by bank / JazzCash / Easypaisa (Pakistan) or on WhatsApp.
 3. **E-book Drive link** in admin › Website › E-book. Confirm the e-book prices in admin › Prices.
 4. Doc 14 sections 3+ still describe the old weekly check-ins; rewrite them when the admin list is final.
 
@@ -164,7 +177,7 @@ Netlify's free plan runs the server in **Ohio, USA**, but the database is in **S
 
 1. `cd app`, then `npm run dev`, then open http://localhost:3000.
 2. **Sign up** at `/signup` → `/dashboard` shows locked cards with "Choose a program to unlock".
-3. **Program page** → **Join now** → e-book popup → `/checkout` → fill in the form → "Payments are not set up yet" (no Stripe keys). The account is created.
+3. **Program page** → **Join now** → e-book popup → `/checkout` → fill in the form → her order page with the payment details (Pakistan) or WhatsApp (other countries; to try, set the cookie `ftf_country=GB`). The emails are printed in the dev-server log. Delete test orders in admin › Orders & payments afterwards (local and live share one database).
 4. **Test member with a membership:**
    - `npx payload run src/payload/seed/test-member.ts`
    - `/forgot-password` with `test.member@example.com` (the link is printed in the dev-server log) → set a password.

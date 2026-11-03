@@ -14,6 +14,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { EBOOK_CHAPTERS, EBOOK_GUIDES } from "@/lib/ebook-contents";
 import { getEbook, getExchangeRates, getPriceTable, getRegions } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
+import { paymentMode } from "@/lib/checkout.server";
 
 export async function generateMetadata() {
   const ebook = await getEbook();
@@ -25,7 +26,7 @@ const POINTS = ["Everyday desi recipes: roti, dal, sabzi, chai", "1200 kcal a da
 const CHAPTER_ICONS = { sun: Sun, utensils: Utensils, sparkle: Sparkle, leaf: Leaf, heart: Heart, star: Star, droplet: Droplet };
 
 export default async function EbookPage() {
-  const [ebook, regions, table, rates] = await Promise.all([getEbook(), getRegions(), getPriceTable(), getExchangeRates()]);
+  const [ebook, regions, table, rates, mode] = await Promise.all([getEbook(), getRegions(), getPriceTable(), getExchangeRates(), paymentMode()]);
   if (!ebook.enabled) notFound();
 
   return (
@@ -59,7 +60,7 @@ export default async function EbookPage() {
                 </li>
               ))}
             </ul>
-            <EbookBuy />
+            <EbookBuy paymentMode={mode} />
           </div>
         </div>
       </section>

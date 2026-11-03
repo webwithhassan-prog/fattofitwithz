@@ -17,6 +17,7 @@ import * as migration_20261013_171400_water_sleep from './20261013_171400_water_
 import * as migration_20261013_171959_workouts_done from './20261013_171959_workouts_done';
 import * as migration_20261013_174046_membership_freeze from './20261013_174046_membership_freeze';
 import * as migration_20261014_143605_membership_days_frozen from './20261014_143605_membership_days_frozen';
+import * as migration_20261103_005116_manual_payments from './20261103_005116_manual_payments';
 
 export const migrations = [
   {
@@ -112,6 +113,11 @@ export const migrations = [
   {
     up: migration_20261014_143605_membership_days_frozen.up,
     down: migration_20261014_143605_membership_days_frozen.down,
-    name: '20261014_143605_membership_days_frozen'
+    name: '20261014_143605_membership_days_frozen',
+  },
+  {
+    up: migration_20261103_005116_manual_payments.up,
+    down: migration_20261103_005116_manual_payments.down,
+    name: '20261103_005116_manual_payments'
   },
 ];

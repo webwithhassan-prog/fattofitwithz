@@ -15,6 +15,7 @@ import { getEbook, getExchangeRates, getFaqs, getPriceTable, getProgram, getProg
 import { getPrice } from "@/lib/pricing";
 import { breadcrumbSchema, buildMetadata, programSchema } from "@/lib/seo";
 import { isStripeTestMode } from "@/lib/stripe.server";
+import { paymentMode } from "@/lib/checkout.server";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -46,7 +47,7 @@ export default async function ProgramPage({ params }: PageProps) {
   const program = await getProgram(slug);
   if (!program) notFound();
 
-  const [regions, table, ebook, rates] = await Promise.all([getRegions(), getPriceTable(), getEbook(), getExchangeRates()]);
+  const [regions, table, ebook, rates, mode] = await Promise.all([getRegions(), getPriceTable(), getEbook(), getExchangeRates(), paymentMode()]);
   // Prices in the structured data (for Google) use the default region (USD).
   const region = regions.find((r) => r.isDefault) ?? regions[0];
   const offerPrices = program.durations.map((d) => ({ months: d.months, cell: getPrice(table, region.code, d.months) }));
@@ -136,7 +137,7 @@ export default async function ProgramPage({ params }: PageProps) {
             </div>
 
             <div>
-              <ProgramPurchase program={program} ebook={ebook} testMode={isStripeTestMode() || !process.env.STRIPE_SECRET_KEY} />
+              <ProgramPurchase program={program} ebook={ebook} paymentMode={mode} testMode={isStripeTestMode()} />
             </div>
           </div>
         </div>

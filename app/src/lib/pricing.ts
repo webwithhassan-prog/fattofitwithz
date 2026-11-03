@@ -140,3 +140,14 @@ export function durationLabel(months: number, isMinimum = false): string {
   const base = months === 1 ? "1 Month" : `${months} Months`;
   return isMinimum ? `${base} (minimum)` : base;
 }
+
+/** An order total for order pages, emails and payment steps: "Rs 7,000", "$49", "£39.50", "AED 180". */
+export function formatOrderAmount(amount: number, currency: string): string {
+  if (currency === "PKR") return `Rs ${amount.toLocaleString("en-US")}`;
+  try {
+    const decimals = Number.isInteger(amount) ? 0 : 2;
+    return new Intl.NumberFormat("en", { style: "currency", currency, minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(amount);
+  } catch {
+    return `${currency} ${amount.toLocaleString("en-US")}`;
+  }
+}

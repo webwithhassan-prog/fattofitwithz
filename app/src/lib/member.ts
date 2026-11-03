@@ -93,6 +93,8 @@ export type DashboardData = {
   hasEbook: boolean;
   /** Workout videos she has finished, as "week-day" keys, e.g. "1-3" = week 1, day 3 */
   workoutsDone: string[];
+  /** Her newest order still waiting for payment (shown as a reminder on the dashboard), or null */
+  pendingOrder: { reference: string; label: string; total: string; path: string } | null;
 };
 
 /** Key for one workout video in workoutsDone: "1-3" = week 1, day 3. */

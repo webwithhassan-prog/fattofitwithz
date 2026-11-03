@@ -19,12 +19,21 @@ import type { EbookOffer, Program } from "@/lib/types";
 type Props = {
   program: Program;
   ebook: EbookOffer;
+  /** "manual": bank / JazzCash / Easypaisa (Pakistan) or WhatsApp; "stripe": card payment page */
+  paymentMode: "stripe" | "manual";
+  /** Stripe test keys: shows the "no real money" note */
   testMode: boolean;
 };
 
-export function ProgramPurchase({ program, ebook, testMode }: Props) {
+export function ProgramPurchase({ program, ebook, paymentMode, testMode }: Props) {
   const router = useRouter();
-  const { ready, ebook: ebookPrices, money } = useRegion();
+  const { ready, ebook: ebookPrices, money, market } = useRegion();
+  const howToPay =
+    paymentMode === "stripe"
+      ? "Secure card payment by Stripe."
+      : market.country === "PK"
+        ? "Pay by bank transfer or JazzCash / Easypaisa."
+        : "We'll arrange your payment on WhatsApp.";
   const dialogRef = useRef<HTMLDialogElement>(null);
   // A program card can link here with ?months=4 to pre-select that duration.
   const monthsInUrl = useClientValue(() => Number(new URLSearchParams(window.location.search).get("months")), 0);
@@ -72,12 +81,12 @@ export function ProgramPurchase({ program, ebook, testMode }: Props) {
         Join now
       </button>
 
-      {testMode ? (
+      {paymentMode === "stripe" && testMode ? (
         <p className="rounded-lg bg-blush px-3 py-2 text-xs text-muted">
           <b className="text-ink">Test mode:</b> payments use Stripe&apos;s test environment, so no real money is taken.
         </p>
       ) : null}
-      <p className="text-xs text-muted">Secure payment by Stripe. You&apos;ll create your account on the next page.</p>
+      <p className="text-xs text-muted">{howToPay} You&apos;ll create your account on the next page.</p>
 
       {/* E-book offer popup */}
       {ebook.enabled ? (

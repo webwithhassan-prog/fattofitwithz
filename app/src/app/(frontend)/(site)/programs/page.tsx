@@ -42,6 +42,8 @@ export default async function ProgramsPage() {
           <div className="mb-6 flex justify-center">
             <RegionSelect />
           </div>
+          {/* Screen readers: the cards' headings (h3) sit under this one */}
+          <h2 className="sr-only">All programs</h2>
           {/* "stagger": the cards fade up one after another when scrolled into view */}
           <Reveal className="stagger grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {programs.map((program) => (

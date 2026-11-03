@@ -1,7 +1,7 @@
 /**
  * /checkout?program=fat-loss&months=2&ebook=1
  * Order summary + the few details we need before payment (name, email, WhatsApp, password).
- * Everything else (health, food, measurements) she fills in later in the first day form.
+ * Everything else (health, food, measurements) she fills in later in her Personal Wellness Profile.
  * Logged-in members only confirm their WhatsApp number.
  */
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { getEbook, getExchangeRates, getPriceTable, getProgram, getRegions } fro
 import { getCurrentMember } from "@/lib/auth/session.server";
 import { buildMetadata } from "@/lib/seo";
 import { isStripeTestMode } from "@/lib/stripe.server";
+import { paymentMode } from "@/lib/checkout.server";
 
 export const metadata = buildMetadata({ title: "Checkout", path: "/checkout", noIndex: true });
 
@@ -24,7 +25,7 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
 
   const requested = Number(query.months);
   const duration = program.durations.find((d) => d.months === requested) ?? program.durations[0];
-  const [ebook, regions, table, rates, member] = await Promise.all([getEbook(), getRegions(), getPriceTable(), getExchangeRates(), getCurrentMember()]);
+  const [ebook, regions, table, rates, member, mode] = await Promise.all([getEbook(), getRegions(), getPriceTable(), getExchangeRates(), getCurrentMember(), paymentMode()]);
 
   return (
     <RegionProvider regions={regions} table={table} rates={rates}>
@@ -46,7 +47,8 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
             startWithEbook={query.ebook === "1"}
             member={member ? { email: member.email, fullName: member.fullName ?? "", phone: member.phone ?? "" } : null}
             cancelled={query.cancelled === "1"}
-            testMode={isStripeTestMode() || !process.env.STRIPE_SECRET_KEY}
+            paymentMode={mode}
+            testMode={isStripeTestMode()}
           />
         </div>
       </section>

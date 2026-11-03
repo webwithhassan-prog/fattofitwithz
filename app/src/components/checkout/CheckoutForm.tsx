@@ -2,8 +2,8 @@
 
 /**
  * The /checkout form: order summary on one side, her details on the other.
- * Sends everything to checkoutAction (src/app/(frontend)/(site)/checkout/actions.ts),
- * which creates her account if needed and opens Stripe's payment page.
+ * Sends everything to checkoutAction (src/app/(frontend)/(site)/checkout/actions.ts), which creates
+ * her account if needed, then saves the order and shows how to pay (or opens Stripe when card payments are on).
  */
 import Image from "next/image";
 import Link from "next/link";
@@ -20,12 +20,14 @@ type Props = {
   startWithEbook: boolean;
   member: { email: string; fullName: string; phone: string } | null;
   cancelled: boolean;
+  /** "manual": bank / JazzCash / Easypaisa (Pakistan) or WhatsApp; "stripe": card payment page */
+  paymentMode: "stripe" | "manual";
   testMode: boolean;
 };
 
 const START: CheckoutFormState = {};
 
-export function CheckoutForm({ program, months, durationLabel, ebook, startWithEbook, member, cancelled, testMode }: Props) {
+export function CheckoutForm({ program, months, durationLabel, ebook, startWithEbook, member, cancelled, paymentMode, testMode }: Props) {
   const [state, formAction, pending] = useActionState(checkoutAction, START);
   const [addEbook, setAddEbook] = useState(startWithEbook && Boolean(ebook));
   const { market, ready, price: priceFor, ebook: ebookPrices, money } = useRegion();
@@ -35,6 +37,9 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
   const total = programPrice + (addEbook ? ebookPrice : 0);
   const price = (amount: number) => (ready ? money(amount) : "…");
   const value = (name: string, fallback = "") => state.values?.[name] ?? fallback;
+  const manual = paymentMode === "manual";
+  const inPakistan = market.country === "PK";
+  const buttonText = !manual ? "Continue to payment" : inPakistan ? "Place order" : "Continue on WhatsApp";
 
   return (
     <form action={formAction} noValidate className="grid items-start gap-6 md:grid-cols-[1fr_1.1fr]">
@@ -108,7 +113,7 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
             <input id="co-phone" name="phone" type="tel" autoComplete="tel" required defaultValue={value("phone")} placeholder="+92 300 1234567" className="field-input" />
             <label htmlFor="co-password" className="field-label mt-4">Create a password (8+ characters)</label>
             <input id="co-password" name="password" type="password" autoComplete="new-password" required minLength={8} className="field-input" />
-            <p className="mt-2 text-xs text-muted">You&apos;ll use this to open your member area. Health and food details come later, in your first day form.</p>
+            <p className="mt-2 text-xs text-muted">You&apos;ll use this to open your member area. Health and food details come later, in your Personal Wellness Profile.</p>
           </>
         )}
 
@@ -124,16 +129,23 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
         ) : null}
 
         <button type="submit" className="btn mt-6 w-full" disabled={pending || !ready}>
-          {pending ? "Opening secure payment…" : `Continue to payment${ready ? ` · ${price(total)}` : ""}`}
+          {pending ? (manual ? "Saving your order…" : "Opening secure payment…") : `${buttonText}${ready ? ` · ${price(total)}` : ""}`}
         </button>
 
-        {testMode ? (
+        {manual ? (
+          <p className="mt-4 rounded-lg bg-blush px-3 py-2 text-sm text-muted">
+            {inPakistan
+              ? "Next you'll see our bank and JazzCash / Easypaisa details. Your program starts as soon as the payment is confirmed."
+              : "Next, WhatsApp opens so we can arrange your payment. Your program starts as soon as the payment is confirmed."}
+          </p>
+        ) : null}
+        {!manual && testMode ? (
           <p className="mt-4 rounded-lg bg-blush px-3 py-2 text-xs text-muted">
             <b className="text-ink">Test mode:</b> no real money is taken. Test card 4242 4242 4242 4242, any future date, any CVC.
           </p>
         ) : null}
         <p className="mt-3 text-xs text-muted">
-          Secure payment by Stripe. By paying you agree to our <Link href="/terms" className="underline">Terms</Link> and{" "}
+          {manual ? "By ordering" : "Secure payment by Stripe. By paying"} you agree to our <Link href="/terms" className="underline">Terms</Link> and{" "}
           <Link href="/refund-policy" className="underline">Refund Policy</Link>.
         </p>
       </div>

@@ -34,11 +34,13 @@ const SHOPIFY_REDIRECTS: [string, string][] = [
 ];
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false, // don't tell visitors (or attackers) which software runs the site
+
   async redirects() {
     return SHOPIFY_REDIRECTS.map(([source, destination]) => ({ source, destination, permanent: true }));
   },
 
-  // Basic security headers for every response.
+  // Security headers for every response. (HTTPS-only "Strict-Transport-Security" is added by Netlify.)
   async headers() {
     return [
       {
@@ -47,7 +49,10 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+          // Only the parts of a content policy that can't break the site: no embedding in other sites,
+          // no plugins, no <base> tricks. (HTTPS itself is enforced by Netlify's Strict-Transport-Security.)
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'; object-src 'none'; base-uri 'self'" },
         ],
       },
     ];

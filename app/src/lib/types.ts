@@ -42,6 +42,8 @@ export type ProgramDuration = {
 };
 
 export type Program = {
+  /** database id (orders link to it) */
+  id: number;
   slug: string;
   name: string;
   tag: string;
@@ -159,4 +161,14 @@ export type SiteSettings = {
   contactSubjects: string[];
   qualifications: string[];
   expertise: string[];
+};
+
+/** admin > Website > Payment details (how clients pay while card payments are off) */
+export type PaymentSettings = {
+  /** Stripe card payments: only when ticked in admin AND the Stripe keys are set */
+  cardPayments: boolean;
+  bank: { enabled: boolean; bankName: string; accountTitle: string; accountNumber: string; iban: string; branch: string };
+  wallet: { enabled: boolean; number: string; accountName: string };
+  instructions: string;
+  otherCountriesText: string;
 };
