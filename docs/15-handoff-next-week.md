@@ -99,8 +99,7 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
   - A video is marked done automatically when she finishes it (or watches 90%), using YouTube's official player. She can also tap "Mark as done" / "Undo".
   - Saved on her account (`members.workoutsDone`, read-only in admin › Clients › Forms).
   - Migration `20261013_171959_workouts_done` (already applied).
-- **Demo client:**
-  - `npx payload run src/payload/seed/demo-client.ts fix-form` refreshes its sample forms without changing the password.
+- **Demo client:** removed on 2026-11-17, together with the other test accounts.
   - Week 1 "Upper Body" is marked done to show the badge.
 
 ## Done ✅ (2026-10-14): freezes + renamed form
@@ -230,14 +229,9 @@ Netlify's free plan runs the server in **Ohio, USA**, but the database is in **S
 
 1. `cd app`, then `npm run dev`, then open http://localhost:3000.
 2. **Sign up** at `/signup` → `/dashboard` shows locked cards with "Choose a program to unlock".
-3. **Program page** → **Join now** → e-book popup → `/checkout` → fill in the form → her order page with the payment details (Pakistan) or WhatsApp (other countries; to try, set the cookie `ftf_country=GB`). The emails are printed in the dev-server log. Delete test orders in admin › Orders & payments afterwards (local and live share one database).
-4. **Test member with a membership:**
-   - `npx payload run src/payload/seed/test-member.ts`
-   - `/forgot-password` with `test.member@example.com` (the link is printed in the dev-server log) → set a password.
-5. **First day form / follow-up / library**, as before.
-6. **Clean up:**
-   - `npx payload run src/payload/seed/test-member.ts remove`
-   - delete test accounts in admin › Members. Remember: **local and live share the same database.**
+3. **Program page** → **Join now** → `/checkout` → fill in the form → her order page with the payment details (Pakistan) or WhatsApp (other countries; to try, set the cookie `ftf_country=GB`). The emails are printed in the dev-server log. Delete test orders in admin › Orders & payments afterwards (local and live share one database).
+4. To unlock a test order: in admin › Orders & payments set it to **Paid**. Then try the profile, follow-up and workouts.
+5. **Clean up:** delete the test order (admin › Orders & payments) and the test account (admin › Clients). Remember: **local and live share the same database.**
 
 ## Useful facts
 

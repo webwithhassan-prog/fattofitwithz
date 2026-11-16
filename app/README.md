@@ -28,7 +28,6 @@ The first time you open `/admin`, it asks you to create the first admin account 
 | `npm run migrate:create -- <name>` | After changing a collection: write a migration for it |
 | `npm run migrate:status` | Which migrations have run |
 | `npm run seed` | Import content from `src/content` into the database (overwrites content edited in /admin!) |
-| `npx payload run src/payload/seed/test-member.ts` | Create a test member (add `remove` to delete it and its data) |
 | `npm run generate:types` | Refresh `src/payload-types.ts` after changing a collection |
 | `node --env-file=.env.local scripts/db-row-counts.mjs` | How many rows each table has |
 | `python scripts/prepare-assets.py` | Re-copy images/content from `../docs` (resizes photos, makes favicon and share image) |

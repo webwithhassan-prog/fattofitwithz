@@ -46,5 +46,3 @@ next-env.d.ts
 # Payload uploads while developing (production uses cloud storage)
 
 
-# Demo client login details (made by src/payload/seed/demo-client.ts) - never commit
-demo-client-login.txt
