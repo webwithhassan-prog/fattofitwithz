@@ -81,10 +81,11 @@ export async function GET(request: Request) {
 
   // ---- size: grows with the number of answers ----
   const answerRows = Math.ceil(filled.length / 2) + Math.ceil(measurements.length / 3);
-  const height = 330 + answerRows * 96 + (measurements.length ? 70 : 0) + (notes ? 200 : 0);
+  // Generous on purpose: too little height squeezes the rows on top of each other (flexShrink: 0 below stops that too).
+  const height = 420 + answerRows * 108 + (measurements.length ? 80 : 0) + (notes ? 220 : 0);
 
   const cell = (r: Row, width: string) => (
-    <div key={r.label} style={{ display: "flex", flexDirection: "column", width, padding: "14px 18px", marginBottom: 14, background: "#fff", borderRadius: 14, border: "1px solid #ebdcde" }}>
+    <div key={r.label} style={{ display: "flex", flexDirection: "column", flexShrink: 0, width, padding: "14px 18px", marginBottom: 14, background: "#fff", borderRadius: 14, border: "1px solid #ebdcde" }}>
       <span style={{ fontSize: 20, color: MUTED }}>{r.label}</span>
       <span style={{ fontSize: 28, color: INK, marginTop: 4 }}>{r.value.length > 60 ? `${r.value.slice(0, 57)}…` : r.value}</span>
     </div>
@@ -96,18 +97,18 @@ export async function GET(request: Request) {
         <span style={{ fontSize: 30, color: BRAND, fontWeight: 700 }}>Fat To Fit With Z</span>
         <span style={{ fontSize: 22, color: MUTED }}>{date(doc.updatedAt)}</span>
       </div>
-      <span style={{ fontSize: 52, color: INK, marginTop: 28, fontWeight: 700 }}>{title}</span>
-      <span style={{ fontSize: 30, color: BRAND, marginTop: 6, marginBottom: 26 }}>{name}</span>
+      <span style={{ fontSize: 52, color: INK, marginTop: 28, fontWeight: 700, flexShrink: 0 }}>{title}</span>
+      <span style={{ fontSize: 30, color: BRAND, marginTop: 6, marginBottom: 26, flexShrink: 0 }}>{name}</span>
 
-      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between" }}>{filled.map((r) => cell(r, "48.8%"))}</div>
+      <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", flexShrink: 0 }}>{filled.map((r) => cell(r, "48.8%"))}</div>
 
-      {measurements.length ? <span style={{ fontSize: 24, color: MUTED, margin: "10px 0 14px" }}>Measurements</span> : null}
+      {measurements.length ? <span style={{ fontSize: 24, color: MUTED, margin: "10px 0 14px", flexShrink: 0 }}>Measurements</span> : null}
       {measurements.length ? (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0 14px" }}>{measurements.map((r) => cell(r, "31.9%"))}</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0 14px", flexShrink: 0 }}>{measurements.map((r) => cell(r, "31.9%"))}</div>
       ) : null}
 
       {notes ? (
-        <div style={{ display: "flex", flexDirection: "column", padding: "16px 20px", marginTop: 6, background: "#fff", borderRadius: 14, border: "1px solid #ebdcde" }}>
+        <div style={{ display: "flex", flexDirection: "column", flexShrink: 0, padding: "16px 20px", marginTop: 6, background: "#fff", borderRadius: 14, border: "1px solid #ebdcde" }}>
           <span style={{ fontSize: 20, color: MUTED }}>Notes</span>
           <span style={{ fontSize: 24, color: INK, marginTop: 6 }}>{notes.length > 260 ? `${notes.slice(0, 257)}…` : notes}</span>
         </div>
