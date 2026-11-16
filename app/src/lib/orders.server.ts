@@ -38,10 +38,15 @@ function addMonths(day: string, months: number): string {
 }
 
 /** Lines about the e-book for the emails. */
+/**
+ * The e-book part of the welcome email. The Drive links themselves are NOT in the email (emails get
+ * forwarded): she opens them from her order page (secret link) or her member area.
+ */
 async function ebookLines(order: Order): Promise<string[]> {
-  return (await orderEbooks(order)).map((ebook) =>
-    ebook.driveLink ? `Your e-book "${ebook.title}": ${ebook.driveLink}` : `Your e-book "${ebook.title}": we'll send you the link on WhatsApp shortly.`,
-  );
+  const ebooks = await orderEbooks(order);
+  if (!ebooks.length) return [];
+  const titles = ebooks.map((e) => `"${e.title}"`).join(" and ");
+  return [`Your e-book${ebooks.length > 1 ? "s" : ""} ${titles}: open ${ebooks.length > 1 ? "them" : "it"} here: ${orderPageUrl(order)}`];
 }
 
 /** The e-books in an order. Older orders only have the "Includes e-books" tick: that was the first e-book. */
