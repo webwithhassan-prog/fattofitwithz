@@ -89,10 +89,12 @@ export type DashboardData = {
   program: MemberProgram | null;
   firstDayForm: { id: number; updatedAt: string; data: FirstDayFormData } | null;
   followUps: { id: number; createdAt: string; weightKg: number; mood: string }[];
-  /** Did she buy the e-book? (the link itself comes from getEbook()) */
-  hasEbook: boolean;
+  /** The e-books she bought, with their Google Drive links ("" until the coach adds the link) */
+  ebooks: { slug: string; title: string; driveLink: string; cover: { src: string; alt: string; width: number; height: number } | null }[];
   /** Workout videos she has finished, as "week-day" keys, e.g. "1-3" = week 1, day 3 */
   workoutsDone: string[];
+  /** true when her account was made at checkout and she hasn't created a password yet (payment first) */
+  needsPassword: boolean;
   /** Her newest order still waiting for payment (shown as a reminder on the dashboard), or null */
   pendingOrder: { reference: string; label: string; total: string; path: string } | null;
 };

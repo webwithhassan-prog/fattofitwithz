@@ -74,6 +74,7 @@ export interface Config {
     orders: Order;
     announcements: Announcement;
     'workout-sessions': WorkoutSession;
+    ebooks: Ebook;
     media: Media;
     memberships: Membership;
     programs: Program;
@@ -108,6 +109,7 @@ export interface Config {
     orders: OrdersSelect<false> | OrdersSelect<true>;
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'workout-sessions': WorkoutSessionsSelect<false> | WorkoutSessionsSelect<true>;
+    ebooks: EbooksSelect<false> | EbooksSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     memberships: MembershipsSelect<false> | MembershipsSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
@@ -133,7 +135,6 @@ export interface Config {
     payments: Payment;
     homepage: Homepage;
     pricing: Pricing;
-    ebook: Ebook;
     'site-settings': SiteSetting;
     'page-photos': PagePhoto;
   };
@@ -141,7 +142,6 @@ export interface Config {
     payments: PaymentsSelect<false> | PaymentsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     pricing: PricingSelect<false> | PricingSelect<true>;
-    ebook: EbookSelect<false> | EbookSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'page-photos': PagePhotosSelect<false> | PagePhotosSelect<true>;
   };
@@ -471,7 +471,14 @@ export interface Order {
    */
   program?: (number | null) | Program;
   months?: number | null;
+  /**
+   * Ticked automatically when e-books are chosen below
+   */
   ebook?: boolean | null;
+  /**
+   * Which e-books she bought (she gets their Drive links).
+   */
+  ebooks?: (number | Ebook)[] | null;
   /**
    * Total, e.g. 7000
    */
@@ -497,6 +504,87 @@ export interface Order {
   stripePaymentIntentId?: string | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Each e-book for sale. Buyers get the Google Drive link after their payment is confirmed. Prices: admin > Prices.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ebooks".
+ */
+export interface Ebook {
+  id: number;
+  title: string;
+  /**
+   * Short name for links, e.g. "healthy-desserts". Don't change it after people have bought it.
+   */
+  slug: string;
+  /**
+   * 1 shows first
+   */
+  order?: number | null;
+  enabled?: boolean | null;
+  /**
+   * One or two sentences for the e-book page and the offer when joining a program.
+   */
+  description: string;
+  cover?: (number | null) | Media;
+  /**
+   * Set sharing to "Anyone with the link can view". Buyers receive this link after paying.
+   */
+  driveLink?: string | null;
+  points?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  chapters?:
+    | {
+        title: string;
+        /**
+         * e.g. "7 recipes, 115-165 kcal"
+         */
+        note?: string | null;
+        /**
+         * A few recipes from this chapter, one per line
+         */
+        highlights?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  guides?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * All photos used on the website. To change a picture, open it and upload a new file: it changes everywhere it is used. Admin > Site photos shows where each one appears.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * Describe the photo in a few words, e.g. "Zaineb Danish speaking at the Lahore Press Club".
+   */
+  alt: string;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * Delete a row to log that member out on that device.
@@ -569,31 +657,6 @@ export interface WorkoutSession {
   youtubeUrl: string;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * All photos used on the website. To change a picture, open it and upload a new file: it changes everywhere it is used. Admin > Site photos shows where each one appears.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  /**
-   * Describe the photo in a few words, e.g. "Zaineb Danish speaking at the Lahore Press Club".
-   */
-  alt: string;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * Before/after photos and Instagram posts for the Testimonials page. Lower order numbers show first.
@@ -799,6 +862,10 @@ export interface PayloadLockedDocument {
         value: number | WorkoutSession;
       } | null)
     | ({
+        relationTo: 'ebooks';
+        value: number | Ebook;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -1002,6 +1069,7 @@ export interface OrdersSelect<T extends boolean = true> {
   program?: T;
   months?: T;
   ebook?: T;
+  ebooks?: T;
   amount?: T;
   currency?: T;
   region?: T;
@@ -1035,6 +1103,41 @@ export interface WorkoutSessionsSelect<T extends boolean = true> {
   day?: T;
   workout?: T;
   youtubeUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ebooks_select".
+ */
+export interface EbooksSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  order?: T;
+  enabled?: T;
+  description?: T;
+  cover?: T;
+  driveLink?: T;
+  points?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  chapters?:
+    | T
+    | {
+        title?: T;
+        note?: T;
+        highlights?: T;
+        id?: T;
+      };
+  guides?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1313,12 +1416,18 @@ export interface Payment {
    */
   cardPayments?: boolean | null;
   bankEnabled?: boolean | null;
+  /**
+   * Optional, e.g. the Meezan Bank logo. A wide PNG with a transparent or white background looks best.
+   */
+  bankLogo?: (number | null) | Media;
   bankName?: string | null;
   bankAccountTitle?: string | null;
   bankBranch?: string | null;
   bankAccountNumber?: string | null;
   bankIban?: string | null;
   walletEnabled?: boolean | null;
+  jazzcashLogo?: (number | null) | Media;
+  easypaisaLogo?: (number | null) | Media;
   walletNumber?: string | null;
   walletAccountName?: string | null;
   instructions?: string | null;
@@ -1433,31 +1542,6 @@ export interface Pricing {
   createdAt?: string | null;
 }
 /**
- * The e-book offer. Its prices per country are under Prices.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ebook".
- */
-export interface Ebook {
-  id: number;
-  /**
-   * Untick to hide it everywhere (the e-book page and the offer when joining a program).
-   */
-  enabled?: boolean | null;
-  title: string;
-  /**
-   * One or two sentences shown on the e-book page and in the offer.
-   */
-  description: string;
-  cover?: (number | null) | Media;
-  /**
-   * Set sharing to "Anyone with the link can view". Buyers receive this link after paying.
-   */
-  driveLink?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * WhatsApp, emails, social links, menus and the coach's qualifications.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1554,12 +1638,15 @@ export interface PagePhoto {
 export interface PaymentsSelect<T extends boolean = true> {
   cardPayments?: T;
   bankEnabled?: T;
+  bankLogo?: T;
   bankName?: T;
   bankAccountTitle?: T;
   bankBranch?: T;
   bankAccountNumber?: T;
   bankIban?: T;
   walletEnabled?: T;
+  jazzcashLogo?: T;
+  easypaisaLogo?: T;
   walletNumber?: T;
   walletAccountName?: T;
   instructions?: T;
@@ -1662,20 +1749,6 @@ export interface PricingSelect<T extends boolean = true> {
         isDefault?: T;
         id?: T;
       };
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ebook_select".
- */
-export interface EbookSelect<T extends boolean = true> {
-  enabled?: T;
-  title?: T;
-  description?: T;
-  cover?: T;
-  driveLink?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

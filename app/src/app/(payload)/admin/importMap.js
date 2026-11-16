@@ -3,6 +3,7 @@ import { RowLabel as RowLabel_24f67a374aa8f39956a3c103508218a9 } from '../../../
 import { Icon as Icon_3cd692343be5ea03e13bd9af21cbda1d } from '../../../payload/admin/Logo'
 import { Logo as Logo_3cd692343be5ea03e13bd9af21cbda1d } from '../../../payload/admin/Logo'
 import { NavLinks as NavLinks_f9e5d63bd5735b9847c8a8f20a8778e5 } from '../../../payload/admin/NavLinks'
+import { ShrinkUploads as ShrinkUploads_4d47692525a1cbf2a5fb6daeda21770c } from '../../../payload/admin/ShrinkUploads'
 import { Dashboard as Dashboard_fc7b3c28f7af7a7ce2ddde1f00b6dd10 } from '../../../payload/admin/Dashboard'
 import { DietPlans as DietPlans_2a01e02b4a86fcfb5c8f0f81ea67ca95 } from '../../../payload/admin/DietPlans'
 import { SitePhotos as SitePhotos_580fddefca0e53708fc0c69b32ddce4c } from '../../../payload/admin/SitePhotos'
@@ -15,6 +16,7 @@ export const importMap = {
   "/payload/admin/Logo#Icon": Icon_3cd692343be5ea03e13bd9af21cbda1d,
   "/payload/admin/Logo#Logo": Logo_3cd692343be5ea03e13bd9af21cbda1d,
   "/payload/admin/NavLinks#NavLinks": NavLinks_f9e5d63bd5735b9847c8a8f20a8778e5,
+  "/payload/admin/ShrinkUploads#ShrinkUploads": ShrinkUploads_4d47692525a1cbf2a5fb6daeda21770c,
   "/payload/admin/Dashboard#Dashboard": Dashboard_fc7b3c28f7af7a7ce2ddde1f00b6dd10,
   "/payload/admin/DietPlans#DietPlans": DietPlans_2a01e02b4a86fcfb5c8f0f81ea67ca95,
   "/payload/admin/SitePhotos#SitePhotos": SitePhotos_580fddefca0e53708fc0c69b32ddce4c,

@@ -12,7 +12,7 @@ import { requireMember } from "./auth/session.server";
 import { EMPTY_FIRST_DAY_FORM, MEASUREMENT_FIELDS } from "./member";
 import type { DashboardData, FirstDayFormData, Measurements, MemberProgram } from "./member";
 import { dayOf, freezeHasEnded, isPausedToday, todayIso } from "./freeze";
-import { getPendingOrderForMember } from "./orders.server";
+import { getPendingOrderForMember, orderEbooks } from "./orders.server";
 import { formatOrderAmount } from "./pricing";
 import type { Payload, Where } from "payload";
 import type { FirstDayForm, Membership } from "@/payload-types";
@@ -97,6 +97,13 @@ export async function loadMemberProgram(payload: Payload, memberId: number): Pro
   return toProgram(memberships.docs);
 }
 
+/** The e-books from her paid orders (each once), with their Drive links. */
+async function ownedEbooks(orders: Parameters<typeof orderEbooks>[0][]): Promise<DashboardData["ebooks"]> {
+  const owned = new Map<string, DashboardData["ebooks"][number]>();
+  for (const order of orders) for (const e of await orderEbooks(order)) owned.set(e.slug, { slug: e.slug, title: e.title, driveLink: e.driveLink, cover: e.cover });
+  return [...owned.values()];
+}
+
 export const getDashboardData = cache(async (): Promise<DashboardData> => {
   const doc = await requireMember(); // not logged in -> redirected to /login
   const payload = await getPayloadClient();
@@ -105,9 +112,11 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
     loadMemberProgram(payload, doc.id),
     payload.find({ collection: "first-day-forms", where: { member: { equals: doc.id } }, limit: 1, depth: 0 }),
     payload.find({ collection: "follow-up-forms", where: { member: { equals: doc.id } }, sort: "-createdAt", limit: 50, depth: 0 }),
-    payload.count({
+    payload.find({
       collection: "orders",
       where: { and: [{ ebook: { equals: true } }, { status: { equals: "paid" } }, { or: [{ member: { equals: doc.id } }, { email: { equals: doc.email } }] }] },
+      limit: 20,
+      depth: 0,
     }),
     getPendingOrderForMember(doc.id),
   ]);
@@ -119,7 +128,8 @@ export const getDashboardData = cache(async (): Promise<DashboardData> => {
     program,
     firstDayForm: form ? { id: form.id, updatedAt: form.updatedAt, data: toFirstDayFormData(form) } : null,
     followUps: followUps.docs.map((f) => ({ id: f.id, createdAt: f.createdAt, weightKg: f.weightKg, mood: f.mood ?? "" })),
-    hasEbook: ebookOrders.totalDocs > 0,
+    ebooks: await ownedEbooks(ebookOrders.docs),
+    needsPassword: !doc.passwordHash,
     pendingOrder: pending?.reference
       ? {
           reference: pending.reference,

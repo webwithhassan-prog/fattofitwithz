@@ -58,6 +58,8 @@ export const Sun = (p: IconProps) => <Svg {...p}><circle cx="12" cy="12" r="4" /
 export const Moon = (p: IconProps) => <Svg {...p}><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z" /></Svg>;
 export const AlertCircle =(p: IconProps) => <Svg {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7.5v5M12 16.2v.3" /></Svg>;
 export const Megaphone = (p: IconProps) => <Svg {...p}><path d="M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1zM16 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11" /></Svg>;
+export const Bank = (p: IconProps) => <Svg {...p}><path d="M3 10l9-6 9 6" /><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8" /><path d="M3 21h18" /></Svg>;
+export const Phone = (p: IconProps) => <Svg {...p}><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18h2" /></Svg>;
 export const Lock = (p: IconProps) => <Svg {...p}><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4M12 15v2" /></Svg>;
 
 /** Brand marks use fill instead of stroke. */

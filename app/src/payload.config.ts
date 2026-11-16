@@ -17,6 +17,7 @@ import { databaseFiles } from "./payload/storage/databaseFiles";
 
 import { Users } from "./payload/collections/Users";
 import { Media } from "./payload/collections/Media";
+import { Ebooks } from "./payload/collections/Ebooks";
 import { Programs } from "./payload/collections/Programs";
 import { Faqs } from "./payload/collections/Faqs";
 import { Testimonials } from "./payload/collections/Testimonials";
@@ -37,7 +38,6 @@ import { ClientIssues } from "./payload/collections/ClientIssues";
 import { SiteSettings } from "./payload/globals/SiteSettings";
 import { Pricing } from "./payload/globals/Pricing";
 import { Homepage } from "./payload/globals/Homepage";
-import { Ebook } from "./payload/globals/Ebook";
 import { PagePhotos } from "./payload/globals/PagePhotos";
 import { Payments } from "./payload/globals/Payments";
 
@@ -60,6 +60,8 @@ export default buildConfig({
       graphics: { Logo: "/payload/admin/Logo#Logo", Icon: "/payload/admin/Logo#Icon" },
       // Shortcuts at the top of the menu: Overview, Diet plans to send, Site photos
       beforeNavLinks: ["/payload/admin/NavLinks#NavLinks"],
+      // Big photos are made smaller in the browser before upload (Netlify refuses requests over ~6 MB)
+      providers: ["/payload/admin/ShrinkUploads#ShrinkUploads"],
       views: {
         // The admin home page: to-do list + sales of the last 30 days
         dashboard: { Component: "/payload/admin/Dashboard#Dashboard" },
@@ -72,7 +74,7 @@ export default buildConfig({
   // THE ADMIN MENU (owner's list, 2026-10-13). Groups appear in the order below; each file sets its group.
   //   Clients:             Clients, First day forms, Follow-up forms, Client issues, Orders & payments
   //   Messages to clients: Reminders & announcements
-  //   Website:             Workout recordings, All photos, Payment details
+  //   Website:             Workout recordings, E-books, All photos, Payment details
   // Everything else has `admin.group: false`: hidden from the menu, but the pages and data still work
   // (open them from a client's page, the Overview, Site photos, or by address, e.g. /admin/globals/pricing).
   collections: [
@@ -83,6 +85,7 @@ export default buildConfig({
     Orders,
     Announcements,
     WorkoutSessions,
+    Ebooks,
     Media,
     // Hidden from the menu
     Memberships,
@@ -97,7 +100,7 @@ export default buildConfig({
     PasswordResets,
     SiteStats,
   ],
-  globals: [Payments, Homepage, Pricing, Ebook, SiteSettings, PagePhotos], // only Payment details is in the menu
+  globals: [Payments, Homepage, Pricing, SiteSettings, PagePhotos], // only Payment details is in the menu
 
   secret: process.env.PAYLOAD_SECRET ?? "",
   // The admin login is only accepted from these addresses (protection against cross-site requests)

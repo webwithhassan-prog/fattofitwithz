@@ -35,10 +35,10 @@ function PhotoTile({ slot, editHref, usedTimes }: { slot: Slot; editHref: string
 
 export async function SitePhotos(view: AdminViewServerProps) {
   const payload = view.initPageResult.req.payload;
-  const [home, pagePhotos, ebook, testimonials] = await Promise.all([
+  const [home, pagePhotos, ebooks, testimonials] = await Promise.all([
     payload.findGlobal({ slug: "homepage", depth: 1 }),
     payload.findGlobal({ slug: "page-photos", depth: 1 }),
-    payload.findGlobal({ slug: "ebook", depth: 1 }),
+    payload.find({ collection: "ebooks", sort: "order", limit: 20, depth: 1 }),
     payload.find({ collection: "testimonials", where: { type: { equals: "photo" } }, sort: "order", limit: 100, depth: 1 }),
   ]);
 
@@ -79,10 +79,10 @@ export async function SitePhotos(view: AdminViewServerProps) {
       slots: testimonials.docs.map((t) => ({ label: t.startKg && t.endKg ? `${t.startKg} kg → ${t.endKg} kg` : `Result ${t.order}`, media: asMedia(t.image) })),
     },
     {
-      title: "E-book",
-      editHref: "/admin/globals/ebook",
-      editLabel: "Edit e-book (cover, text, Drive link)",
-      slots: [{ label: "Cover", media: asMedia(ebook.cover) }],
+      title: "E-books",
+      editHref: "/admin/collections/ebooks",
+      editLabel: "Edit e-books (cover, text, Drive link)",
+      slots: ebooks.docs.map((e) => ({ label: `Cover: ${e.title}`, media: asMedia(e.cover) })),
     },
   ];
 

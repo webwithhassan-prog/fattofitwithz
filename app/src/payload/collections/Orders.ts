@@ -87,9 +87,10 @@ export const Orders: CollectionConfig = {
       fields: [
         { name: "program", type: "relationship", relationTo: "programs", admin: { description: "Empty for an e-book only order" } },
         { name: "months", type: "number", min: 1, max: 12 },
-        { name: "ebook", type: "checkbox", label: "Includes the e-book", defaultValue: false },
+        { name: "ebook", type: "checkbox", label: "Includes e-books", defaultValue: false, admin: { description: "Ticked automatically when e-books are chosen below" } },
       ],
     },
+    { name: "ebooks", type: "relationship", relationTo: "ebooks", hasMany: true, label: "E-books", admin: { description: "Which e-books she bought (she gets their Drive links)." } },
     {
       type: "row",
       fields: [
@@ -132,7 +133,14 @@ export const Orders: CollectionConfig = {
           const program = await req.payload.findByID({ collection: "programs", id: programId, depth: 0, req });
           parts.push(`${program.name} - ${months} month${months > 1 ? "s" : ""}`);
         }
-        if (data.ebook ?? originalDoc?.ebook) parts.push(parts.length ? "e-book" : "E-book");
+        // E-books: their titles (older orders only have the "Includes e-books" tick)
+        const ebookRefs = (data.ebooks ?? originalDoc?.ebooks ?? []) as (number | { id: number })[];
+        if (ebookRefs.length) {
+          data.ebook = true;
+          const ids = ebookRefs.map((e) => (typeof e === "object" ? e.id : e));
+          const { docs } = await req.payload.find({ collection: "ebooks", where: { id: { in: ids } }, depth: 0, limit: 10, req });
+          parts.push(...docs.map((e) => `${e.title} (e-book)`));
+        } else if (data.ebook ?? originalDoc?.ebook) parts.push(parts.length ? "e-book" : "E-book");
         if (parts.length) data.orderLabel = parts.join(" + ");
         return data;
       },

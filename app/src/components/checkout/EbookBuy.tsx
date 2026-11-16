@@ -1,11 +1,13 @@
 "use client";
 
 /**
- * Price + "Buy the e-book" on /ebook. Calls buyEbookAction (src/app/(frontend)/(site)/checkout/actions.ts).
+ * Buy box on /ebook: tick the e-books she wants (each at the e-book price), then "Buy". Calls buyEbookAction (src/app/(frontend)/(site)/checkout/actions.ts).
  *   manual (card payments off): asks name, email and WhatsApp, saves the order and shows how to pay.
  *   stripe: opens Stripe's payment page (Stripe asks for the email).
  */
-import { useActionState } from "react";
+import Image from "next/image";
+import { useActionState, useState } from "react";
+import type { EbookOffer } from "@/lib/types";
 import { useClientValue } from "@/components/ui/hooks";
 import { buyEbookAction, type CheckoutFormState } from "@/app/(frontend)/(site)/checkout/actions";
 import { RegionSelect } from "@/components/pricing/RegionSelect";
@@ -13,9 +15,14 @@ import { useRegion } from "@/components/pricing/RegionProvider";
 
 const START: CheckoutFormState = {};
 
-export function EbookBuy({ paymentMode }: { paymentMode: "stripe" | "manual" }) {
+type Props = { paymentMode: "stripe" | "manual"; ebooks: Pick<EbookOffer, "slug" | "title" | "cover">[] };
+
+export function EbookBuy({ paymentMode, ebooks }: Props) {
   const [state, formAction, pending] = useActionState(buyEbookAction, START);
   const { market, ready, ebook, money } = useRegion();
+  const [chosen, setChosen] = useState<string[]>(ebooks.map((e) => e.slug)); // all ticked to start
+  const toggle = (slug: string) => setChosen((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
+  const total = chosen.length * ebook.alone;
   const manual = paymentMode === "manual";
   const inPakistan = market.country === "PK";
   const value = (name: string) => state.values?.[name] ?? "";
@@ -32,10 +39,24 @@ export function EbookBuy({ paymentMode }: { paymentMode: "stripe" | "manual" }) 
         </p>
       ) : null}
       <RegionSelect />
+      {ebooks.length > 1 ? (
+        <fieldset className="grid gap-2 sm:grid-cols-2">
+          <legend className="field-label">Choose your e-books</legend>
+          {ebooks.map((e) => (
+            <label key={e.slug} className={`flex cursor-pointer items-center gap-3 rounded-[12px] border-2 p-2.5 transition ${chosen.includes(e.slug) ? "border-brand bg-blush" : "border-line"}`}>
+              <input type="checkbox" name="ebooks" value={e.slug} checked={chosen.includes(e.slug)} onChange={() => toggle(e.slug)} className="h-4.5 w-4.5 flex-none accent-[var(--color-brand-dark)]" />
+              {e.cover ? <Image src={e.cover.src} alt="" width={40} height={56} className="h-14 w-10 flex-none rounded object-cover" /> : null}
+              <span className="text-sm leading-tight font-semibold">{e.title}</span>
+            </label>
+          ))}
+        </fieldset>
+      ) : (
+        ebooks.map((e) => <input key={e.slug} type="hidden" name="ebooks" value={e.slug} />)
+      )}
       <p className={`font-display text-4xl tabular-nums transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}>
-        {money(ebook.alone)}
+        {money(total)}
         <span className="ml-3 align-middle font-body text-sm text-muted">
-          or {money(ebook.withPlan)} with any program
+          {money(ebook.alone)} each, or {money(ebook.withPlan)} each with any program
         </span>
       </p>
 
@@ -61,8 +82,8 @@ export function EbookBuy({ paymentMode }: { paymentMode: "stripe" | "manual" }) 
           {state.error}
         </p>
       ) : null}
-      <button type="submit" className="btn w-full sm:w-max" disabled={pending || !ready}>
-        {pending ? (manual ? "Saving your order…" : "Opening secure payment…") : manual && !inPakistan ? "Continue on WhatsApp" : "Buy the e-book"}
+      <button type="submit" className="btn w-full sm:w-max" disabled={pending || !ready || chosen.length === 0}>
+        {pending ? (manual ? "Saving your order…" : "Opening secure payment…") : manual && !inPakistan ? "Continue on WhatsApp" : chosen.length > 1 ? `Buy ${chosen.length} e-books` : "Buy the e-book"}
       </button>
       <p className="text-xs text-muted">
         {!manual

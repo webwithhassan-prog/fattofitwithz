@@ -33,6 +33,7 @@ export const Payments: GlobalConfig = {
       label: "Pakistan: bank transfer",
       fields: [
         { name: "bankEnabled", type: "checkbox", label: "Show bank transfer", defaultValue: true },
+        { name: "bankLogo", type: "upload", relationTo: "media", label: "Bank logo", admin: { description: "Optional, e.g. the Meezan Bank logo. A wide PNG with a transparent or white background looks best." } },
         {
           type: "row",
           fields: [
@@ -55,6 +56,13 @@ export const Payments: GlobalConfig = {
       label: "Pakistan: JazzCash / Easypaisa",
       fields: [
         { name: "walletEnabled", type: "checkbox", label: "Show JazzCash / Easypaisa", defaultValue: true },
+        {
+          type: "row",
+          fields: [
+            { name: "jazzcashLogo", type: "upload", relationTo: "media", label: "JazzCash logo" },
+            { name: "easypaisaLogo", type: "upload", relationTo: "media", label: "Easypaisa logo" },
+          ],
+        },
         {
           type: "row",
           fields: [

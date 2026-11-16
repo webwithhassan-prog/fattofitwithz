@@ -288,18 +288,32 @@ export const getLegalPages = cachedContent("legal", async () => {
 
 // ---------- e-book ----------
 
-export const getEbook = cachedContent("ebook", async (): Promise<EbookOffer> => {
+/** Every e-book, also the ones switched off (buyers keep their links). Use getEbooks() to sell. */
+export const getAllEbooks = cachedContent("ebooks", async (): Promise<EbookOffer[]> => {
   const payload = await getPayloadClient();
-  const e = await payload.findGlobal({ slug: "ebook", depth: 1 });
-  const cover = e.cover && typeof e.cover === "object" && e.cover.url ? photo(e.cover) : null;
-  return {
+  const { docs } = await payload.find({ collection: "ebooks", sort: "order", limit: 20, depth: 1 });
+  return docs.map((e) => ({
+    id: e.id,
+    slug: e.slug,
     enabled: Boolean(e.enabled),
     title: e.title,
     description: e.description,
-    cover,
+    cover: e.cover && typeof e.cover === "object" && e.cover.url ? photo(e.cover) : null,
     driveLink: e.driveLink?.trim() ?? "",
-  };
+    points: texts(e.points),
+    chapters: (e.chapters ?? []).map((c) => ({
+      title: c.title,
+      note: c.note ?? "",
+      highlights: (c.highlights ?? "").split(/\r?\n/).map((line) => line.trim()).filter(Boolean),
+    })),
+    guides: texts(e.guides),
+  }));
 });
+
+/** The e-books on sale, in admin order. */
+export async function getEbooks(): Promise<EbookOffer[]> {
+  return (await getAllEbooks()).filter((e) => e.enabled);
+}
 
 // ---------- page photos (About page + before/after slider) ----------
 
@@ -373,8 +387,10 @@ export const getSettings = cachedContent("settings", async (): Promise<SiteSetti
 
 export const getPaymentSettings = cachedContent("payments", async (): Promise<PaymentSettings> => {
   const payload = await getPayloadClient();
-  const p = await payload.findGlobal({ slug: "payments", depth: 0 });
+  const p = await payload.findGlobal({ slug: "payments", depth: 1 });
   const t = (value: string | null | undefined) => value?.trim() ?? "";
+  const logo = (media: number | Media | null | undefined, name: string) =>
+    media && typeof media === "object" && media.url ? { src: media.url, alt: media.alt || `${name} logo`, width: media.width ?? 240, height: media.height ?? 80 } : null;
   return {
     cardPayments: Boolean(p.cardPayments),
     bank: {
@@ -384,8 +400,14 @@ export const getPaymentSettings = cachedContent("payments", async (): Promise<Pa
       accountNumber: t(p.bankAccountNumber),
       iban: t(p.bankIban),
       branch: t(p.bankBranch),
+      logo: logo(p.bankLogo, t(p.bankName) || "Bank"),
     },
-    wallet: { enabled: p.walletEnabled !== false && Boolean(t(p.walletNumber)), number: t(p.walletNumber), accountName: t(p.walletAccountName) },
+    wallet: {
+      enabled: p.walletEnabled !== false && Boolean(t(p.walletNumber)),
+      number: t(p.walletNumber),
+      accountName: t(p.walletAccountName),
+      logos: [logo(p.jazzcashLogo, "JazzCash"), logo(p.easypaisaLogo, "Easypaisa")].filter((l) => l !== null),
+    },
     instructions: t(p.instructions),
     otherCountriesText: t(p.otherCountriesText),
   };

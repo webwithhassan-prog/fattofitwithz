@@ -2,39 +2,35 @@
 
 /**
  * Purchase box on a program page: duration choice, price in the visitor's region and "Join now".
- * "Join now" first offers the e-book at the lower "with a program" price (a native <dialog> popup),
- * then opens /checkout. If the e-book is switched off in admin, it goes straight to /checkout.
+ * "Join now" goes straight to /checkout (kept short on purpose); the e-books are offered there as
+ * optional tick boxes at the lower "with a program" price.
  */
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useClientValue } from "@/components/ui/hooks";
 import { PriceTag } from "@/components/pricing/PriceTag";
 import { RegionSelect } from "@/components/pricing/RegionSelect";
 import { useRegion } from "@/components/pricing/RegionProvider";
-import { Close } from "@/components/ui/Icons";
 import { durationLabel } from "@/lib/pricing";
-import type { EbookOffer, Program } from "@/lib/types";
+import type { Program } from "@/lib/types";
 
 type Props = {
   program: Program;
-  ebook: EbookOffer;
   /** "manual": bank / JazzCash / Easypaisa (Pakistan) or WhatsApp; "stripe": card payment page */
   paymentMode: "stripe" | "manual";
   /** Stripe test keys: shows the "no real money" note */
   testMode: boolean;
 };
 
-export function ProgramPurchase({ program, ebook, paymentMode, testMode }: Props) {
+export function ProgramPurchase({ program, paymentMode, testMode }: Props) {
   const router = useRouter();
-  const { ready, ebook: ebookPrices, money, market } = useRegion();
+  const { market } = useRegion();
   const howToPay =
     paymentMode === "stripe"
       ? "Secure card payment by Stripe."
       : market.country === "PK"
         ? "Pay by bank transfer or JazzCash / Easypaisa."
         : "We'll arrange your payment on WhatsApp.";
-  const dialogRef = useRef<HTMLDialogElement>(null);
   // A program card can link here with ?months=4 to pre-select that duration.
   const monthsInUrl = useClientValue(() => Number(new URLSearchParams(window.location.search).get("months")), 0);
   const startMonths = program.durations.some((d) => d.months === monthsInUrl) ? monthsInUrl : program.durations[0].months;
@@ -42,15 +38,7 @@ export function ProgramPurchase({ program, ebook, paymentMode, testMode }: Props
   const months = chosenMonths ?? startMonths;
   const duration = program.durations.find((d) => d.months === months) ?? program.durations[0];
 
-  function goToCheckout(withEbook: boolean) {
-    dialogRef.current?.close();
-    router.push(`/checkout?program=${program.slug}&months=${months}&ebook=${withEbook ? 1 : 0}`);
-  }
-
-  function onJoin() {
-    if (ebook.enabled) dialogRef.current?.showModal();
-    else goToCheckout(false);
-  }
+  const onJoin = () => router.push(`/checkout?program=${program.slug}&months=${months}`);
 
   return (
     <div className="card flex flex-col gap-4 p-6 md:sticky md:top-24">
@@ -86,43 +74,7 @@ export function ProgramPurchase({ program, ebook, paymentMode, testMode }: Props
           <b className="text-ink">Test mode:</b> payments use Stripe&apos;s test environment, so no real money is taken.
         </p>
       ) : null}
-      <p className="text-xs text-muted">{howToPay} You&apos;ll create your account on the next page.</p>
-
-      {/* E-book offer popup */}
-      {ebook.enabled ? (
-        <dialog
-          ref={dialogRef}
-          aria-labelledby="ebook-offer-title"
-          className="ebook-dialog m-auto w-[min(92vw,440px)] rounded-[18px] border border-line bg-card p-0 text-ink shadow-[0_30px_60px_-20px_rgba(43,26,36,0.45)] backdrop:bg-ink/45"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) dialogRef.current?.close(); // click outside the box closes it
-          }}
-        >
-          <div className="relative p-6 text-center sm:p-7">
-            <button type="button" className="absolute top-3 right-3 rounded-full p-1.5 text-muted hover:text-ink" onClick={() => dialogRef.current?.close()} aria-label="Close">
-              <Close className="h-5 w-5" />
-            </button>
-            {ebook.cover ? (
-              <Image src={ebook.cover.src} alt={ebook.cover.alt} width={150} height={200} className="mx-auto h-[170px] w-auto rounded-lg shadow-[0_16px_30px_-14px_rgba(43,26,36,0.5)]" />
-            ) : null}
-            <p className="kicker mt-5">Special offer</p>
-            <h2 id="ebook-offer-title" className="mt-2 text-[26px]">
-              Add the e-book for <span className="script">{ready ? money(ebookPrices.withPlan) : "less"}</span>?
-            </h2>
-            <p className="mt-2 text-[15px] text-muted">
-              {ebook.title}: normally {ready ? money(ebookPrices.alone) : "more"}. This price is only for program members.
-            </p>
-            <div className="mt-6 grid gap-2.5">
-              <button type="button" className="btn w-full" onClick={() => goToCheckout(true)}>
-                Yes, add it
-              </button>
-              <button type="button" className="btn btn-ghost w-full" onClick={() => goToCheckout(false)}>
-                No thanks
-              </button>
-            </div>
-          </div>
-        </dialog>
-      ) : null}
+      <p className="text-xs text-muted">{howToPay} Next: one short page (name, WhatsApp, email).</p>
     </div>
   );
 }

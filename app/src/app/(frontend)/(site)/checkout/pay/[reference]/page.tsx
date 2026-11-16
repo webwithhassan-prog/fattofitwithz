@@ -4,7 +4,9 @@
  *   Waiting for payment, Pakistan:  bank + JazzCash / Easypaisa details (admin > Website > Payment details),
  *                                   then "Send payment screenshot on WhatsApp".
  *   Waiting for payment, elsewhere: opens WhatsApp, where the coach arranges the payment.
- *   Paid / cancelled:               the order's status.
+ *   Paid:                           next step: her Personal Wellness Profile if she's logged in here,
+ *                                   "Create your password" if her account has none yet (paid first), else "Log in".
+ *   Cancelled / refunded:           the order's status.
  *
  * Only opens with the secret key from her link (also in her email) or when she's logged in to the
  * account that placed the order (src/lib/orders.server.ts > getOrderForPage).
@@ -12,11 +14,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CopyButton } from "@/components/checkout/CopyButton";
+import { MethodBadge } from "@/components/checkout/PaymentMethodBadges";
 import { WhatsAppRedirect } from "@/components/checkout/WhatsAppRedirect";
 import { Check, WhatsAppIcon } from "@/components/ui/Icons";
 import { getCurrentMember } from "@/lib/auth/session.server";
-import { getEbook, getPaymentSettings, whatsappLink } from "@/lib/content";
-import { getOrderForPage, paymentWhatsappMessage } from "@/lib/orders.server";
+import { getPaymentSettings, whatsappLink } from "@/lib/content";
+import { getOrderForPage, orderEbooks, paymentWhatsappMessage } from "@/lib/orders.server";
+import { getPayloadClient } from "@/lib/payload.server";
+import { setUpAccountAction } from "./actions";
 import { formatOrderAmount } from "@/lib/pricing";
 import { buildMetadata } from "@/lib/seo";
 
@@ -43,7 +48,7 @@ export default async function OrderPayPage({ params, searchParams }: PageProps) 
   const order = await getOrderForPage(reference, key, member?.id ?? null);
   if (!order) notFound();
 
-  const [payments, ebook] = await Promise.all([getPaymentSettings(), getEbook()]);
+  const [payments, ebooks] = await Promise.all([getPaymentSettings(), orderEbooks(order)]);
   const inPakistan = order.country === "PK";
   const total = formatOrderAmount(order.amount, order.currency);
   const chatHref = await whatsappLink(paymentWhatsappMessage(order, inPakistan));
@@ -70,6 +75,10 @@ export default async function OrderPayPage({ params, searchParams }: PageProps) 
 
   // ---- Paid ----
   if (order.status === "paid") {
+    const orderMemberId = typeof order.member === "object" ? order.member?.id : order.member;
+    const loggedInHere = Boolean(member && member.id === orderMemberId);
+    const needsPassword =
+      !loggedInHere && orderMemberId ? !(await (await getPayloadClient()).findByID({ collection: "members", id: orderMemberId, depth: 0 })).passwordHash : false;
     return (
       <section className="section bg-gradient-to-b from-blush to-bg">
         <div className="container-site flex max-w-[720px] flex-col gap-6">
@@ -83,11 +92,25 @@ export default async function OrderPayPage({ params, searchParams }: PageProps) 
             <p className="lead mt-3">Thank you{firstName ? `, ${firstName}` : ""}! {order.program ? "Your program has started." : "Your e-book is ready."}</p>
           </div>
           {summary}
+          {order.program && needsPassword ? (
+            <form action={setUpAccountAction} className="card flex flex-col gap-3 p-5">
+              <p className="font-display text-xl">One last step: create your password</p>
+              <p className="text-[15px] text-muted">It opens your member area, where you fill in your Personal Wellness Profile and watch your workouts.</p>
+              <input type="hidden" name="reference" value={order.reference ?? ""} />
+              <input type="hidden" name="key" value={key ?? ""} />
+              <button type="submit" className="btn w-full sm:w-max">Create your password</button>
+            </form>
+          ) : null}
           <div className="flex flex-wrap gap-3">
-            {order.program ? <Link href="/dashboard/first-day" className="btn">Fill in your Personal Wellness Profile</Link> : null}
-            {order.ebook && ebook.driveLink ? (
-              <a href={ebook.driveLink} target="_blank" rel="noopener noreferrer" className={order.program ? "btn btn-ghost" : "btn"}>Open the e-book</a>
-            ) : null}
+            {order.program && loggedInHere ? <Link href="/dashboard/first-day" className="btn">Fill in your Personal Wellness Profile</Link> : null}
+            {order.program && !loggedInHere && !needsPassword ? <Link href="/login?next=/dashboard/first-day" className="btn">Log in to your member area</Link> : null}
+            {ebooks.map((ebook) =>
+              ebook.driveLink ? (
+                <a key={ebook.slug} href={ebook.driveLink} target="_blank" rel="noopener noreferrer" className={order.program ? "btn btn-ghost" : "btn"}>
+                  Open {ebooks.length > 1 ? ebook.title : "the e-book"}
+                </a>
+              ) : null,
+            )}
           </div>
         </div>
       </section>
@@ -139,8 +162,13 @@ export default async function OrderPayPage({ params, searchParams }: PageProps) 
               <div className={`mt-4 grid gap-4 ${bank.enabled && wallet.enabled ? "md:grid-cols-2" : ""}`}>
                 {bank.enabled ? (
                   <div className="card p-5">
-                    <p className="font-display text-xl">Bank transfer</p>
-                    <p className="text-sm text-muted">{bank.bankName}</p>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-display text-xl">Bank transfer</p>
+                        <p className="text-sm text-muted">{bank.bankName}</p>
+                      </div>
+                      <MethodBadge logo={bank.logo} icon="bank" name={bank.logo ? "" : "Bank"} />
+                    </div>
                     <dl className="mt-2">
                       <Detail label="Account title" value={bank.accountTitle} />
                       <Detail label="Account number" value={bank.accountNumber} copy />
@@ -153,6 +181,13 @@ export default async function OrderPayPage({ params, searchParams }: PageProps) 
                   <div className="card p-5">
                     <p className="font-display text-xl">JazzCash / Easypaisa</p>
                     <p className="text-sm text-muted">Send to this mobile account</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {wallet.logos.length ? (
+                        wallet.logos.map((logo) => <MethodBadge key={logo.src} logo={logo} icon="phone" name="" />)
+                      ) : (
+                        <MethodBadge logo={null} icon="phone" name="Mobile wallet" />
+                      )}
+                    </div>
                     <dl className="mt-2">
                       <Detail label="Mobile number" value={wallet.number} copy />
                       <Detail label="Account name" value={wallet.accountName} />

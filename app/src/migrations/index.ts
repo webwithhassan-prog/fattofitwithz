@@ -18,6 +18,8 @@ import * as migration_20261013_171959_workouts_done from './20261013_171959_work
 import * as migration_20261013_174046_membership_freeze from './20261013_174046_membership_freeze';
 import * as migration_20261014_143605_membership_days_frozen from './20261014_143605_membership_days_frozen';
 import * as migration_20261103_005116_manual_payments from './20261103_005116_manual_payments';
+import * as migration_20261103_082905_payment_logos from './20261103_082905_payment_logos';
+import * as migration_20261116_184440_ebooks from './20261116_184440_ebooks';
 
 export const migrations = [
   {
@@ -118,6 +120,16 @@ export const migrations = [
   {
     up: migration_20261103_005116_manual_payments.up,
     down: migration_20261103_005116_manual_payments.down,
-    name: '20261103_005116_manual_payments'
+    name: '20261103_005116_manual_payments',
+  },
+  {
+    up: migration_20261103_082905_payment_logos.up,
+    down: migration_20261103_082905_payment_logos.down,
+    name: '20261103_082905_payment_logos',
+  },
+  {
+    up: migration_20261116_184440_ebooks.up,
+    down: migration_20261116_184440_ebooks.down,
+    name: '20261116_184440_ebooks'
   },
 ];

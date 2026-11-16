@@ -2,39 +2,46 @@
 
 /**
  * The /checkout form: order summary on one side, her details on the other.
- * Sends everything to checkoutAction (src/app/(frontend)/(site)/checkout/actions.ts), which creates
- * her account if needed, then saves the order and shows how to pay (or opens Stripe when card payments are on).
+ * Kept SHORT on purpose (payment first): name, email and WhatsApp only, no password.
+ * checkoutAction (src/app/(frontend)/(site)/checkout/actions.ts) saves the order and shows how to pay
+ * (or opens Stripe when card payments are on). She sets a password later, from her welcome email.
  */
 import Image from "next/image";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { checkoutAction, type CheckoutFormState } from "@/app/(frontend)/(site)/checkout/actions";
 import { useRegion } from "@/components/pricing/RegionProvider";
+import { PaymentMethodBadges, type PayMethods } from "@/components/checkout/PaymentMethodBadges";
 import type { EbookOffer } from "@/lib/types";
 
 type Props = {
   program: { slug: string; name: string; focus: string };
   months: number;
   durationLabel: string;
-  ebook: { title: string; cover: EbookOffer["cover"] } | null;
-  startWithEbook: boolean;
+  /** E-books on sale (each can be added at the lower "with a program" price) */
+  ebooks: Pick<EbookOffer, "slug" | "title" | "cover">[];
+  /** slugs ticked when the page opens (from the e-book offer on the program page) */
+  startWithEbooks: string[];
   member: { email: string; fullName: string; phone: string } | null;
   cancelled: boolean;
   /** "manual": bank / JazzCash / Easypaisa (Pakistan) or WhatsApp; "stripe": card payment page */
   paymentMode: "stripe" | "manual";
+  /** Ways to pay in Pakistan with their logos (admin > Website > Payment details) */
+  payMethods: PayMethods;
   testMode: boolean;
 };
 
 const START: CheckoutFormState = {};
 
-export function CheckoutForm({ program, months, durationLabel, ebook, startWithEbook, member, cancelled, paymentMode, testMode }: Props) {
+export function CheckoutForm({ program, months, durationLabel, ebooks, startWithEbooks, member, cancelled, paymentMode, payMethods, testMode }: Props) {
   const [state, formAction, pending] = useActionState(checkoutAction, START);
-  const [addEbook, setAddEbook] = useState(startWithEbook && Boolean(ebook));
+  const [chosen, setChosen] = useState<string[]>(startWithEbooks.filter((slug) => ebooks.some((e) => e.slug === slug)));
+  const toggle = (slug: string, on: boolean) => setChosen((prev) => (on ? [...new Set([...prev, slug])] : prev.filter((s) => s !== slug)));
   const { market, ready, price: priceFor, ebook: ebookPrices, money } = useRegion();
 
   const programPrice = priceFor(months).amount;
   const ebookPrice = ebookPrices.withPlan;
-  const total = programPrice + (addEbook ? ebookPrice : 0);
+  const total = programPrice + chosen.length * ebookPrice;
   const price = (amount: number) => (ready ? money(amount) : "…");
   const value = (name: string, fallback = "") => state.values?.[name] ?? fallback;
   const manual = paymentMode === "manual";
@@ -45,7 +52,9 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
     <form action={formAction} noValidate className="grid items-start gap-6 md:grid-cols-[1fr_1.1fr]">
       <input type="hidden" name="program" value={program.slug} />
       <input type="hidden" name="months" value={months} />
-      <input type="hidden" name="ebook" value={addEbook ? "1" : "0"} />
+      {chosen.map((slug) => (
+        <input key={slug} type="hidden" name="ebooks" value={slug} />
+      ))}
       <input type="hidden" name="country" value={market.country} />
 
       {/* Order summary */}
@@ -59,9 +68,14 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
           <p className="font-medium tabular-nums">{price(programPrice)}</p>
         </div>
 
-        {ebook ? (
-          <label className="mt-4 flex cursor-pointer gap-3 rounded-[12px] border border-brand/30 bg-blush p-3.5 transition hover:border-brand">
-            <input type="checkbox" checked={addEbook} onChange={(e) => setAddEbook(e.target.checked)} className="mt-1 h-4.5 w-4.5 flex-none accent-[var(--color-brand-dark)]" />
+        {ebooks.map((ebook) => (
+          <label key={ebook.slug} className="mt-3 flex cursor-pointer gap-3 rounded-[12px] border border-brand/30 bg-blush p-3.5 transition hover:border-brand">
+            <input
+              type="checkbox"
+              checked={chosen.includes(ebook.slug)}
+              onChange={(e) => toggle(ebook.slug, e.target.checked)}
+              className="mt-1 h-4.5 w-4.5 flex-none accent-[var(--color-brand-dark)]"
+            />
             {ebook.cover ? <Image src={ebook.cover.src} alt="" width={48} height={64} className="h-16 w-12 flex-none rounded object-cover" /> : null}
             <span className="text-sm">
               <b className="block text-[15px]">Add the e-book: {ebook.title}</b>
@@ -70,7 +84,7 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
               </span>
             </span>
           </label>
-        ) : null}
+        ))}
 
         <div className="mt-5 flex items-baseline justify-between">
           <span className="font-medium">Total</span>
@@ -98,22 +112,20 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
           </>
         ) : (
           <>
-            <h2 className="text-2xl">Create your account</h2>
+            <h2 className="text-2xl">Your details</h2>
             <p className="mt-1 text-sm text-muted">
-              Already have one?{" "}
-              <Link href={`/login?next=${encodeURIComponent(`/checkout?program=${program.slug}&months=${months}&ebook=${addEbook ? 1 : 0}`)}`} className="text-brand-dark underline">
+              Just three things. Already a member?{" "}
+              <Link href={`/login?next=${encodeURIComponent(`/checkout?program=${program.slug}&months=${months}&ebooks=${chosen.join(",")}`)}`} className="text-brand-dark underline">
                 Log in
               </Link>
             </p>
             <label htmlFor="co-name" className="field-label mt-5">Full name</label>
             <input id="co-name" name="fullName" autoComplete="name" required defaultValue={value("fullName")} className="field-input" />
+            <label htmlFor="co-phone" className="field-label mt-4">WhatsApp number (your coach will message you here)</label>
+            <input id="co-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" required defaultValue={value("phone")} placeholder="+92 300 1234567" className="field-input" />
             <label htmlFor="co-email" className="field-label mt-4">Email address</label>
-            <input id="co-email" name="email" type="email" autoComplete="email" required defaultValue={value("email")} className="field-input" />
-            <label htmlFor="co-phone" className="field-label mt-4">WhatsApp number</label>
-            <input id="co-phone" name="phone" type="tel" autoComplete="tel" required defaultValue={value("phone")} placeholder="+92 300 1234567" className="field-input" />
-            <label htmlFor="co-password" className="field-label mt-4">Create a password (8+ characters)</label>
-            <input id="co-password" name="password" type="password" autoComplete="new-password" required minLength={8} className="field-input" />
-            <p className="mt-2 text-xs text-muted">You&apos;ll use this to open your member area. Health and food details come later, in your Personal Wellness Profile.</p>
+            <input id="co-email" name="email" type="email" autoComplete="email" inputMode="email" required defaultValue={value("email")} className="field-input" />
+            <p className="mt-2 text-xs text-muted">No password needed now: after your payment we email you a link to open your member area.</p>
           </>
         )}
 
@@ -132,8 +144,9 @@ export function CheckoutForm({ program, months, durationLabel, ebook, startWithE
           {pending ? (manual ? "Saving your order…" : "Opening secure payment…") : `${buttonText}${ready ? ` · ${price(total)}` : ""}`}
         </button>
 
+        {manual && inPakistan ? <PaymentMethodBadges methods={payMethods} className="mt-4" /> : null}
         {manual ? (
-          <p className="mt-4 rounded-lg bg-blush px-3 py-2 text-sm text-muted">
+          <p className="mt-3 rounded-lg bg-blush px-3 py-2 text-sm text-muted">
             {inPakistan
               ? "Next you'll see our bank and JazzCash / Easypaisa details. Your program starts as soon as the payment is confirmed."
               : "Next, WhatsApp opens so we can arrange your payment. Your program starts as soon as the payment is confirmed."}

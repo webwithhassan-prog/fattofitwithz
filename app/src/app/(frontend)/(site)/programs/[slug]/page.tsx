@@ -11,7 +11,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { CheckBullet } from "@/components/ui/CheckBullet";
 import { Sparkle, Target } from "@/components/ui/Icons";
 import { Reveal } from "@/components/ui/Reveal";
-import { getEbook, getExchangeRates, getFaqs, getPriceTable, getProgram, getPrograms, getRegions } from "@/lib/content";
+import { getExchangeRates, getFaqs, getPriceTable, getProgram, getPrograms, getRegions } from "@/lib/content";
 import { getPrice } from "@/lib/pricing";
 import { breadcrumbSchema, buildMetadata, programSchema } from "@/lib/seo";
 import { isStripeTestMode } from "@/lib/stripe.server";
@@ -47,7 +47,7 @@ export default async function ProgramPage({ params }: PageProps) {
   const program = await getProgram(slug);
   if (!program) notFound();
 
-  const [regions, table, ebook, rates, mode] = await Promise.all([getRegions(), getPriceTable(), getEbook(), getExchangeRates(), paymentMode()]);
+  const [regions, table, rates, mode] = await Promise.all([getRegions(), getPriceTable(), getExchangeRates(), paymentMode()]);
   // Prices in the structured data (for Google) use the default region (USD).
   const region = regions.find((r) => r.isDefault) ?? regions[0];
   const offerPrices = program.durations.map((d) => ({ months: d.months, cell: getPrice(table, region.code, d.months) }));
@@ -137,7 +137,7 @@ export default async function ProgramPage({ params }: PageProps) {
             </div>
 
             <div>
-              <ProgramPurchase program={program} ebook={ebook} paymentMode={mode} testMode={isStripeTestMode()} />
+              <ProgramPurchase program={program} paymentMode={mode} testMode={isStripeTestMode()} />
             </div>
           </div>
         </div>

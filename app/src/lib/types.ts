@@ -130,13 +130,20 @@ export type WorkoutSession = {
 };
 
 /** The e-book offer (admin > Website > E-book). */
+/** One e-book (admin > Website > E-books) */
 export type EbookOffer = {
+  id: number;
+  /** used in links and the checkout, e.g. "healthy-desserts" */
+  slug: string;
   enabled: boolean;
   title: string;
   description: string;
   cover: { src: string; alt: string; width: number; height: number } | null;
   /** Google Drive link sent to buyers ("" until the owner adds it) */
   driveLink: string;
+  points: string[];
+  chapters: { title: string; note: string; highlights: string[] }[];
+  guides: string[];
 };
 
 export type SiteSettings = {
@@ -163,12 +170,15 @@ export type SiteSettings = {
   expertise: string[];
 };
 
+/** A payment method's logo uploaded in admin > Website > Payment details */
+export type PaymentLogo = { src: string; alt: string; width: number; height: number };
+
 /** admin > Website > Payment details (how clients pay while card payments are off) */
 export type PaymentSettings = {
   /** Stripe card payments: only when ticked in admin AND the Stripe keys are set */
   cardPayments: boolean;
-  bank: { enabled: boolean; bankName: string; accountTitle: string; accountNumber: string; iban: string; branch: string };
-  wallet: { enabled: boolean; number: string; accountName: string };
+  bank: { enabled: boolean; bankName: string; accountTitle: string; accountNumber: string; iban: string; branch: string; logo: PaymentLogo | null };
+  wallet: { enabled: boolean; number: string; accountName: string; logos: PaymentLogo[] };
   instructions: string;
   otherCountriesText: string;
 };

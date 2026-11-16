@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { getDashboardData } from "@/lib/members.server";
-import { getEbook } from "@/lib/content";
 import { durationLabel } from "@/lib/pricing";
 import { logOut } from "../actions";
 import { formatDate } from "@/lib/dates";
@@ -8,7 +7,7 @@ import { formatDate } from "@/lib/dates";
 export const metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
-  const [{ member, program, hasEbook }, ebook] = await Promise.all([getDashboardData(), getEbook()]);
+  const { member, program, ebooks } = await getDashboardData();
   return (
     <div className="mx-auto flex max-w-[800px] flex-col gap-5">
       <h1 className="text-3xl">Settings</h1>
@@ -42,14 +41,21 @@ export default async function SettingsPage() {
           Need to pause? Message us on WhatsApp and your coach will freeze your program. Freezes follow our <Link href="/refund-policy" className="text-brand-dark underline">Refund, Cancellation &amp; Freeze Policy</Link>.
         </p>
       </section>
-      {hasEbook ? (
+      {ebooks.length ? (
         <section className="card p-6">
-          <h2 className="mb-3 text-xl text-brand-dark">E-book</h2>
-          {ebook.driveLink ? (
-            <a href={ebook.driveLink} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Open {ebook.title}</a>
-          ) : (
-            <p className="text-[15px] text-muted">Your coach will send the link on WhatsApp.</p>
-          )}
+          <h2 className="mb-3 text-xl text-brand-dark">Your e-books</h2>
+          <ul className="flex flex-col gap-2">
+            {ebooks.map((e) => (
+              <li key={e.slug} className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-medium">{e.title}</span>
+                {e.driveLink ? (
+                  <a href={e.driveLink} target="_blank" rel="noopener noreferrer" className="btn btn-sm">Open</a>
+                ) : (
+                  <span className="text-sm text-muted">Link coming on WhatsApp</span>
+                )}
+              </li>
+            ))}
+          </ul>
         </section>
       ) : null}
       <section className="card p-6">

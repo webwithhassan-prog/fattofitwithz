@@ -230,13 +230,7 @@ async function seedGlobals(
     },
   });
 
-  // E-book (the Drive link is added by the owner in admin)
-  const ebook = await readJson<{ enabled: boolean; title: string; description: string; cover: string; coverAlt: string }>("ebook.json");
-  await payload.updateGlobal({
-    slug: "ebook",
-    context,
-    data: { enabled: ebook.enabled, title: ebook.title, description: ebook.description, cover: await photo(ebook.cover, ebook.coverAlt) },
-  });
+  // E-books are added in admin > Website > E-books (see the migration 20261116_ebooks for the first two).
 
   // Page photos: About page + before/after slider (admin > Site photos)
   await payload.updateGlobal({

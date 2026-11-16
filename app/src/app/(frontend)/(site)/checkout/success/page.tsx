@@ -4,7 +4,7 @@
  * and what to do next. (The order itself is recorded by the Stripe webhook, not by this page.)
  */
 import Link from "next/link";
-import { getEbook, getProgram, whatsappLink } from "@/lib/content";
+import { getAllEbooks, getProgram, whatsappLink } from "@/lib/content";
 import { getStripe } from "@/lib/stripe.server";
 import { buildMetadata } from "@/lib/seo";
 
@@ -21,7 +21,7 @@ async function loadSession(sessionId: string | undefined) {
       email: session.customer_details?.email ?? null,
       program: (await getProgram(session.metadata?.programSlug ?? ""))?.name ?? null,
       months: Number(session.metadata?.months ?? 0),
-      ebook: session.metadata?.ebook === "1",
+      ebookSlugs: (session.metadata?.ebooks ?? "").split(",").filter(Boolean),
     };
   } catch (error) {
     console.error("[checkout-success] Could not load session", sessionId, error);
@@ -31,9 +31,10 @@ async function loadSession(sessionId: string | undefined) {
 
 export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
   const { session_id } = await searchParams;
-  const [session, ebook, whatsappHref] = await Promise.all([loadSession(session_id), getEbook(), whatsappLink("Hi, I just joined!")]);
+  const [session, allEbooks, whatsappHref] = await Promise.all([loadSession(session_id), getAllEbooks(), whatsappLink("Hi, I just joined!")]);
+  const ebooks = allEbooks.filter((e) => session?.ebookSlugs.includes(e.slug));
   const boughtProgram = Boolean(session?.program);
-  const boughtEbook = Boolean(session?.ebook);
+  const boughtEbook = ebooks.length > 0;
 
   return (
     <section className="section bg-gradient-to-b from-blush to-bg text-center">
@@ -57,8 +58,8 @@ export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
           {session?.email ? ` A confirmation is on its way to ${session.email}.` : ""}
         </p>
 
-        {boughtEbook ? (
-          <div className="card mx-auto mt-8 max-w-[520px] p-5">
+        {ebooks.map((ebook) => (
+          <div key={ebook.slug} className="card mx-auto mt-8 max-w-[520px] p-5">
             <p className="font-display text-xl">{ebook.title}</p>
             {ebook.driveLink ? (
               <a href={ebook.driveLink} target="_blank" rel="noopener noreferrer" className="btn mt-4">
@@ -68,7 +69,7 @@ export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
               <p className="mt-2 text-sm text-muted">We&apos;ll send you the e-book link on WhatsApp and by email shortly.</p>
             )}
           </div>
-        ) : null}
+        ))}
 
         {boughtProgram ? (
           <>

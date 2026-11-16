@@ -1,7 +1,7 @@
 "use server";
 
 /**
- * Server actions for the member area: the two forms, and logging out.
+ * Server actions for the member area: the two forms, "Create a password", and logging out.
  *
  * Each save:
  *   1. checks who is logged in (never trusts an id sent by the browser),
@@ -17,6 +17,7 @@ import { endSession, getCurrentMember } from "@/lib/auth/session.server";
 import { MEASUREMENT_FIELDS, SLEEP_HOURS, WATER_INTAKE } from "@/lib/member";
 import { LIMITS, rateLimit } from "@/lib/rate-limit.server";
 import { loadMemberProgram } from "@/lib/members.server";
+import { createPasswordLink } from "@/lib/auth/passwords.server";
 import { formatDate } from "@/lib/dates";
 
 export type SaveFormResult = { ok: true; id: number } | { ok: false; error: string };
@@ -145,6 +146,16 @@ export async function saveFollowUpForm(input: unknown): Promise<SaveFormResult> 
     console.error(`[dashboard:follow-up] member ${member.id}:`, error);
     return SAVE_FAILED;
   }
+}
+
+// ---------- create a password (accounts made at checkout have none) ----------
+
+export async function createMyPasswordAction(): Promise<void> {
+  const member = await getCurrentMember();
+  if (!member) redirect("/login");
+  if (member.passwordHash) redirect("/dashboard/settings");
+  const link = new URL(await createPasswordLink(member.id, member.email, 1, { welcome: true }));
+  redirect(`${link.pathname}${link.search}`); // same site, whatever address she's on
 }
 
 // ---------- log out ----------

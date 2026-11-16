@@ -1,8 +1,12 @@
 "use server";
 
 /**
- * Server actions for buying:
- *   checkoutAction  /checkout  program (+ optional e-book). Creates her account first if she is not logged in.
+ * Server actions for buying. PAYMENT FIRST: she only types her name, email and WhatsApp number;
+ * no password. Her password comes later, from the link in her welcome email (or her dashboard).
+ *   checkoutAction  /checkout  program (+ optional e-book).
+ *                   New email -> an account without a password is made and she's logged in on this device.
+ *                   Email that already has an account -> the order is linked to it (she isn't logged in;
+ *                   only that account's owner can log in to it).
  *   buyEbookAction  /ebook     e-book only (no account needed).
  *
  * Then, depending on paymentMode() (src/lib/checkout.server.ts):
@@ -17,8 +21,7 @@ import { createCheckoutSession, paymentMode, priceBasket, type Basket } from "@/
 import { createPendingOrder } from "@/lib/orders.server";
 import { getPayloadClient } from "@/lib/payload.server";
 import { getCurrentMember, startSession } from "@/lib/auth/session.server";
-import { hashPassword } from "@/lib/auth/crypto.server";
-import { MIN_PASSWORD_LENGTH, normalizeEmail } from "@/lib/auth/passwords.server";
+import { normalizeEmail } from "@/lib/auth/passwords.server";
 import { clientIp, LIMITS, rateLimit } from "@/lib/rate-limit.server";
 import { countEvent } from "@/lib/stats.server";
 
@@ -33,13 +36,11 @@ async function siteOrigin(): Promise<string> {
 }
 
 const phoneRule = z.string().trim().min(7, "Please enter your WhatsApp number").max(30);
-const NewAccount = z.object({
+const Buyer = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name").max(100),
   email: z.email("Please enter a valid email address"),
   phone: phoneRule,
-  password: z.string().min(MIN_PASSWORD_LENGTH, `Use at least ${MIN_PASSWORD_LENGTH} characters for your password`).max(128),
 });
-const EbookBuyer = NewAccount.omit({ password: true });
 
 type Buyer = { memberId?: number; buyerName: string; email: string; phone: string };
 
@@ -50,7 +51,7 @@ async function placePendingOrder(basket: Basket, buyer: Buyer): Promise<{ ok: tr
       ...buyer,
       programId: basket.program?.id,
       months: basket.months,
-      ebook: basket.ebook,
+      ebookIds: basket.ebooks.map((e) => e.id),
       amount: basket.total,
       currency: basket.market.currency,
       region: basket.market.region.code,
@@ -68,8 +69,9 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
   const get = (name: string) => String(formData.get(name) ?? "").trim();
   const programSlug = get("program");
   const months = Number(get("months"));
-  const ebook = get("ebook") === "1";
-  const checkoutPath = `/checkout?program=${encodeURIComponent(programSlug)}&months=${months}&ebook=${ebook ? 1 : 0}`;
+  // The e-books she ticked (checkboxes named "ebooks", one per e-book)
+  const ebooks = formData.getAll("ebooks").map(String).filter(Boolean);
+  const checkoutPath = `/checkout?program=${encodeURIComponent(programSlug)}&months=${months}&ebooks=${encodeURIComponent(ebooks.join(","))}`;
   // Typed values are sent back on an error, so she doesn't have to type them again (never the password).
   const values = { fullName: get("fullName"), email: get("email"), phone: get("phone") };
 
@@ -77,10 +79,11 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
   if (!limited.ok) return { error: limited.message, values };
 
   // Price first: nothing is saved if the basket isn't valid.
-  const priced = await priceBasket({ programSlug, months, ebook, country: get("country") });
+  const priced = await priceBasket({ programSlug, months, ebooks, country: get("country") });
   if (!priced.ok) return { error: priced.error, values };
 
   let member = await getCurrentMember();
+  let buyerName = member?.fullName || values.fullName;
   try {
     const payload = await getPayloadClient();
     if (member) {
@@ -89,29 +92,19 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
       if (!phone.success) return { error: phone.error.issues[0].message, values };
       if (phone.data !== member.phone) member = await payload.update({ collection: "members", id: member.id, data: { phone: phone.data } });
     } else {
-      // New buyer: create her account, then log her in.
-      const parsed = NewAccount.safeParse({ ...values, password: String(formData.get("password") ?? "") });
+      const parsed = Buyer.safeParse(values);
       if (!parsed.success) return { error: parsed.error.issues[0].message, values };
       const email = normalizeEmail(parsed.data.email);
-      const existing = await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 });
-      if (existing.docs[0]) {
-        return {
-          error: "This email already has an account. Please log in and you'll come straight back here.",
-          loginLink: `/login?next=${encodeURIComponent(checkoutPath)}`,
-          values,
-        };
+      buyerName = parsed.data.fullName;
+      const existing = (await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 })).docs[0];
+      if (existing) {
+        // She already has an account: the order goes to it. (Not logged in: that needs her password.)
+        member = existing.phone ? existing : await payload.update({ collection: "members", id: existing.id, data: { phone: parsed.data.phone } });
+      } else {
+        // New: an account without a password, and she's logged in on this device straight away.
+        member = await payload.create({ collection: "members", data: { email, fullName: parsed.data.fullName, phone: parsed.data.phone } });
+        await startSession(member.id);
       }
-      member = await payload.create({
-        collection: "members",
-        data: {
-          email,
-          fullName: parsed.data.fullName,
-          phone: parsed.data.phone,
-          passwordHash: await hashPassword(parsed.data.password),
-          passwordSetAt: new Date().toISOString(),
-        },
-      });
-      await startSession(member.id);
     }
   } catch (error) {
     console.error("[checkout] Could not prepare the account:", error);
@@ -132,9 +125,9 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
 
   const placed = await placePendingOrder(priced.basket, {
     memberId: member.id,
-    buyerName: member.fullName || values.fullName,
+    buyerName,
     email: member.email,
-    phone: member.phone || values.phone,
+    phone: values.phone || member.phone || "",
   });
   if (!placed.ok) return { error: placed.error, values };
   redirect(placed.path);
@@ -146,7 +139,9 @@ export async function buyEbookAction(_previous: CheckoutFormState, formData: For
   const limited = await rateLimit(LIMITS.checkout, await clientIp());
   if (!limited.ok) return { error: limited.message, values };
 
-  const priced = await priceBasket({ ebook: true, country: get("country") });
+  const ebooks = formData.getAll("ebooks").map(String).filter(Boolean);
+  if (!ebooks.length) return { error: "Please choose at least one e-book.", values };
+  const priced = await priceBasket({ ebooks, country: get("country") });
   if (!priced.ok) return { error: priced.error, values };
   const member = await getCurrentMember(); // optional: logged-in buyers are linked to their account
 
@@ -157,7 +152,7 @@ export async function buyEbookAction(_previous: CheckoutFormState, formData: For
   }
 
   // No account needed: name, email and WhatsApp number are enough to send her the e-book later.
-  const parsed = EbookBuyer.safeParse(values);
+  const parsed = Buyer.safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0].message, values };
   const email = normalizeEmail(parsed.data.email);
   let memberId = member?.id;

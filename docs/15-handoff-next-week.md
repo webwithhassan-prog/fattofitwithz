@@ -141,6 +141,45 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
   - Checked every main page: one H1, no image without alt text, every field labelled, no duplicate ids, meta description, canonical, share image and structured data present.
 - Migration `20261103_005116_manual_payments` (already applied: new Orders fields, the Payment details table).
 
+## Done ✅ (2026-11-03, later): payment first, account second + payment logos
+
+- **Shorter checkout:** name, WhatsApp and email only (no password, no "this email already has an account" stop).
+  - New email: an account without a password is made, and she's logged in on that device straight away (her dashboard shows the order and "Create a password").
+  - Email that already has an account: the order goes to that account. She isn't logged in, because that needs her password.
+- **After payment is confirmed** (order set to Paid):
+  - The welcome email's first step is "Create your password" (a link that works 7 days). Existing members get "Log in" instead.
+  - Her order page shows "Create your password" (or "Log in" / "Fill in your Personal Wellness Profile").
+  - The password page says "Create your password" and logs her in.
+  - Orders added by hand for a new email also get an account automatically.
+- **Payment logos:** admin › Website › Payment details now has Bank logo, JazzCash logo and Easypaisa logo uploads.
+  - They show on /checkout ("pay with" row, Pakistan only) and on the order page.
+  - Until a logo is uploaded, a simple icon with the name is shown.
+  - Migration `20261103_082905_payment_logos` (already applied).
+- Tested end to end locally (new buyer, paid, password from the order page, dashboard; existing-member email); test data deleted.
+
+## Done ✅ (2026-11-16): two e-books, shorter checkout, member dashboard, upload fix
+
+- **E-books:** admin › Website › **E-books** (a list instead of the old single "E-book" page).
+  - Desi Weightloss Recipes (copied over, with its chapters).
+  - **Healthy Desserts & Sweet Cravings** (new; cover taken from the PDF, 3 chapters).
+  - Each e-book has its title, cover, Drive link, key points, chapters and guides, and can be switched off.
+  - Prices: the same "E-book price" for each (admin › Prices).
+  - Orders record which e-books were bought (old orders = the first e-book).
+  - Emails, the order page and the dashboard give one link per e-book.
+  - **Drive links still empty**: paste them in each e-book.
+  - Migration `20261116_184440_ebooks` (applied). It leaves the old `ebook` table in place for the live site; drop it after this deploy.
+- **Shorter purchase:**
+  - "Join now" goes straight to checkout (the e-book pop-up is gone).
+  - The e-books are optional tick boxes on the checkout page.
+  - Checkout asks name, WhatsApp and email only.
+- **Member dashboard (phones first):**
+  - A bottom tab bar (Home, Profile, Follow-up, Workouts, More).
+  - "Your next step" card: pay → profile → today's workout / rest day.
+  - A program progress bar (day X of Y).
+  - Big shortcut tiles and a "Your e-books" list.
+  - Coach messages for one client are tagged "For you".
+- **Admin "An unknown error occurred" on photo upload:** most likely phone photos above Netlify's ~6 MB request limit. The admin now shrinks photos over 1.5 MB to 1800 px in the browser before uploading (`src/payload/admin/ShrinkUploads.tsx`). Not confirmed against Netlify's logs (not signed in).
+
 ## 🚀 Deploy steps (do these in order)
 
 1. **Push the code** to GitHub `main` (Netlify builds it automatically, about 3 minutes). Migrations are already applied (they only add fields), so nothing to run after.

@@ -11,16 +11,16 @@
  * PRICES ARE CALCULATED HERE from admin > Prices and the visitor's country (src/lib/pricing.ts:
  * her own price list, or the default list converted into her currency). Never trust an amount sent
  * by the browser. The page showed the same numbers because it uses the same rules and rates.
- * E-book price: "with a program" price when bought together with a program, otherwise the normal price.
+ * E-book price (each e-book): "with a program" price when bought together with a program, otherwise the normal price.
  */
 import "server-only";
 import type Stripe from "stripe";
-import { getEbook, getExchangeRates, getPaymentSettings, getPriceTable, getProgram, getRegions } from "./content";
+import { getEbooks, getExchangeRates, getPaymentSettings, getPriceTable, getProgram, getRegions } from "./content";
 import { isCountryCode } from "./countries";
 import { getMarket, marketEbook, marketPrice, toStripeAmount, type Market } from "./pricing";
 import { getStripe, StripeNotConfiguredError } from "./stripe.server";
 import { countEvent } from "./stats.server";
-import type { Program } from "./types";
+import type { EbookOffer, Program } from "./types";
 
 export type PaymentMode = "stripe" | "manual";
 
@@ -33,7 +33,8 @@ export async function paymentMode(): Promise<PaymentMode> {
 export type BasketInput = {
   programSlug?: string;
   months?: number;
-  ebook: boolean;
+  /** slugs of the e-books she picked, e.g. ["desi-weightloss-recipes"] */
+  ebooks: string[];
   /** Visitor's country, e.g. "GB" (decides the currency and price list) */
   country: string;
 };
@@ -42,7 +43,8 @@ export type Basket = {
   market: Market;
   program: Program | null;
   months: number;
-  ebook: boolean;
+  /** the e-books in the basket */
+  ebooks: EbookOffer[];
   items: { name: string; amount: number; description?: string }[];
   total: number;
 };
@@ -71,17 +73,24 @@ export async function priceBasket(input: BasketInput): Promise<{ ok: true; baske
     months = duration.months;
   }
 
-  // 2. The e-book (optional)
-  if (input.ebook) {
-    const ebook = await getEbook();
-    if (!ebook.enabled) return { ok: false, error: "The e-book is not available right now." };
+  // 2. E-books (optional), each at the e-book price
+  const ebooks: EbookOffer[] = [];
+  if (input.ebooks.length) {
+    const onSale = await getEbooks();
+    for (const slug of new Set(input.ebooks)) {
+      const ebook = onSale.find((e) => e.slug === slug);
+      if (!ebook) return { ok: false, error: "That e-book is not available right now. Please refresh the page." };
+      ebooks.push(ebook);
+    }
     const prices = marketEbook(market);
-    items.push(program ? { name: `${ebook.title} (e-book, program price)`, amount: prices.withPlan } : { name: `${ebook.title} (e-book)`, amount: prices.alone });
+    for (const ebook of ebooks) {
+      items.push(program ? { name: `${ebook.title} (e-book, program price)`, amount: prices.withPlan } : { name: `${ebook.title} (e-book)`, amount: prices.alone });
+    }
   }
 
   if (!items.length) return { ok: false, error: "Your basket is empty. Please choose a program or the e-book." };
   const total = items.reduce((sum, item) => sum + item.amount, 0);
-  return { ok: true, basket: { market, program, months, ebook: input.ebook, items, total: Math.round(total * 100) / 100 } };
+  return { ok: true, basket: { market, program, months, ebooks, items, total: Math.round(total * 100) / 100 } };
 }
 
 export type StripeCheckoutInput = {
@@ -121,7 +130,7 @@ export async function createCheckoutSession(input: StripeCheckoutInput): Promise
         months: String(basket.months),
         region: basket.market.region.code,
         country: basket.market.country,
-        ebook: basket.ebook ? "1" : "0",
+        ebooks: basket.ebooks.map((e) => e.slug).join(","),
         memberId: input.memberId ? String(input.memberId) : "",
       },
       custom_text: {

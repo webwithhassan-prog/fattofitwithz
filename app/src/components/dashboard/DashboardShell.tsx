@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * Member area frame: sidebar navigation, a top bar with her name, and the page content.
+ * Member area frame: sidebar navigation (computer), a bottom tab bar within thumb reach (phone),
+ * a top bar with her name, and the page content.
  * Kept deliberately small: home, the two forms, the recorded library, "report an issue" and settings.
  * (Diet plans and day-to-day coaching happen on WhatsApp.)
  */
@@ -11,6 +12,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AlertCircle, Clipboard, Close, Heart, Home, LogOut, Menu, PlayCircle, Settings } from "@/components/ui/Icons";
 import { logOut } from "@/app/(frontend)/dashboard/actions";
+
+/** Phone tab bar: the 4 things she uses most + "More" (opens the full menu). */
+const TABS = [
+  { href: "/dashboard", label: "Home", Icon: Home },
+  { href: "/dashboard/first-day", label: "Profile", Icon: Clipboard },
+  { href: "/dashboard/follow-up", label: "Follow-up", Icon: Clipboard },
+  { href: "/dashboard/library", label: "Workouts", Icon: PlayCircle },
+];
 
 const NAV = [
   { href: "/dashboard", label: "Home", Icon: Home },
@@ -99,10 +108,35 @@ export function DashboardShell({ firstName, initial, children }: Props) {
           </Link>
         </header>
 
-        <main id="main" className="px-4 py-6 sm:px-6 lg:px-8">
+        <main id="main" className="px-4 pt-5 pb-28 sm:px-6 lg:px-8 lg:py-6">
           {children}
         </main>
       </div>
+
+      {/* Phone: tab bar at the bottom, within thumb reach */}
+      <nav
+        aria-label="Member area shortcuts"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-line bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+      >
+        {TABS.map(({ href, label, Icon }) => {
+          const active = href === "/dashboard" ? pathname === href : pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className="flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium text-muted aria-[current=page]:text-brand-dark"
+            >
+              <Icon className="h-6 w-6" />
+              {label}
+            </Link>
+          );
+        })}
+        <button type="button" onClick={() => setDrawerOpen(true)} aria-expanded={drawerOpen} className="flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium text-muted">
+          <Menu className="h-6 w-6" />
+          More
+        </button>
+      </nav>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 /**
- * /checkout?program=fat-loss&months=2&ebook=1
+ * /checkout?program=fat-loss&months=2&ebooks=desi-weightloss-recipes,healthy-desserts  (old links: &ebook=1 = the first e-book)
  * Order summary + the few details we need before payment (name, email, WhatsApp, password).
  * Everything else (health, food, measurements) she fills in later in her Personal Wellness Profile.
  * Logged-in members only confirm their WhatsApp number.
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { RegionProvider } from "@/components/pricing/RegionProvider";
-import { getEbook, getExchangeRates, getPriceTable, getProgram, getRegions } from "@/lib/content";
+import { getEbooks, getExchangeRates, getPaymentSettings, getPriceTable, getProgram, getRegions } from "@/lib/content";
 import { getCurrentMember } from "@/lib/auth/session.server";
 import { buildMetadata } from "@/lib/seo";
 import { isStripeTestMode } from "@/lib/stripe.server";
@@ -16,7 +16,7 @@ import { paymentMode } from "@/lib/checkout.server";
 
 export const metadata = buildMetadata({ title: "Checkout", path: "/checkout", noIndex: true });
 
-type PageProps = { searchParams: Promise<{ program?: string; months?: string; ebook?: string; cancelled?: string }> };
+type PageProps = { searchParams: Promise<{ program?: string; months?: string; ebook?: string; ebooks?: string; cancelled?: string }> };
 
 export default async function CheckoutPage({ searchParams }: PageProps) {
   const query = await searchParams;
@@ -25,7 +25,15 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
 
   const requested = Number(query.months);
   const duration = program.durations.find((d) => d.months === requested) ?? program.durations[0];
-  const [ebook, regions, table, rates, member, mode] = await Promise.all([getEbook(), getRegions(), getPriceTable(), getExchangeRates(), getCurrentMember(), paymentMode()]);
+  const [ebooks, regions, table, rates, member, mode, payments] = await Promise.all([
+    getEbooks(),
+    getRegions(),
+    getPriceTable(),
+    getExchangeRates(),
+    getCurrentMember(),
+    paymentMode(),
+    getPaymentSettings(),
+  ]);
 
   return (
     <RegionProvider regions={regions} table={table} rates={rates}>
@@ -43,11 +51,15 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
             program={{ slug: program.slug, name: program.name, focus: program.focus }}
             months={duration.months}
             durationLabel={duration.label}
-            ebook={ebook.enabled ? { title: ebook.title, cover: ebook.cover } : null}
-            startWithEbook={query.ebook === "1"}
+            ebooks={ebooks.map(({ slug, title, cover }) => ({ slug, title, cover }))}
+            startWithEbooks={query.ebooks ? query.ebooks.split(",") : query.ebook === "1" && ebooks[0] ? [ebooks[0].slug] : []}
             member={member ? { email: member.email, fullName: member.fullName ?? "", phone: member.phone ?? "" } : null}
             cancelled={query.cancelled === "1"}
             paymentMode={mode}
+            payMethods={{
+              bank: { enabled: payments.bank.enabled, bankName: payments.bank.bankName, logo: payments.bank.logo },
+              wallet: { enabled: payments.wallet.enabled, logos: payments.wallet.logos },
+            }}
             testMode={isStripeTestMode()}
           />
         </div>

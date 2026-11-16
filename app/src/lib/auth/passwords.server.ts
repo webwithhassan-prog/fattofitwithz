@@ -16,6 +16,7 @@
  * While RESEND_API_KEY is empty, emails (with the link) are printed in the terminal.
  */
 import "server-only";
+import type { PayloadRequest } from "payload";
 import { getPayloadClient } from "../payload.server";
 import { sendEmail } from "../email.server";
 import { absoluteUrl } from "../site";
@@ -76,9 +77,21 @@ export async function logIn(emailInput: string, password: string): Promise<Resul
 
 // ---------- password links ----------
 
-/** Creates a one-time link to set a password. Used by "Forgot password" and the welcome email. */
-export async function createPasswordLink(memberId: number, email: string, hoursValid: number, ip = ""): Promise<string> {
-  const payload = await getPayloadClient();
+/** How long the "create your password" link in the welcome email works. */
+export const ACCOUNT_SETUP_LINK_HOURS = 7 * 24;
+
+/**
+ * Creates a one-time link to set a password. Used by "Forgot password", the welcome email after payment
+ * (welcome: true -> the page says "Create your password") and the dashboard's "Create a password" button.
+ * Pass `req` when called inside a Payload hook, so it's saved in the same database transaction.
+ */
+export async function createPasswordLink(
+  memberId: number,
+  email: string,
+  hoursValid: number,
+  options: { ip?: string; welcome?: boolean; req?: PayloadRequest } = {},
+): Promise<string> {
+  const payload = options.req?.payload ?? (await getPayloadClient());
   const token = newToken();
   await payload.create({
     collection: "password-resets",
@@ -87,10 +100,11 @@ export async function createPasswordLink(memberId: number, email: string, hoursV
       email,
       tokenHash: hashToken(token),
       expiresAt: new Date(Date.now() + hoursValid * 60 * 60 * 1000).toISOString(),
-      ip,
+      ip: options.ip ?? "",
     },
+    req: options.req,
   });
-  return absoluteUrl(`/reset-password?token=${token}`);
+  return absoluteUrl(`/reset-password?token=${token}${options.welcome ? "&welcome=1" : ""}`);
 }
 
 export async function sendPasswordLink(emailInput: string, ip: string): Promise<Result> {
@@ -119,7 +133,7 @@ export async function sendPasswordLink(emailInput: string, ip: string): Promise<
     return { ok: true };
   }
 
-  const link = await createPasswordLink(docs[0].id, email, RESET_LINK_HOURS, ip);
+  const link = await createPasswordLink(docs[0].id, email, RESET_LINK_HOURS, { ip });
   await sendEmail({
     to: email,
     subject: "Set your Fat To Fit With Z password",

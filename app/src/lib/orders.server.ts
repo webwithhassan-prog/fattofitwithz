@@ -24,8 +24,10 @@ import { sendEmail } from "./email.server";
 import { absoluteUrl } from "./site";
 import { formatOrderAmount, fromStripeAmount, isRegionCode } from "./pricing";
 import type { RegionCode } from "./types";
-import { getEbook, getPaymentSettings, getSettings, whatsappLink } from "./content";
+import { getAllEbooks, getPaymentSettings, getSettings, whatsappLink } from "./content";
+import type { EbookOffer } from "./types";
 import { addDays, dayOf, todayIso } from "./freeze";
+import { ACCOUNT_SETUP_LINK_HOURS, createPasswordLink } from "./auth/passwords.server";
 
 const idOf = (ref: number | { id: number } | null | undefined) => (ref && typeof ref === "object" ? ref.id : (ref ?? null));
 
@@ -36,11 +38,18 @@ function addMonths(day: string, months: number): string {
 }
 
 /** Lines about the e-book for the emails. */
-async function ebookLines(): Promise<string[]> {
-  const ebook = await getEbook();
-  return ebook.driveLink
-    ? [`Your e-book "${ebook.title}": ${ebook.driveLink}`]
-    : [`Your e-book "${ebook.title}": we'll send you the link on WhatsApp shortly.`];
+async function ebookLines(order: Order): Promise<string[]> {
+  return (await orderEbooks(order)).map((ebook) =>
+    ebook.driveLink ? `Your e-book "${ebook.title}": ${ebook.driveLink}` : `Your e-book "${ebook.title}": we'll send you the link on WhatsApp shortly.`,
+  );
+}
+
+/** The e-books in an order. Older orders only have the "Includes e-books" tick: that was the first e-book. */
+export async function orderEbooks(order: Pick<Order, "ebook" | "ebooks">): Promise<EbookOffer[]> {
+  const all = await getAllEbooks();
+  const ids = (order.ebooks ?? []).map((e) => (typeof e === "object" ? e.id : e));
+  if (ids.length) return all.filter((e) => ids.includes(e.id));
+  return order.ebook && all[0] ? [all[0]] : [];
 }
 
 /** Her order page (payment details / status), e.g. https://fattofitwithz.com/checkout/pay/FTF-7K2Q9M?key=... */
@@ -51,8 +60,16 @@ export const orderPageUrl = (order: Pick<Order, "reference" | "accessKey">) =>
 
 export async function activatePaidOrder(order: Order, req: PayloadRequest): Promise<void> {
   const { payload } = req;
-  const memberId = idOf(order.member);
+  let memberId = idOf(order.member);
   const programId = idOf(order.program);
+
+  // 0. A program needs an account: find hers by email, or make one (no password yet), e.g. for an order added by hand.
+  if (programId && !memberId) {
+    const found = (await payload.find({ collection: "members", where: { email: { equals: order.email } }, limit: 1, depth: 0, req })).docs[0];
+    const member = found ?? (await payload.create({ collection: "members", data: { email: order.email, fullName: order.buyerName ?? "", phone: order.phone ?? "" }, req }));
+    memberId = member.id;
+    await payload.update({ collection: "orders", id: order.id, data: { member: memberId }, req });
+  }
 
   // 1. Her program (only once per order)
   if (programId && memberId && order.months) {
@@ -82,7 +99,15 @@ export async function activatePaidOrder(order: Order, req: PayloadRequest): Prom
   // 2. Welcome email (a failure here must not undo the payment, so it's only logged)
   try {
     const greeting = order.buyerName ? `Hi ${order.buyerName.split(" ")[0]},` : "Hi,";
-    if (programId) {
+    if (programId && memberId) {
+      // Paid first, so she may not have a password yet: then step 1 is a link to create one.
+      const member = await payload.findByID({ collection: "members", id: memberId, depth: 0, req });
+      const firstStep = member.passwordHash
+        ? [`1. Log in to your member area: ${absoluteUrl("/login")}`, '   (Forgot your password? Use "Forgot password" on the login page.)']
+        : [
+            `1. Create your password to open your member area (the link works for ${ACCOUNT_SETUP_LINK_HOURS / 24} days):`,
+            `   ${await createPasswordLink(memberId, member.email, ACCOUNT_SETUP_LINK_HOURS, { welcome: true, req })}`,
+          ];
       await sendEmail({
         to: order.email,
         subject: "Welcome to Fat To Fit With Z: your program has started",
@@ -92,11 +117,10 @@ export async function activatePaidOrder(order: Order, req: PayloadRequest): Prom
           `Thank you! Your payment for ${order.orderLabel ?? "your program"} is confirmed${order.reference ? ` (order ${order.reference})` : ""}.`,
           "",
           "What happens next:",
-          `1. Log in to your member area: ${absoluteUrl("/login")}`,
-          '   (Forgot your password? Use "Forgot password" on the login page.)',
+          ...firstStep,
           `2. Fill in your Personal Wellness Profile: ${absoluteUrl("/dashboard/first-day")}`,
           "3. Your coach prepares your personalized diet plan and sends it to you on WhatsApp.",
-          ...(order.ebook ? ["", ...(await ebookLines())] : []),
+          ...(order.ebook ? ["", ...(await ebookLines(order))] : []),
           "",
           "Questions? Reply to this email or message us on WhatsApp.",
         ].join("\n"),
@@ -105,7 +129,7 @@ export async function activatePaidOrder(order: Order, req: PayloadRequest): Prom
       await sendEmail({
         to: order.email,
         subject: "Your e-book from Fat To Fit With Z",
-        text: [greeting, "", "Thank you for your purchase!", "", ...(await ebookLines()), "", "Questions? Reply to this email or message us on WhatsApp."].join("\n"),
+        text: [greeting, "", "Thank you for your purchase!", "", ...(await ebookLines(order)), "", "Questions? Reply to this email or message us on WhatsApp."].join("\n"),
       });
     }
   } catch (error) {
@@ -132,7 +156,8 @@ export type PendingOrderInput = {
   phone: string;
   programId?: number;
   months?: number;
-  ebook: boolean;
+  /** ids of the e-books bought (admin > Website > E-books) */
+  ebookIds: number[];
   amount: number;
   currency: string;
   region: RegionCode;
@@ -155,13 +180,14 @@ export async function createPendingOrder(input: PendingOrderInput): Promise<Orde
         { email: { equals: input.email } },
         { createdAt: { greater_than_equal: since } },
         input.programId ? { program: { equals: input.programId } } : { program: { exists: false } },
-        { ebook: { equals: input.ebook } },
       ],
     },
     sort: "-createdAt",
-    limit: 1,
+    limit: 10,
     depth: 0,
   });
+  const sameEbooks = (o: Order) =>
+    (o.ebooks ?? []).map((e) => (typeof e === "object" ? e.id : e)).sort().join(",") === [...input.ebookIds].sort().join(",");
 
   const data = {
     status: "pending" as const,
@@ -172,14 +198,15 @@ export async function createPendingOrder(input: PendingOrderInput): Promise<Orde
     phone: input.phone,
     program: input.programId,
     months: input.programId ? input.months : undefined,
-    ebook: input.ebook,
+    ebook: input.ebookIds.length > 0,
+    ebooks: input.ebookIds,
     amount: input.amount,
     currency: input.currency,
     region: input.region,
     country: input.country,
   };
-  const existing = same.docs[0];
-  if (existing && (existing.months ?? null) === (data.months ?? null)) {
+  const existing = same.docs.find((o) => sameEbooks(o) && (o.months ?? null) === (data.months ?? null));
+  if (existing) {
     // Same order again: keep its number, refresh the price (exchange rates change) and her details.
     return payload.update({ collection: "orders", id: existing.id, data });
   }
@@ -260,9 +287,11 @@ type FulfilResult = { status: "created"; memberId: number | null; orderId: numbe
 export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<FulfilResult> {
   if (session.payment_status !== "paid") return { status: "skipped", reason: `payment_status is "${session.payment_status}"` };
   const email = session.customer_details?.email?.trim().toLowerCase();
-  const { programSlug, months: monthsText, region, country, ebook: ebookFlag, memberId: memberIdText } = session.metadata ?? {};
+  const { programSlug, months: monthsText, region, country, ebooks: ebookSlugs, memberId: memberIdText } = session.metadata ?? {};
   const months = Number(monthsText);
-  const boughtEbook = ebookFlag === "1";
+  const slugs = (ebookSlugs ?? "").split(",").filter(Boolean);
+  const ebookIds = (await getAllEbooks()).filter((e) => slugs.includes(e.slug)).map((e) => e.id);
+  const boughtEbook = ebookIds.length > 0;
   const isProgramOrder = Boolean(programSlug);
   if (!email) return { status: "skipped", reason: "no email in the session" };
   if (isProgramOrder && !months) return { status: "skipped", reason: "program order without months" };
@@ -300,6 +329,7 @@ export async function fulfilCheckout(session: Stripe.Checkout.Session): Promise<
         program: program?.id,
         months: isProgramOrder ? months : undefined,
         ebook: boughtEbook,
+        ebooks: ebookIds,
         amount: fromStripeAmount(session.amount_total ?? 0, session.currency ?? "usd"),
         currency: (session.currency ?? "").toUpperCase(),
         region: isRegionCode(region) ? region : undefined,
