@@ -180,6 +180,20 @@ Shell tip (Windows Git Bash): don't put apostrophes in heredocs; write code with
   - Coach messages for one client are tagged "For you".
 - **Admin "An unknown error occurred" on photo upload:** most likely phone photos above Netlify's ~6 MB request limit. The admin now shrinks photos over 1.5 MB to 1800 px in the browser before uploading (`src/payload/admin/ShrinkUploads.tsx`). Not confirmed against Netlify's logs (not signed in).
 
+## Done ✅ (2026-11-17): database moved to US East, e-book links, live test
+
+- **Database:** new Neon project **fattofit-us** in **AWS US East 2 (Ohio)**, next to Netlify's servers.
+  - All 56 tables copied and checked; Netlify `DATABASE_URL` and `app/.env.local` point to it.
+  - The old Singapore project "fattofit" is kept as a backup (`OLD_SINGAPORE_DATABASE_URL` in `.env.local`). Delete both after about a week.
+  - New migrations still go through `npm run migrate` as before.
+- **E-book files:** Google Drive of **fattofitwithz@gmail.com**, "Anyone with the link · Viewer", download/print/copy off for viewers.
+  - The links are in admin › Website › E-books.
+  - Buyers see "Open the e-book" on their order page and dashboard as soon as the order is Paid. The emails link to the order page, not to Drive.
+  - To update a PDF without changing its link: Drive › Manage versions › Upload new version.
+- **Full live test:** program + e-book order → order page → Paid → dashboard unlocked → Wellness Profile (+ WhatsApp image) → follow-up → workout Done → Settings. All good.
+  - Fixed: the WhatsApp image squeezed its title over the answers.
+  - Not tested on live: typing a password (only tested locally).
+
 ## 🚀 Deploy steps (do these in order)
 
 1. **Push the code** to GitHub `main` (Netlify builds it automatically, about 3 minutes). Migrations are already applied (they only add fields), so nothing to run after.
