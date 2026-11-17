@@ -33,17 +33,21 @@ export type Region = {
 /** One price cell from the client's pricing sheet. */
 export type PriceCell = { amount: number; compareAt: number };
 
+/** A program's OWN prices (admin > Programs > Own prices), per price list and months. Empty = use admin > Prices. */
+export type OwnPrices = Partial<Record<RegionCode, Record<string, PriceCell>>>;
+
 export type ProgramDuration = {
   label: string;
   months: number;
   /** true for "6 Months (Minimum)" */
   isMinimum: boolean;
-  legacyShopifyVariantId?: number;
 };
 
 export type Program = {
   /** database id (orders link to it) */
   id: number;
+  /** this program's own prices, if it has any (otherwise admin > Prices is used) */
+  ownPrices: OwnPrices;
   slug: string;
   name: string;
   tag: string;
@@ -58,7 +62,6 @@ export type Program = {
   howItWorks: string;
   includes: string[];
   order: number;
-  legacyShopifyHandle?: string;
 };
 
 export type Goal = {

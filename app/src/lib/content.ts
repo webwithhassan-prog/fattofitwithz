@@ -27,6 +27,7 @@ import type {
   Goal,
   HeroBanner,
   InstagramItem,
+  OwnPrices,
   PaymentSettings,
   PriceCell,
   Program,
@@ -78,6 +79,11 @@ export const getPrograms = cachedContent("programs", async (): Promise<Program[]
   const { docs } = await payload.find({ collection: "programs", sort: "order", limit: 100, depth: 0 });
   return docs.map((p) => ({
     id: p.id,
+    ownPrices: (p.ownPrices ?? []).reduce<OwnPrices>((own, row) => {
+      const list = (own[row.region as RegionCode] ??= {});
+      list[String(row.months)] = { amount: row.amount, compareAt: row.compareAt };
+      return own;
+    }, {}),
     slug: p.slug,
     name: p.name,
     tag: p.tag ?? "",
@@ -96,7 +102,6 @@ export const getPrograms = cachedContent("programs", async (): Promise<Program[]
     whoIsItFor: p.whoIsItFor,
     howItWorks: p.howItWorks,
     order: p.order,
-    legacyShopifyHandle: p.legacyShopifyHandle ?? undefined,
   }));
 });
 

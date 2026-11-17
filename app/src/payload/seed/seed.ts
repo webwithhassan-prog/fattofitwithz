@@ -80,7 +80,6 @@ async function main() {
       includes: lines(p.includes),
       whoIsItFor: p.whoIsItFor,
       howItWorks: p.howItWorks,
-      legacyShopifyHandle: p.legacyShopifyHandle,
     });
     programIds.set(p.slug, doc.id as number);
   }

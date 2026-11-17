@@ -62,7 +62,7 @@ export function ProgramPurchase({ program, paymentMode, testMode }: Props) {
         <p className="text-sm text-brand-dark">{durationLabel(duration.months, duration.isMinimum)}</p>
       )}
 
-      <PriceTag months={months} />
+      <PriceTag months={months} own={program.ownPrices} />
       <p className="-mt-2 text-sm text-muted">One-time payment for {durationLabel(duration.months).toLowerCase()} of coaching.</p>
 
       <button type="button" className="btn w-full" onClick={onJoin}>

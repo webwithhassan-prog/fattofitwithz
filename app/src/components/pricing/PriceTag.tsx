@@ -7,13 +7,14 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { savingsPercent } from "@/lib/pricing";
+import type { OwnPrices } from "@/lib/types";
 import { useRegion } from "./RegionProvider";
 
-type Props = { months: number; size?: "lg" | "md" };
+type Props = { months: number; size?: "lg" | "md"; /** the program's own prices, if any */ own?: OwnPrices };
 
-export function PriceTag({ months, size = "lg" }: Props) {
+export function PriceTag({ months, size = "lg", own }: Props) {
   const { market, ready, price, money } = useRegion();
-  const cell = price(months);
+  const cell = price(months, own);
 
   // Flip only when the visitor changes something AFTER the price was shown.
   const [flipKey, setFlipKey] = useState(0);

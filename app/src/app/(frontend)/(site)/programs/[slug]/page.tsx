@@ -50,7 +50,7 @@ export default async function ProgramPage({ params }: PageProps) {
   const [regions, table, rates, mode] = await Promise.all([getRegions(), getPriceTable(), getExchangeRates(), paymentMode()]);
   // Prices in the structured data (for Google) use the default region (USD).
   const region = regions.find((r) => r.isDefault) ?? regions[0];
-  const offerPrices = program.durations.map((d) => ({ months: d.months, cell: getPrice(table, region.code, d.months) }));
+  const offerPrices = program.durations.map((d) => ({ months: d.months, cell: program.ownPrices[region.code]?.[String(d.months)] ?? getPrice(table, region.code, d.months) }));
 
   const faqs = (await getFaqs()).filter((f) => [3, 4, 5, 9, 21].includes(f.order));
   const others = (await getPrograms()).filter((p) => p.slug !== program.slug);

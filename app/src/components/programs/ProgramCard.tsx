@@ -42,7 +42,7 @@ export function ProgramCard({ program }: { program: Program }) {
         <p className="text-[13px] text-brand-dark">{durationLabel(current.months, current.isMinimum)}</p>
       )}
 
-      <PriceTag months={months} />
+      <PriceTag months={months} own={program.ownPrices} />
 
       <ul className="flex flex-col gap-2 text-[15px]">
         {program.cardBenefits.slice(0, 4).map((benefit) => (

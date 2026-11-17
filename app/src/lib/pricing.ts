@@ -14,7 +14,7 @@
  *   - If there is no exchange rate for her currency (or Stripe can't charge in it): USD.
  */
 import { currencyOfCountry } from "./countries";
-import type { PriceCell, Region, RegionCode } from "./types";
+import type { OwnPrices, PriceCell, Region, RegionCode } from "./types";
 import type { PriceTable } from "./content";
 
 export const DEFAULT_REGION: RegionCode = "usa";
@@ -89,11 +89,26 @@ export function getPrice(table: PriceTable, region: RegionCode, months: number):
   return cell;
 }
 
-/** A program price in the visitor's currency. */
-export function marketPrice(market: Market, table: PriceTable, months: number): PriceCell {
+/**
+ * A program price in the visitor's currency.
+ * If the program has its OWN prices (admin > Programs > Own prices) for this duration, they win:
+ *   - the visitor's price list has an own price -> that one
+ *   - otherwise the own USA price, converted into her currency (needs `rates`)
+ * Without own prices: admin > Prices, as for every other program.
+ */
+export function marketPrice(market: Market, table: PriceTable, months: number, own?: OwnPrices, rates?: Rates): PriceCell {
+  const convert = (cell: PriceCell, rate: number): PriceCell => ({
+    amount: niceAmount(cell.amount * rate, market.currency),
+    compareAt: niceAmount(cell.compareAt * rate, market.currency),
+  });
+  const ownCell = own?.[market.region.code]?.[String(months)];
+  if (ownCell) return market.converted ? convert(ownCell, market.rate) : ownCell;
+  const ownUsa = own?.usa?.[String(months)];
+  const usdRate = market.currency === "USD" ? 1 : rates?.[market.currency];
+  if (ownUsa && usdRate) return market.currency === "USD" ? ownUsa : convert(ownUsa, usdRate);
+
   const cell = getPrice(table, market.region.code, months);
-  if (!market.converted) return cell;
-  return { amount: niceAmount(cell.amount * market.rate, market.currency), compareAt: niceAmount(cell.compareAt * market.rate, market.currency) };
+  return market.converted ? convert(cell, market.rate) : cell;
 }
 
 /** E-book prices in the visitor's currency: on its own, and when bought with a program. */

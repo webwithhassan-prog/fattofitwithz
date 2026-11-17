@@ -20,6 +20,8 @@ import * as migration_20261014_143605_membership_days_frozen from './20261014_14
 import * as migration_20261103_005116_manual_payments from './20261103_005116_manual_payments';
 import * as migration_20261103_082905_payment_logos from './20261103_082905_payment_logos';
 import * as migration_20261116_184440_ebooks from './20261116_184440_ebooks';
+import * as migration_20261117_100200_program_own_prices from './20261117_100200_program_own_prices';
+import * as migration_20261117_103406_remove_shopify_handle from './20261117_103406_remove_shopify_handle';
 
 export const migrations = [
   {
@@ -130,6 +132,16 @@ export const migrations = [
   {
     up: migration_20261116_184440_ebooks.up,
     down: migration_20261116_184440_ebooks.down,
-    name: '20261116_184440_ebooks'
+    name: '20261116_184440_ebooks',
+  },
+  {
+    up: migration_20261117_100200_program_own_prices.up,
+    down: migration_20261117_100200_program_own_prices.down,
+    name: '20261117_100200_program_own_prices'
+  },
+  {
+    up: migration_20261117_103406_remove_shopify_handle.up,
+    down: migration_20261117_103406_remove_shopify_handle.down,
+    name: '20261117_103406_remove_shopify_handle'
   },
 ];

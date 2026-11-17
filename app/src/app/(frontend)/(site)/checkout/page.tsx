@@ -48,7 +48,7 @@ export default async function CheckoutPage({ searchParams }: PageProps) {
             Almost <span className="script">there</span>
           </h1>
           <CheckoutForm
-            program={{ slug: program.slug, name: program.name, focus: program.focus }}
+            program={{ slug: program.slug, name: program.name, focus: program.focus, ownPrices: program.ownPrices }}
             months={duration.months}
             durationLabel={duration.label}
             ebooks={ebooks.map(({ slug, title, cover }) => ({ slug, title, cover }))}

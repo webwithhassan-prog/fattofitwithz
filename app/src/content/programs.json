@@ -5,14 +5,12 @@
     {
       "slug": "kickstart",
       "name": "Kickstart Program",
-      "legacyShopifyHandle": "fat-to-fit-basic-plan",
       "focus": "Habit building, basic nutrition, portion control & movement",
       "durations": [
         {
           "label": "1 Month",
           "months": 1,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49635073523867
+          "isMinimum": false
         }
       ],
       "summary": "A practical and structured program designed to help you start your health and fitness journey with the right nutrition, movement, and sustainable lifestyle habits.",
@@ -43,20 +41,17 @@
     {
       "slug": "fat-loss",
       "name": "Fat Loss Program",
-      "legacyShopifyHandle": "fat-to-fit-standard-plan",
       "focus": "Calorie deficit, strength training & body composition",
       "durations": [
         {
           "label": "2 Months",
           "months": 2,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49670850707611
+          "isMinimum": false
         },
         {
           "label": "4 Months",
           "months": 4,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49670850740379
+          "isMinimum": false
         }
       ],
       "summary": "A structured fat-loss program focused on reducing body fat, improving body composition, and creating a visibly fitter, stronger, and more toned physique through nutrition and progressive training.",
@@ -88,14 +83,12 @@
     {
       "slug": "diabetes-control",
       "name": "Diabetes Control Program",
-      "legacyShopifyHandle": "fat-to-fit-premium-plan",
       "focus": "Insulin resistance, HbA1c optimization & blood sugar",
       "durations": [
         {
           "label": "3 Months",
           "months": 3,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49634460532891
+          "isMinimum": false
         }
       ],
       "summary": "A structured 3-month program designed to support better blood sugar management by addressing insulin resistance, insulin spikes, and hyperglycemia through personalized nutrition, guided exercise, and consistent monitoring.",
@@ -128,14 +121,12 @@
     {
       "slug": "health-concerns",
       "name": "Health Concerns Program",
-      "legacyShopifyHandle": "health-concerns-programs",
       "focus": "PCOS, Thyroid, Menopause, Cholesterol, Fatty Liver, Uric Acid",
       "durations": [
         {
           "label": "3 Months",
           "months": 3,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49670945833115
+          "isMinimum": false
         }
       ],
       "summary": "A specialized 3-month program designed to address specific health and nutritional concerns through condition-focused nutrition, structured lifestyle guidance, and personalized fitness support.",
@@ -172,14 +163,12 @@
     {
       "slug": "total-transformation",
       "name": "Total Transformation Program",
-      "legacyShopifyHandle": "total-transformation-program",
       "focus": "Complete body/lifestyle overhaul + Recipe E-Book",
       "durations": [
         {
           "label": "6 Months",
           "months": 6,
-          "isMinimum": false,
-          "legacyShopifyVariantId": 49671002390683
+          "isMinimum": false
         }
       ],
       "summary": "A comprehensive transformation program designed to create a complete change in your body, health, fitness, nutrition, and lifestyle through a structured and personalized approach.",
@@ -214,14 +203,12 @@
     {
       "slug": "premium-signature",
       "name": "Premium Signature Transformation",
-      "legacyShopifyHandle": "premium-signature-transformation",
       "focus": "1-on-1 VIP coaching, maximum personalization + E-Book",
       "durations": [
         {
           "label": "6 Months (Minimum)",
           "months": 6,
-          "isMinimum": true,
-          "legacyShopifyVariantId": 49671055868059
+          "isMinimum": true
         }
       ],
       "summary": "An exclusive, high-level transformation program designed for women who want a more personalized and comprehensive approach to body transformation, nutrition, fitness, and sustainable lifestyle change.",

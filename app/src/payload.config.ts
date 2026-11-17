@@ -74,7 +74,7 @@ export default buildConfig({
   // THE ADMIN MENU (owner's list, 2026-10-13). Groups appear in the order below; each file sets its group.
   //   Clients:             Clients, First day forms, Follow-up forms, Client issues, Orders & payments
   //   Messages to clients: Reminders & announcements
-  //   Website:             Workout recordings, E-books, All photos, Payment details
+  //   Website:             Workout recordings, Programs, E-books, All photos, Payment details
   // Everything else has `admin.group: false`: hidden from the menu, but the pages and data still work
   // (open them from a client's page, the Overview, Site photos, or by address, e.g. /admin/globals/pricing).
   collections: [

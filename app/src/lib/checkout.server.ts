@@ -65,7 +65,7 @@ export async function priceBasket(input: BasketInput): Promise<{ ok: true; baske
     const duration = program.durations.find((d) => d.months === input.months);
     if (!duration) return { ok: false, error: `${program.name} is not offered for ${input.months} month(s).` };
     try {
-      items.push({ name: `${program.name} (${duration.label})`, amount: marketPrice(market, table, duration.months).amount, description: program.focus });
+      items.push({ name: `${program.name} (${duration.label})`, amount: marketPrice(market, table, duration.months, program.ownPrices, rates).amount, description: program.focus });
     } catch (error) {
       console.error("[checkout] Missing price:", error instanceof Error ? error.message : error);
       return { ok: false, error: "This option can't be bought online right now. Please contact us on WhatsApp." };

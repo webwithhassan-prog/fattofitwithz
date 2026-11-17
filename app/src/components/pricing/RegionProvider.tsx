@@ -19,7 +19,7 @@ import { useClientValue } from "@/components/ui/hooks";
 import type { PriceTable } from "@/lib/content";
 import { countryFromTimeZone, isCountryCode } from "@/lib/countries";
 import { COUNTRY_COOKIE, formatMoney, getMarket, marketEbook, marketPrice, type Market, type Rates } from "@/lib/pricing";
-import type { PriceCell, Region } from "@/lib/types";
+import type { OwnPrices, PriceCell, Region } from "@/lib/types";
 
 type RegionContextValue = {
   /** Her country, price list and currency */
@@ -27,8 +27,8 @@ type RegionContextValue = {
   /** false until we know her country */
   ready: boolean;
   setCountry: (code: string) => void;
-  /** A program price in her currency */
-  price: (months: number) => PriceCell;
+  /** A program price in her currency (pass the program's own prices, if it has any) */
+  price: (months: number, own?: OwnPrices) => PriceCell;
   /** E-book prices in her currency */
   ebook: { alone: number; withPlan: number };
   /** 49 -> "£49" in her currency */
@@ -91,7 +91,7 @@ export function RegionProvider({ regions, table, rates, children }: Props) {
     market,
     ready: chosen !== null || saved !== null || detectionDone,
     setCountry,
-    price: (months) => marketPrice(market, table, months),
+    price: (months, own) => marketPrice(market, table, months, own, rates),
     ebook: marketEbook(market),
     money: (amount) => formatMoney(amount, market),
   };

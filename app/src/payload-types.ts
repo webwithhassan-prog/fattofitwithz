@@ -355,7 +355,7 @@ export interface Membership {
   createdAt: string;
 }
 /**
- * The six programs. Prices are under Prices (they depend on months and country, not on the program).
+ * The coaching programs. Prices come from admin > Prices, unless a program has its own prices ("Own prices" tab).
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs".
@@ -381,7 +381,7 @@ export interface Program {
   focus: string;
   summary: string;
   /**
-   * Each duration needs a price for every country under Prices.
+   * Each duration needs a price for every country: under Prices, or in this program's "Own prices" tab.
    */
   durations: {
     months: number;
@@ -427,10 +427,15 @@ export interface Program {
     | null;
   whoIsItFor: string;
   howItWorks: string;
-  /**
-   * Old Shopify address, kept for redirects. Leave as is.
-   */
-  legacyShopifyHandle?: string | null;
+  ownPrices?:
+    | {
+        region: 'usa' | 'canada' | 'uae' | 'saudi' | 'qatar' | 'india' | 'pakistan' | 'australia';
+        months: number;
+        amount: number;
+        compareAt: number;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1224,7 +1229,15 @@ export interface ProgramsSelect<T extends boolean = true> {
       };
   whoIsItFor?: T;
   howItWorks?: T;
-  legacyShopifyHandle?: T;
+  ownPrices?:
+    | T
+    | {
+        region?: T;
+        months?: T;
+        amount?: T;
+        compareAt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -82,7 +82,7 @@ export function RecommendedCarousel({ goals, programs }: Props) {
                   <p className="text-[15px] text-muted">{goal.why[program.slug] ?? program.focus}</p>
                   <div className="mt-auto flex flex-wrap items-end justify-between gap-2.5 pt-2">
                     <div>
-                      <PriceTag months={months} size="md" />
+                      <PriceTag months={months} size="md" own={program.ownPrices} />
                       <p className="text-[13px] text-muted">
                         {durationLabel(months, program.durations[0].isMinimum)}
                         {program.durations.length > 1 ? " · more options" : ""}

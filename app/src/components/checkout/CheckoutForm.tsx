@@ -12,10 +12,10 @@ import { useActionState, useState } from "react";
 import { checkoutAction, type CheckoutFormState } from "@/app/(frontend)/(site)/checkout/actions";
 import { useRegion } from "@/components/pricing/RegionProvider";
 import { PaymentMethodBadges, type PayMethods } from "@/components/checkout/PaymentMethodBadges";
-import type { EbookOffer } from "@/lib/types";
+import type { EbookOffer, OwnPrices } from "@/lib/types";
 
 type Props = {
-  program: { slug: string; name: string; focus: string };
+  program: { slug: string; name: string; focus: string; ownPrices: OwnPrices };
   months: number;
   durationLabel: string;
   /** E-books on sale (each can be added at the lower "with a program" price) */
@@ -39,7 +39,7 @@ export function CheckoutForm({ program, months, durationLabel, ebooks, startWith
   const toggle = (slug: string, on: boolean) => setChosen((prev) => (on ? [...new Set([...prev, slug])] : prev.filter((s) => s !== slug)));
   const { market, ready, price: priceFor, ebook: ebookPrices, money } = useRegion();
 
-  const programPrice = priceFor(months).amount;
+  const programPrice = priceFor(months, program.ownPrices).amount;
   const ebookPrice = ebookPrices.withPlan;
   const total = programPrice + chosen.length * ebookPrice;
   const price = (amount: number) => (ready ? money(amount) : "…");
