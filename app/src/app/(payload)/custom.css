@@ -436,3 +436,114 @@ a.ftf-card:hover {
   border-radius: 16px;
   background: var(--ftf-blush);
 }
+
+/* "Replace photo" button on Site photos (PhotoReplaceButton.tsx) */
+.ftf-replace {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ftf-replace__ok {
+  font-size: 12px;
+  color: #1a7f45;
+}
+.ftf-replace__error {
+  font-size: 12px;
+  color: #c0392b;
+}
+.ftf-replace__adjust {
+  align-self: flex-start;
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* Photo preview window (PhotoReplaceButton.tsx): shows the photo the way the website shows it */
+.ftf-editor {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(43, 26, 36, 0.55);
+}
+.ftf-editor__panel {
+  width: min(440px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 20px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 30px 60px -20px rgba(43, 26, 36, 0.5);
+}
+.ftf-editor__panel h3 {
+  margin: 0 0 4px;
+}
+.ftf-editor__frame {
+  position: relative;
+  width: min(300px, 100%);
+  margin: 14px auto;
+  overflow: hidden;
+  background: #fde7f3;
+}
+.ftf-editor__frame--arch {
+  aspect-ratio: 360 / 498;
+  border-radius: 999px 999px 14px 14px;
+}
+.ftf-editor__frame--portrait {
+  aspect-ratio: 4 / 5;
+  border-radius: 14px;
+}
+.ftf-editor__frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ftf-editor__right {
+  clip-path: inset(0 0 0 50%);
+}
+.ftf-editor__divider {
+  position: absolute;
+  inset: 0 auto 0 50%;
+  width: 2px;
+  background: #fff;
+}
+.ftf-editor__tag {
+  position: absolute;
+  bottom: 12px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.ftf-editor__tag--before {
+  left: 12px;
+  background: rgba(43, 26, 36, 0.8);
+}
+.ftf-editor__tag--after {
+  right: 12px;
+  background: #ff65c5;
+}
+.ftf-editor__slider {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.ftf-editor__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.ftf-btn--ghost {
+  background: transparent;
+}

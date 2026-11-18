@@ -20,5 +20,12 @@ export const PagePhotos: GlobalConfig = {
         { name: "afterPhoto", type: "upload", relationTo: "media", label: "After photo (slider)" },
       ],
     },
+    {
+      type: "row",
+      fields: [
+        { name: "beforeKg", type: "number", min: 20, max: 300, defaultValue: 71, label: "Before weight (kg)", admin: { description: "Shown next to the slider, e.g. 71 kg → 61 kg" } },
+        { name: "afterKg", type: "number", min: 20, max: 300, defaultValue: 61, label: "After weight (kg)", admin: { description: "The kg lost is worked out by itself" } },
+      ],
+    },
   ],
 };

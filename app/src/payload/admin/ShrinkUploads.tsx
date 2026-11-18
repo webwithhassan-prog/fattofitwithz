@@ -18,7 +18,8 @@ const MAX_BYTES = 1.5 * 1024 * 1024;
 const SHRINKABLE = /^image\/(jpeg|png|webp)$/;
 const needsShrinking = (file: File) => SHRINKABLE.test(file.type) && file.size > MAX_BYTES;
 
-async function shrink(file: File): Promise<File> {
+/** Shrinks one photo (if it is big) in the browser. Also used by the Site photos "Replace" buttons. */
+export async function shrink(file: File): Promise<File> {
   if (!needsShrinking(file)) return file;
   try {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" }); // keeps phone photos upright
@@ -52,7 +53,7 @@ export function ShrinkUploads({ children }: { children?: React.ReactNode }) {
     // File picker ("Select a file")
     const onChange = (event: Event) => {
       const input = event.target;
-      if (!(input instanceof HTMLInputElement) || input.type !== "file" || !event.isTrusted) return;
+      if (!(input instanceof HTMLInputElement) || input.type !== "file" || !event.isTrusted || input.dataset.ftfSkip) return;
       if (![...(input.files ?? [])].some(needsShrinking)) return;
       event.stopImmediatePropagation(); // Payload sees the smaller file instead (below)
       void shrinkAll(input.files!).then((smaller) => {

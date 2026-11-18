@@ -322,15 +322,19 @@ export async function getEbooks(): Promise<EbookOffer[]> {
 
 // ---------- page photos (About page + before/after slider) ----------
 
-export type SimplePhoto = { src: string; alt: string };
+/** position: CSS object-position, e.g. "40% 15%" (set with "Adjust position" in admin > Site photos) */
+export type SimplePhoto = { src: string; alt: string; position?: string };
 export type PagePhotos = {
   aboutPhoto: SimplePhoto;
   before: SimplePhoto;
   after: SimplePhoto;
+  /** weights shown with the before/after slider, e.g. 71 and 61 (null = not shown) */
+  beforeKg: number | null;
+  afterKg: number | null;
 };
 
 /** Used when a photo hasn't been chosen in admin > Page photos (the original files in public/images). */
-const PAGE_PHOTO_FALLBACKS: PagePhotos = {
+const PAGE_PHOTO_FALLBACKS: Omit<PagePhotos, "beforeKg" | "afterKg"> = {
   aboutPhoto: { src: "/images/coach/coach-p03.jpg", alt: "Portrait of Zaineb Danish" },
   before: { src: "/images/results/before-71kg.jpg", alt: "Client before the program, 71 kg" },
   after: { src: "/images/results/after-61kg.jpg", alt: "The same client after the program, 61 kg" },
@@ -338,7 +342,15 @@ const PAGE_PHOTO_FALLBACKS: PagePhotos = {
 
 /** A chosen photo, or the fallback when the field is empty. */
 function photoOr(media: number | Media | null | undefined, fallback: SimplePhoto): SimplePhoto {
-  return media && typeof media === "object" && media.url ? { src: media.url, alt: media.alt } : fallback;
+  if (!(media && typeof media === "object" && media.url)) return fallback;
+  return { src: media.url, alt: media.alt, position: photoPosition(media) };
+}
+
+/** The photo's chosen position (focal point); 50/50 = never set, then undefined (each place uses its own default). */
+export function photoPosition(media: Pick<Media, "focalX" | "focalY">): string | undefined {
+  const x = media.focalX ?? 50;
+  const y = media.focalY ?? 50;
+  return x === 50 && y === 50 ? undefined : `${Math.round(x)}% ${Math.round(y)}%`;
 }
 
 export const getPagePhotos = cachedContent("page-photos", async (): Promise<PagePhotos> => {
@@ -348,6 +360,8 @@ export const getPagePhotos = cachedContent("page-photos", async (): Promise<Page
     aboutPhoto: photoOr(p.aboutPhoto, PAGE_PHOTO_FALLBACKS.aboutPhoto),
     before: photoOr(p.beforePhoto, PAGE_PHOTO_FALLBACKS.before),
     after: photoOr(p.afterPhoto, PAGE_PHOTO_FALLBACKS.after),
+    beforeKg: p.beforeKg ?? null,
+    afterKg: p.afterKg ?? null,
   };
 });
 

@@ -14,7 +14,7 @@ export const Media: CollectionConfig = {
     defaultColumns: ["filename", "alt", "updatedAt"],
     group: "Website",
     pagination: { defaultLimit: 50 },
-    description: "All photos used on the website. To change a picture, open it and upload a new file: it changes everywhere it is used. Admin > Site photos shows where each one appears.",
+    description: "The photo library (every uploaded file). To change a picture on the website, go to Site photos (top of the menu) and press \"Replace photo\" under it: that's the easy way.",
   },
   access: { read: anyone }, // photos are public; uploading and deleting still need an admin
   hooks: {

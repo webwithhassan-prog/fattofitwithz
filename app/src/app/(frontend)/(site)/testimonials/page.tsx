@@ -5,6 +5,7 @@
  */
 import Image from "next/image";
 import Link from "next/link";
+import { WeightChange } from "@/components/home/WeightChange";
 import { BeforeAfter } from "@/components/home/BeforeAfter";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { InstagramIcon } from "@/components/ui/Icons";
@@ -38,11 +39,9 @@ export default async function TestimonialsPage() {
             lead="Real journeys and real progress from women who trusted Fat To Fit With Z and committed to changing their lives."
           />
           <div className="grid items-center gap-10 md:grid-cols-2">
-            <BeforeAfter before={photos.before.src} after={photos.after.src} beforeAlt={photos.before.alt} afterAlt={photos.after.alt} />
+            <BeforeAfter before={photos.before.src} after={photos.after.src} beforeAlt={photos.before.alt} afterAlt={photos.after.alt} beforePosition={photos.before.position} afterPosition={photos.after.position} />
             <div>
-              <p className="font-display text-[30px]">
-                71 kg → 61 kg <span className="text-brand-dark">· −10 kg</span>
-              </p>
+              <WeightChange beforeKg={photos.beforeKg} afterKg={photos.afterKg} className="text-[30px]" />
               <p className="lead mt-3">Drag the handle to compare. Below is every transformation our clients agreed to share.</p>
             </div>
           </div>

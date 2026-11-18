@@ -21,11 +21,11 @@ export const REGION_OPTIONS = [
 
 export const Pricing: GlobalConfig = {
   slug: "pricing",
-  label: "Prices",
+  label: "Prices: e-books & countries",
   admin: {
-    group: false, // hidden from the menu (2026-10-13): the page still works at its address
+    group: "Website",
     description:
-      "One entry per country. The price depends on the number of months, not the program. Every program duration (e.g. 2 or 4 months) needs a price in every country.",
+      "E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > \"Prices\" tab). The program prices below are only a backup, used when a program has no price for a country or duration.",
   },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [

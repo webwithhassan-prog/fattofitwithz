@@ -22,6 +22,7 @@ import * as migration_20261103_082905_payment_logos from './20261103_082905_paym
 import * as migration_20261116_184440_ebooks from './20261116_184440_ebooks';
 import * as migration_20261117_100200_program_own_prices from './20261117_100200_program_own_prices';
 import * as migration_20261117_103406_remove_shopify_handle from './20261117_103406_remove_shopify_handle';
+import * as migration_20261118_091124_before_after_weights from './20261118_091124_before_after_weights';
 
 export const migrations = [
   {
@@ -137,11 +138,16 @@ export const migrations = [
   {
     up: migration_20261117_100200_program_own_prices.up,
     down: migration_20261117_100200_program_own_prices.down,
-    name: '20261117_100200_program_own_prices'
+    name: '20261117_100200_program_own_prices',
   },
   {
     up: migration_20261117_103406_remove_shopify_handle.up,
     down: migration_20261117_103406_remove_shopify_handle.down,
-    name: '20261117_103406_remove_shopify_handle'
+    name: '20261117_103406_remove_shopify_handle',
+  },
+  {
+    up: migration_20261118_091124_before_after_weights.up,
+    down: migration_20261118_091124_before_after_weights.down,
+    name: '20261118_091124_before_after_weights'
   },
 ];

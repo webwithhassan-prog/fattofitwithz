@@ -4,13 +4,20 @@
  * Before/after drag slider (approved animation #7).
  * A transparent <input type="range"> covers the photos, so it works with mouse, touch
  * AND keyboard (arrow keys) without any custom drag code.
+ * The handle stops at 8% / 92% so it never slides out of sight, and both photos are lined up from
+ * near the top (faces), so a "before" and "after" taken at different distances still match.
  */
 import Image from "next/image";
 import { useState } from "react";
 
-type Props = { before: string; after: string; beforeAlt: string; afterAlt: string };
+const MIN = 8;
+const MAX = 92;
+const PHOTO_POSITION = "object-cover object-[center_18%]";
 
-export function BeforeAfter({ before, after, beforeAlt, afterAlt }: Props) {
+/** beforePosition/afterPosition: chosen with "Adjust position" in admin > Site photos (CSS object-position) */
+type Props = { before: string; after: string; beforeAlt: string; afterAlt: string; beforePosition?: string; afterPosition?: string };
+
+export function BeforeAfter({ before, after, beforeAlt, afterAlt, beforePosition, afterPosition }: Props) {
   const [cut, setCut] = useState(50); // % from the left where the "after" photo starts
 
   return (
@@ -18,13 +25,14 @@ export function BeforeAfter({ before, after, beforeAlt, afterAlt }: Props) {
       className="relative aspect-[360/498] w-full max-w-[380px] justify-self-center overflow-hidden rounded-[999px_999px_14px_14px] bg-blush select-none"
       style={{ "--cut": `${cut}%` } as React.CSSProperties}
     >
-      <Image src={before} alt={beforeAlt} fill sizes="380px" className="object-cover" />
+      <Image src={before} alt={beforeAlt} fill sizes="380px" className={PHOTO_POSITION} style={beforePosition ? { objectPosition: beforePosition } : undefined} />
       <Image
         src={after}
         alt={afterAlt}
         fill
         sizes="380px"
-        className="object-cover [clip-path:inset(0_0_0_var(--cut))]"
+        className={`${PHOTO_POSITION} [clip-path:inset(0_0_0_var(--cut))]`}
+        style={afterPosition ? { objectPosition: afterPosition } : undefined}
       />
       <span className="absolute bottom-4.5 left-4.5 rounded-full bg-ink/80 px-3 py-1 text-[11px] tracking-[0.12em] text-white uppercase">
         Before
@@ -41,10 +49,10 @@ export function BeforeAfter({ before, after, beforeAlt, afterAlt }: Props) {
       </div>
       <input
         type="range"
-        min={0}
-        max={100}
+        min={MIN}
+        max={MAX}
         value={cut}
-        onChange={(e) => setCut(Number(e.target.value))}
+        onChange={(e) => setCut(Math.min(MAX, Math.max(MIN, Number(e.target.value))))}
         aria-label="Drag to compare before and after"
         className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
       />

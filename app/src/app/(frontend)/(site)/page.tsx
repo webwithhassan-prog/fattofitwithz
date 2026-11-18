@@ -8,6 +8,7 @@ import Link from "next/link";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { TrustStrip } from "@/components/home/TrustStrip";
 import { StepsSection } from "@/components/home/StepsSection";
+import { WeightChange } from "@/components/home/WeightChange";
 import { BeforeAfter } from "@/components/home/BeforeAfter";
 import { FounderCarousel } from "@/components/home/FounderCarousel";
 import { FaqList } from "@/components/home/FaqList";
@@ -90,7 +91,7 @@ export default async function HomePage() {
 
       <section className="section bg-blush" id="results">
         <div className="container-site grid items-center gap-[clamp(24px,5vw,64px)] md:grid-cols-2">
-          <BeforeAfter before={pagePhotos.before.src} after={pagePhotos.after.src} beforeAlt={pagePhotos.before.alt} afterAlt={pagePhotos.after.alt} />
+          <BeforeAfter before={pagePhotos.before.src} after={pagePhotos.after.src} beforeAlt={pagePhotos.before.alt} afterAlt={pagePhotos.after.alt} beforePosition={pagePhotos.before.position} afterPosition={pagePhotos.after.position} />
           <Reveal>
             <div className="gold-rule gold-rule-left">
               <span className="kicker">Real people. Real results.</span>
@@ -101,9 +102,7 @@ export default async function HomePage() {
             <p className="lead mt-3.5">
               Drag the handle to compare. Every story on our testimonials page comes with the result and the program used.
             </p>
-            <p className="mt-5 font-display text-[26px]">
-              71 kg → 61 kg <span className="text-brand-dark">· −10 kg</span>
-            </p>
+            <WeightChange beforeKg={pagePhotos.beforeKg} afterKg={pagePhotos.afterKg} className="mt-5 text-[26px]" />
             <p className="tracking-[3px] text-gold" aria-label="Rated 5 out of 5">
               ★★★★★
             </p>

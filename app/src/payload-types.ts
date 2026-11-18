@@ -355,7 +355,7 @@ export interface Membership {
   createdAt: string;
 }
 /**
- * The coaching programs. Prices come from admin > Prices, unless a program has its own prices ("Own prices" tab).
+ * The coaching programs. To change a program's price: open it, go to the "Prices" tab, change the number and Save.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "programs".
@@ -364,7 +364,7 @@ export interface Program {
   id: number;
   name: string;
   /**
-   * Web address: /programs/<slug>. Changing it breaks links people have shared.
+   * Web address: /programs/<slug>, e.g. "postpartum-transformation" (made lowercase with dashes automatically). Changing it breaks links people have shared.
    */
   slug: string;
   /**
@@ -381,13 +381,22 @@ export interface Program {
   focus: string;
   summary: string;
   /**
-   * Each duration needs a price for every country: under Prices, or in this program's "Own prices" tab.
+   * Each duration needs a price for every country in the "Prices" tab.
    */
   durations: {
     months: number;
     isMinimum?: boolean | null;
     id?: string | null;
   }[];
+  ownPrices?:
+    | {
+        region: 'usa' | 'canada' | 'uae' | 'saudi' | 'qatar' | 'india' | 'pakistan' | 'australia';
+        months: number;
+        amount: number;
+        compareAt: number;
+        id?: string | null;
+      }[]
+    | null;
   benefitsLabel?: string | null;
   /**
    * Short lines shown on the program card (about 6).
@@ -427,15 +436,6 @@ export interface Program {
     | null;
   whoIsItFor: string;
   howItWorks: string;
-  ownPrices?:
-    | {
-        region: 'usa' | 'canada' | 'uae' | 'saudi' | 'qatar' | 'india' | 'pakistan' | 'australia';
-        months: number;
-        amount: number;
-        compareAt: number;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -567,7 +567,7 @@ export interface Ebook {
   createdAt: string;
 }
 /**
- * All photos used on the website. To change a picture, open it and upload a new file: it changes everywhere it is used. Admin > Site photos shows where each one appears.
+ * The photo library (every uploaded file). To change a picture on the website, go to Site photos (top of the menu) and press "Replace photo" under it: that's the easy way.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -1202,6 +1202,15 @@ export interface ProgramsSelect<T extends boolean = true> {
         isMinimum?: T;
         id?: T;
       };
+  ownPrices?:
+    | T
+    | {
+        region?: T;
+        months?: T;
+        amount?: T;
+        compareAt?: T;
+        id?: T;
+      };
   benefitsLabel?: T;
   cardBenefits?:
     | T
@@ -1229,15 +1238,6 @@ export interface ProgramsSelect<T extends boolean = true> {
       };
   whoIsItFor?: T;
   howItWorks?: T;
-  ownPrices?:
-    | T
-    | {
-        region?: T;
-        months?: T;
-        amount?: T;
-        compareAt?: T;
-        id?: T;
-      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1512,7 +1512,7 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
- * One entry per country. The price depends on the number of months, not the program. Every program duration (e.g. 2 or 4 months) needs a price in every country.
+ * E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > "Prices" tab). The program prices below are only a backup, used when a program has no price for a country or duration.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricing".
@@ -1641,6 +1641,14 @@ export interface PagePhoto {
   aboutPhoto?: (number | null) | Media;
   beforePhoto?: (number | null) | Media;
   afterPhoto?: (number | null) | Media;
+  /**
+   * Shown next to the slider, e.g. 71 kg → 61 kg
+   */
+  beforeKg?: number | null;
+  /**
+   * The kg lost is worked out by itself
+   */
+  afterKg?: number | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1842,6 +1850,8 @@ export interface PagePhotosSelect<T extends boolean = true> {
   aboutPhoto?: T;
   beforePhoto?: T;
   afterPhoto?: T;
+  beforeKg?: T;
+  afterKg?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -66,6 +66,9 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
+    // "Replace photo" in admin > Site photos sends the picture through a server action (default limit 1 MB).
+    // Photos are shrunk in the browser first; Netlify's own limit is about 6 MB.
+    serverActions: { bodySizeLimit: "5mb" },
     // The site has two root layouts (website + admin panel), so unknown URLs use
     // src/app/global-not-found.tsx instead of a layout-based 404.
     globalNotFound: true,
