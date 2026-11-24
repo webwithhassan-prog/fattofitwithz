@@ -8,11 +8,11 @@ import { contentHooks } from "../hooks/revalidateSite";
 
 export const Media: CollectionConfig = {
   slug: "media",
-  labels: { singular: "Photo", plural: "All photos" },
+  labels: { singular: "Photo", plural: "Photo library" },
   admin: {
     useAsTitle: "alt", // show the description, not the file name
     defaultColumns: ["filename", "alt", "updatedAt"],
-    group: "Website",
+    group: "Settings",
     pagination: { defaultLimit: 50 },
     description: "The photo library (every uploaded file). To change a picture on the website, go to Site photos (top of the menu) and press \"Replace photo\" under it: that's the easy way.",
   },

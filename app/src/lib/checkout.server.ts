@@ -19,6 +19,7 @@ import { getEbooks, getExchangeRates, getPaymentSettings, getPriceTable, getProg
 import { isCountryCode } from "./countries";
 import { getMarket, marketEbook, marketPrice, toStripeAmount, type Market } from "./pricing";
 import { getStripe, StripeNotConfiguredError } from "./stripe.server";
+import { getPayloadClient } from "./payload.server";
 import { countEvent } from "./stats.server";
 import type { EbookOffer, Program } from "./types";
 
@@ -37,6 +38,8 @@ export type BasketInput = {
   ebooks: string[];
   /** Visitor's country, e.g. "GB" (decides the currency and price list) */
   country: string;
+  /** She already has a program (memberHasProgram): e-books bought on their own get the lower "with a program" price too */
+  memberPrice?: boolean;
 };
 
 export type Basket = {
@@ -48,6 +51,20 @@ export type Basket = {
   items: { name: string; amount: number; description?: string }[];
   total: number;
 };
+
+/**
+ * true when she has a program that hasn't ended (running, paused or starting later).
+ * Then e-books bought on their own (/ebook) are also at the lower "with a program" price.
+ */
+export async function memberHasProgram(memberId?: number): Promise<boolean> {
+  if (!memberId) return false;
+  const payload = await getPayloadClient();
+  const { totalDocs } = await payload.count({
+    collection: "memberships",
+    where: { and: [{ member: { equals: memberId } }, { status: { not_equals: "cancelled" } }, { endDate: { greater_than_equal: new Date().toISOString() } }] },
+  });
+  return totalDocs > 0;
+}
 
 /** The price of what she is buying, in her currency. */
 export async function priceBasket(input: BasketInput): Promise<{ ok: true; basket: Basket } | { ok: false; error: string }> {
@@ -73,7 +90,8 @@ export async function priceBasket(input: BasketInput): Promise<{ ok: true; baske
     months = duration.months;
   }
 
-  // 2. E-books (optional), each at the e-book price
+  // 2. E-books (optional): the lower price with a program (or for members who have one), else the e-book price.
+  //    Always a one-time payment, never per month.
   const ebooks: EbookOffer[] = [];
   if (input.ebooks.length) {
     const onSale = await getEbooks();
@@ -84,7 +102,9 @@ export async function priceBasket(input: BasketInput): Promise<{ ok: true; baske
     }
     const prices = marketEbook(market);
     for (const ebook of ebooks) {
-      items.push(program ? { name: `${ebook.title} (e-book, program price)`, amount: prices.withPlan } : { name: `${ebook.title} (e-book)`, amount: prices.alone });
+      if (program) items.push({ name: `${ebook.title} (e-book, program price)`, amount: prices.withPlan });
+      else if (input.memberPrice) items.push({ name: `${ebook.title} (e-book, member price)`, amount: prices.withPlan });
+      else items.push({ name: `${ebook.title} (e-book)`, amount: prices.alone });
     }
   }
 

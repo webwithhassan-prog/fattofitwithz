@@ -1,4 +1,5 @@
 import { ClientActions as ClientActions_419d20f271f43cd8ae8826e7b31db6f5 } from '../../../payload/admin/ClientActions'
+import { LoginStatus as LoginStatus_2b6fe33091d1009fbcae247775dd332a } from '../../../payload/admin/LoginStatus'
 import { RowLabel as RowLabel_24f67a374aa8f39956a3c103508218a9 } from '../../../payload/admin/RowLabel'
 import { Icon as Icon_3cd692343be5ea03e13bd9af21cbda1d } from '../../../payload/admin/Logo'
 import { Logo as Logo_3cd692343be5ea03e13bd9af21cbda1d } from '../../../payload/admin/Logo'
@@ -12,6 +13,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 /** @type import('payload').ImportMap */
 export const importMap = {
   "/payload/admin/ClientActions#ClientActions": ClientActions_419d20f271f43cd8ae8826e7b31db6f5,
+  "/payload/admin/LoginStatus#LoginStatus": LoginStatus_2b6fe33091d1009fbcae247775dd332a,
   "/payload/admin/RowLabel#RowLabel": RowLabel_24f67a374aa8f39956a3c103508218a9,
   "/payload/admin/Logo#Icon": Icon_3cd692343be5ea03e13bd9af21cbda1d,
   "/payload/admin/Logo#Logo": Logo_3cd692343be5ea03e13bd9af21cbda1d,

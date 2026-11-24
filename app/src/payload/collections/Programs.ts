@@ -8,6 +8,7 @@ import type { CollectionConfig } from "payload";
 import { contentHooks } from "../hooks/revalidateSite";
 import { textList } from "../fields/textList";
 import { rowLabel } from "../fields/rowLabel";
+import { formatSlug } from "../fields/formatSlug";
 import { REGION_OPTIONS } from "../globals/Pricing";
 
 export const Programs: CollectionConfig = {
@@ -39,14 +40,7 @@ export const Programs: CollectionConfig = {
                   unique: true,
                   index: true,
                   // Typed as "Postpartum - Transformation " -> saved as "postpartum-transformation" (a valid web address)
-                  hooks: {
-                    beforeValidate: [
-                      ({ value }) =>
-                        typeof value === "string"
-                          ? value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
-                          : value,
-                    ],
-                  },
+                  hooks: { beforeValidate: [formatSlug] },
                   admin: { description: 'Web address: /programs/<slug>, e.g. "postpartum-transformation" (made lowercase with dashes automatically). Changing it breaks links people have shared.' },
                 },
               ],

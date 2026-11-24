@@ -13,7 +13,7 @@ export const LegalPages: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "effectiveDate"],
-    group: false, // hidden from the menu (2026-10-13): the page still works at its address
+    group: "Settings",
   },
   hooks: contentHooks,
   fields: [

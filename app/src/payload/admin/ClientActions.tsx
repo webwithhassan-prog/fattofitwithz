@@ -17,9 +17,14 @@ export function ClientActions() {
   return (
     <div className="ftf-client-actions">
       {phone ? (
-        <a className="ftf-btn ftf-btn--whatsapp" href={`https://wa.me/${digitsOnly(phone)}`} target="_blank" rel="noopener noreferrer">
-          WhatsApp {phone}
-        </a>
+        <>
+          <a className="ftf-btn ftf-btn--whatsapp" href={`https://wa.me/${digitsOnly(phone)}`} target="_blank" rel="noopener noreferrer">
+            WhatsApp {phone}
+          </a>
+          {phone.trim().startsWith("+") ? null : (
+            <span className="ftf-replace__error">No country code: add it below (e.g. +92 for Pakistan, +91 for India) and Save, or WhatsApp may not open.</span>
+          )}
+        </>
       ) : (
         <span className="ftf-muted">No WhatsApp number yet</span>
       )}

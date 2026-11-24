@@ -3,12 +3,12 @@ import type { CollectionConfig } from "payload";
 
 export const ContactMessages: CollectionConfig = {
   slug: "contact-messages",
-  labels: { singular: "Contact message", plural: "Contact messages" },
+  labels: { singular: "Website message", plural: "Website messages" },
   defaultSort: "-createdAt",
   admin: {
     useAsTitle: "subject",
     defaultColumns: ["name", "email", "subject", "createdAt"],
-    group: false, // hidden from the menu (2026-10-13): the page still works at its address
+    group: "Clients",
   },
   fields: [
     { type: "row", fields: [{ name: "name", type: "text", required: true }, { name: "email", type: "email", required: true }] },

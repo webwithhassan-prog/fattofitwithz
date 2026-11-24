@@ -8,6 +8,7 @@
  *   signUpAction          /signup           creates an account (no purchase needed)
  * The rules (lockout, link lifetime, rate limits) live in ./passwords.server.ts.
  */
+import { withCountryCode } from "../phone";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { logIn, MIN_PASSWORD_LENGTH, normalizeEmail, sendPasswordLink, setPasswordWithLink } from "./passwords.server";
@@ -117,7 +118,7 @@ export async function signUpAction(_previous: AuthFormState, formData: FormData)
     }
     const member = await payload.create({
       collection: "members",
-      data: { email, fullName, phone, passwordHash: await hashPassword(password), passwordSetAt: new Date().toISOString() },
+      data: { email, fullName, phone: withCountryCode(phone), passwordHash: await hashPassword(password), passwordSetAt: new Date().toISOString() },
     });
     await startSession(member.id);
   } catch (error) {

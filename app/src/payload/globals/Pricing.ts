@@ -23,7 +23,7 @@ export const Pricing: GlobalConfig = {
   slug: "pricing",
   label: "Prices: e-books & countries",
   admin: {
-    group: "Website",
+    group: "Settings",
     description:
       "E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > \"Prices\" tab). The program prices below are only a backup, used when a program has no price for a country or duration.",
   },
@@ -35,9 +35,36 @@ export const Pricing: GlobalConfig = {
       label: "Countries",
       required: true,
       labels: { singular: "Country", plural: "Countries" },
-      admin: { initCollapsed: true, components: { RowLabel: rowLabel("{label} ({currency})", "Country") } },
+      admin: { initCollapsed: true, components: { RowLabel: rowLabel("{label} ({currency}): e-book {ebookPrice}, with a program {ebookPriceWithPlan}", "Country") } },
       fields: [
-        // What the coach changes most: the prices, shown first.
+        // E-book prices first (the program prices below are only a backup now).
+        {
+          type: "row",
+          fields: [
+            {
+              name: "ebookPrice",
+              type: "number",
+              required: true,
+              min: 0,
+              label: "E-book price",
+              admin: { description: "One-time price when bought on its own (e.g. USD 8). Never monthly." },
+            },
+            {
+              name: "ebookPriceWithPlan",
+              type: "number",
+              required: true,
+              min: 0,
+              label: "E-book price with a program",
+              validate: (value: number | null | undefined, { siblingData }: { siblingData: { ebookPrice?: number | null } }) => {
+                if (value === null || value === undefined) return "Please enter a price.";
+                if (typeof siblingData.ebookPrice === "number" && value > siblingData.ebookPrice) return "Should not be more than the normal e-book price.";
+                return true;
+              },
+              admin: { description: "Lower one-time price when added to a program, or for clients who already have one (e.g. USD 6)." },
+            },
+          ],
+        },
+        // Backup program prices (each program has its own prices in its "Prices" tab).
         {
           name: "prices",
           type: "array",
@@ -52,27 +79,6 @@ export const Pricing: GlobalConfig = {
                 { name: "amount", type: "number", required: true, min: 0, label: "Price" },
                 { name: "compareAt", type: "number", required: true, min: 0, label: "Was (crossed out)" },
               ],
-            },
-          ],
-        },
-        {
-          type: "row",
-          fields: [
-            {
-              name: "ebookPrice",
-              type: "number",
-              required: true,
-              min: 0,
-              label: "E-book price",
-              admin: { description: "When bought on its own (e.g. USD 8)" },
-            },
-            {
-              name: "ebookPriceWithPlan",
-              type: "number",
-              required: true,
-              min: 0,
-              label: "E-book price with a program",
-              admin: { description: "Offered when joining a program (e.g. USD 6)" },
             },
           ],
         },

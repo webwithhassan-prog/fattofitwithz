@@ -70,20 +70,20 @@ export interface Config {
     members: Member;
     'first-day-forms': FirstDayForm;
     'follow-up-forms': FollowUpForm;
-    'client-issues': ClientIssue;
     orders: Order;
+    'client-issues': ClientIssue;
+    'contact-messages': ContactMessage;
     announcements: Announcement;
-    'workout-sessions': WorkoutSession;
-    ebooks: Ebook;
-    media: Media;
-    memberships: Membership;
     programs: Program;
+    ebooks: Ebook;
     testimonials: Testimonial;
     faqs: Faq;
+    'workout-sessions': WorkoutSession;
+    media: Media;
     'legal-pages': LegalPage;
-    'contact-messages': ContactMessage;
     subscribers: Subscriber;
     users: User;
+    memberships: Membership;
     'member-sessions': MemberSession;
     'password-resets': PasswordReset;
     'site-stats': SiteStat;
@@ -105,20 +105,20 @@ export interface Config {
     members: MembersSelect<false> | MembersSelect<true>;
     'first-day-forms': FirstDayFormsSelect<false> | FirstDayFormsSelect<true>;
     'follow-up-forms': FollowUpFormsSelect<false> | FollowUpFormsSelect<true>;
-    'client-issues': ClientIssuesSelect<false> | ClientIssuesSelect<true>;
     orders: OrdersSelect<false> | OrdersSelect<true>;
+    'client-issues': ClientIssuesSelect<false> | ClientIssuesSelect<true>;
+    'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
-    'workout-sessions': WorkoutSessionsSelect<false> | WorkoutSessionsSelect<true>;
-    ebooks: EbooksSelect<false> | EbooksSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    memberships: MembershipsSelect<false> | MembershipsSelect<true>;
     programs: ProgramsSelect<false> | ProgramsSelect<true>;
+    ebooks: EbooksSelect<false> | EbooksSelect<true>;
     testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
+    'workout-sessions': WorkoutSessionsSelect<false> | WorkoutSessionsSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     'legal-pages': LegalPagesSelect<false> | LegalPagesSelect<true>;
-    'contact-messages': ContactMessagesSelect<false> | ContactMessagesSelect<true>;
     subscribers: SubscribersSelect<false> | SubscribersSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    memberships: MembershipsSelect<false> | MembershipsSelect<true>;
     'member-sessions': MemberSessionsSelect<false> | MemberSessionsSelect<true>;
     'password-resets': PasswordResetsSelect<false> | PasswordResetsSelect<true>;
     'site-stats': SiteStatsSelect<false> | SiteStatsSelect<true>;
@@ -132,15 +132,15 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
-    payments: Payment;
     homepage: Homepage;
+    payments: Payment;
     pricing: Pricing;
     'site-settings': SiteSetting;
     'page-photos': PagePhoto;
   };
   globalsSelect: {
-    payments: PaymentsSelect<false> | PaymentsSelect<true>;
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    payments: PaymentsSelect<false> | PaymentsSelect<true>;
     pricing: PricingSelect<false> | PricingSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'page-photos': PagePhotosSelect<false> | PagePhotosSelect<true>;
@@ -233,7 +233,7 @@ export interface Member {
   passwordSetAt?: string | null;
   failedLogins?: number | null;
   /**
-   * 5 wrong passwords lock the account for 15 minutes. Clear this to unlock now.
+   * 5 wrong passwords lock the account for 15 minutes. To unlock now, use "Unlock now" above.
    */
   lockedUntil?: string | null;
   /**
@@ -249,7 +249,7 @@ export interface Member {
   createdAt: string;
 }
 /**
- * Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick "Diet plan sent".
+ * Each client's Personal Wellness Profile (filled in after joining). Read it, send her diet plan on WhatsApp, then tick "Diet plan sent".
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "first-day-forms".
@@ -520,7 +520,7 @@ export interface Ebook {
   id: number;
   title: string;
   /**
-   * Short name for links, e.g. "healthy-desserts". Don't change it after people have bought it.
+   * Short name for links, e.g. "healthy-desserts" (made lowercase with dashes automatically).
    */
   slug: string;
   /**
@@ -624,6 +624,20 @@ export interface ClientIssue {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages".
+ */
+export interface ContactMessage {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  subject: string;
+  message: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Shown on the client's dashboard. An announcement goes to every client; a reminder goes to one client.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -646,25 +660,7 @@ export interface Announcement {
   createdAt: string;
 }
 /**
- * The recorded YouTube workouts on the member dashboard. Six per week (Monday to Saturday); day 1 = Monday.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workout-sessions".
- */
-export interface WorkoutSession {
-  id: number;
-  week: number;
-  day: number;
-  workout: string;
-  /**
-   * e.g. https://youtu.be/dGyVLPcUcs8
-   */
-  youtubeUrl: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Before/after photos and Instagram posts for the Testimonials page. Lower order numbers show first.
+ * Client results (before/after photos) and Instagram posts on the Testimonials page. To add one: press "Create new", choose the type, add the photo and weights, Save. Lower order numbers show first.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials".
@@ -713,6 +709,24 @@ export interface Faq {
   createdAt: string;
 }
 /**
+ * The recorded YouTube workouts on the member dashboard. Six per week (Monday to Saturday); day 1 = Monday.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workout-sessions".
+ */
+export interface WorkoutSession {
+  id: number;
+  week: number;
+  day: number;
+  workout: string;
+  /**
+   * e.g. https://youtu.be/dGyVLPcUcs8
+   */
+  youtubeUrl: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "legal-pages".
  */
@@ -732,20 +746,8 @@ export interface LegalPage {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-messages".
- */
-export interface ContactMessage {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string | null;
-  subject: string;
-  message: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Emails left in the newsletter box at the bottom of the website.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "subscribers".
  */
@@ -851,36 +853,28 @@ export interface PayloadLockedDocument {
         value: number | FollowUpForm;
       } | null)
     | ({
+        relationTo: 'orders';
+        value: number | Order;
+      } | null)
+    | ({
         relationTo: 'client-issues';
         value: number | ClientIssue;
       } | null)
     | ({
-        relationTo: 'orders';
-        value: number | Order;
+        relationTo: 'contact-messages';
+        value: number | ContactMessage;
       } | null)
     | ({
         relationTo: 'announcements';
         value: number | Announcement;
       } | null)
     | ({
-        relationTo: 'workout-sessions';
-        value: number | WorkoutSession;
+        relationTo: 'programs';
+        value: number | Program;
       } | null)
     | ({
         relationTo: 'ebooks';
         value: number | Ebook;
-      } | null)
-    | ({
-        relationTo: 'media';
-        value: number | Media;
-      } | null)
-    | ({
-        relationTo: 'memberships';
-        value: number | Membership;
-      } | null)
-    | ({
-        relationTo: 'programs';
-        value: number | Program;
       } | null)
     | ({
         relationTo: 'testimonials';
@@ -891,12 +885,16 @@ export interface PayloadLockedDocument {
         value: number | Faq;
       } | null)
     | ({
-        relationTo: 'legal-pages';
-        value: number | LegalPage;
+        relationTo: 'workout-sessions';
+        value: number | WorkoutSession;
       } | null)
     | ({
-        relationTo: 'contact-messages';
-        value: number | ContactMessage;
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'legal-pages';
+        value: number | LegalPage;
       } | null)
     | ({
         relationTo: 'subscribers';
@@ -905,6 +903,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'memberships';
+        value: number | Membership;
       } | null)
     | ({
         relationTo: 'member-sessions';
@@ -1045,20 +1047,6 @@ export interface FollowUpFormsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "client-issues_select".
- */
-export interface ClientIssuesSelect<T extends boolean = true> {
-  title?: T;
-  status?: T;
-  member?: T;
-  topic?: T;
-  message?: T;
-  reply?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "orders_select".
  */
 export interface OrdersSelect<T extends boolean = true> {
@@ -1088,6 +1076,33 @@ export interface OrdersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "client-issues_select".
+ */
+export interface ClientIssuesSelect<T extends boolean = true> {
+  title?: T;
+  status?: T;
+  member?: T;
+  topic?: T;
+  message?: T;
+  reply?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-messages_select".
+ */
+export interface ContactMessagesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  subject?: T;
+  message?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "announcements_select".
  */
 export interface AnnouncementsSelect<T extends boolean = true> {
@@ -1096,91 +1111,6 @@ export interface AnnouncementsSelect<T extends boolean = true> {
   title?: T;
   message?: T;
   showUntil?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "workout-sessions_select".
- */
-export interface WorkoutSessionsSelect<T extends boolean = true> {
-  week?: T;
-  day?: T;
-  workout?: T;
-  youtubeUrl?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ebooks_select".
- */
-export interface EbooksSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  order?: T;
-  enabled?: T;
-  description?: T;
-  cover?: T;
-  driveLink?: T;
-  points?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
-  chapters?:
-    | T
-    | {
-        title?: T;
-        note?: T;
-        highlights?: T;
-        id?: T;
-      };
-  guides?:
-    | T
-    | {
-        text?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
- */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
-  _objectKey?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "memberships_select".
- */
-export interface MembershipsSelect<T extends boolean = true> {
-  title?: T;
-  member?: T;
-  program?: T;
-  order?: T;
-  startDate?: T;
-  endDate?: T;
-  status?: T;
-  frozenUntil?: T;
-  frozenFrom?: T;
-  daysFrozen?: T;
-  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1243,6 +1173,41 @@ export interface ProgramsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ebooks_select".
+ */
+export interface EbooksSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  order?: T;
+  enabled?: T;
+  description?: T;
+  cover?: T;
+  driveLink?: T;
+  points?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  chapters?:
+    | T
+    | {
+        title?: T;
+        note?: T;
+        highlights?: T;
+        id?: T;
+      };
+  guides?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "testimonials_select".
  */
 export interface TestimonialsSelect<T extends boolean = true> {
@@ -1283,6 +1248,37 @@ export interface FaqsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "workout-sessions_select".
+ */
+export interface WorkoutSessionsSelect<T extends boolean = true> {
+  week?: T;
+  day?: T;
+  workout?: T;
+  youtubeUrl?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  _objectKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "legal-pages_select".
  */
 export interface LegalPagesSelect<T extends boolean = true> {
@@ -1290,19 +1286,6 @@ export interface LegalPagesSelect<T extends boolean = true> {
   slug?: T;
   effectiveDate?: T;
   body?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-messages_select".
- */
-export interface ContactMessagesSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  subject?: T;
-  message?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1338,6 +1321,25 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "memberships_select".
+ */
+export interface MembershipsSelect<T extends boolean = true> {
+  title?: T;
+  member?: T;
+  program?: T;
+  order?: T;
+  startDate?: T;
+  endDate?: T;
+  status?: T;
+  frozenUntil?: T;
+  frozenFrom?: T;
+  daysFrozen?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1417,38 +1419,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * The bank and JazzCash / Easypaisa details clients see after placing an order. Changes show on the website straight away.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payments".
- */
-export interface Payment {
-  id: number;
-  /**
-   * Leave unticked until Stripe is set up (it also needs the Stripe keys in Netlify). While off, everyone pays with the options below.
-   */
-  cardPayments?: boolean | null;
-  bankEnabled?: boolean | null;
-  /**
-   * Optional, e.g. the Meezan Bank logo. A wide PNG with a transparent or white background looks best.
-   */
-  bankLogo?: (number | null) | Media;
-  bankName?: string | null;
-  bankAccountTitle?: string | null;
-  bankBranch?: string | null;
-  bankAccountNumber?: string | null;
-  bankIban?: string | null;
-  walletEnabled?: boolean | null;
-  jazzcashLogo?: (number | null) | Media;
-  easypaisaLogo?: (number | null) | Media;
-  walletNumber?: string | null;
-  walletAccountName?: string | null;
-  instructions?: string | null;
-  otherCountriesText?: string | null;
-  updatedAt?: string | null;
-  createdAt?: string | null;
-}
-/**
  * The big banners at the top, Zaineb's messages, and the goal picker.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1512,6 +1482,38 @@ export interface Homepage {
   createdAt?: string | null;
 }
 /**
+ * The bank and JazzCash / Easypaisa details clients see after placing an order. Changes show on the website straight away.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments".
+ */
+export interface Payment {
+  id: number;
+  /**
+   * Leave unticked until Stripe is set up (it also needs the Stripe keys in Netlify). While off, everyone pays with the options below.
+   */
+  cardPayments?: boolean | null;
+  bankEnabled?: boolean | null;
+  /**
+   * Optional, e.g. the Meezan Bank logo. A wide PNG with a transparent or white background looks best.
+   */
+  bankLogo?: (number | null) | Media;
+  bankName?: string | null;
+  bankAccountTitle?: string | null;
+  bankBranch?: string | null;
+  bankAccountNumber?: string | null;
+  bankIban?: string | null;
+  walletEnabled?: boolean | null;
+  jazzcashLogo?: (number | null) | Media;
+  easypaisaLogo?: (number | null) | Media;
+  walletNumber?: string | null;
+  walletAccountName?: string | null;
+  instructions?: string | null;
+  otherCountriesText?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > "Prices" tab). The program prices below are only a backup, used when a program has no price for a country or duration.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1520,20 +1522,20 @@ export interface Homepage {
 export interface Pricing {
   id: number;
   regions: {
+    /**
+     * One-time price when bought on its own (e.g. USD 8). Never monthly.
+     */
+    ebookPrice: number;
+    /**
+     * Lower one-time price when added to a program, or for clients who already have one (e.g. USD 6).
+     */
+    ebookPriceWithPlan: number;
     prices: {
       months: number;
       amount: number;
       compareAt: number;
       id?: string | null;
     }[];
-    /**
-     * When bought on its own (e.g. USD 8)
-     */
-    ebookPrice: number;
-    /**
-     * Offered when joining a program (e.g. USD 6)
-     */
-    ebookPriceWithPlan: number;
     code: 'usa' | 'canada' | 'uae' | 'saudi' | 'qatar' | 'india' | 'pakistan' | 'australia';
     label: string;
     /**
@@ -1654,30 +1656,6 @@ export interface PagePhoto {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "payments_select".
- */
-export interface PaymentsSelect<T extends boolean = true> {
-  cardPayments?: T;
-  bankEnabled?: T;
-  bankLogo?: T;
-  bankName?: T;
-  bankAccountTitle?: T;
-  bankBranch?: T;
-  bankAccountNumber?: T;
-  bankIban?: T;
-  walletEnabled?: T;
-  jazzcashLogo?: T;
-  easypaisaLogo?: T;
-  walletNumber?: T;
-  walletAccountName?: T;
-  instructions?: T;
-  otherCountriesText?: T;
-  updatedAt?: T;
-  createdAt?: T;
-  globalType?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
 export interface HomepageSelect<T extends boolean = true> {
@@ -1746,12 +1724,38 @@ export interface HomepageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payments_select".
+ */
+export interface PaymentsSelect<T extends boolean = true> {
+  cardPayments?: T;
+  bankEnabled?: T;
+  bankLogo?: T;
+  bankName?: T;
+  bankAccountTitle?: T;
+  bankBranch?: T;
+  bankAccountNumber?: T;
+  bankIban?: T;
+  walletEnabled?: T;
+  jazzcashLogo?: T;
+  easypaisaLogo?: T;
+  walletNumber?: T;
+  walletAccountName?: T;
+  instructions?: T;
+  otherCountriesText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricing_select".
  */
 export interface PricingSelect<T extends boolean = true> {
   regions?:
     | T
     | {
+        ebookPrice?: T;
+        ebookPriceWithPlan?: T;
         prices?:
           | T
           | {
@@ -1760,8 +1764,6 @@ export interface PricingSelect<T extends boolean = true> {
               compareAt?: T;
               id?: T;
             };
-        ebookPrice?: T;
-        ebookPriceWithPlan?: T;
         code?: T;
         label?: T;
         currency?: T;

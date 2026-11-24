@@ -82,7 +82,7 @@ export const Members: CollectionConfig = {
               type: "join",
               collection: "first-day-forms",
               on: "member",
-              label: "First day form",
+              label: "Wellness profile",
               admin: { defaultColumns: ["title", "reviewed", "updatedAt"], allowCreate: false },
             },
             {
@@ -129,6 +129,8 @@ export const Members: CollectionConfig = {
         {
           label: "Login",
           fields: [
+            // "She can log in" / "Locked ... Unlock now" (src/payload/admin/LoginStatus.tsx)
+            { name: "loginStatus", type: "ui", admin: { components: { Field: "/payload/admin/LoginStatus#LoginStatus" } } },
             {
               name: "passwordSetAt",
               type: "date",
@@ -149,7 +151,7 @@ export const Members: CollectionConfig = {
                   label: "Locked until",
                   admin: {
                     date: { pickerAppearance: "dayAndTime" },
-                    description: "5 wrong passwords lock the account for 15 minutes. Clear this to unlock now.",
+                    description: '5 wrong passwords lock the account for 15 minutes. To unlock now, use "Unlock now" above.',
                   },
                 },
               ],

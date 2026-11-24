@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { forgotPasswordAction, logInAction, resetPasswordAction, signUpAction, type AuthFormState } from "@/lib/auth/actions";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 
 const START: AuthFormState = {};
 
@@ -137,7 +138,7 @@ export function SignUpForm() {
       <label htmlFor="signup-email" className="field-label mt-5">Email address</label>
       <input id="signup-email" name="email" type="email" autoComplete="email" required defaultValue={state.email} aria-describedby={describedBy} className="field-input" />
       <label htmlFor="signup-phone" className="field-label mt-5">WhatsApp number</label>
-      <input id="signup-phone" name="phone" type="tel" autoComplete="tel" required placeholder="+92 300 1234567" aria-describedby={describedBy} className="field-input" />
+      <PhoneInput id="signup-phone" required describedBy={describedBy} />
       <PasswordField id="signup-password" name="password" label="Create a password (8+ characters)" autoComplete="new-password" invalid={Boolean(state.error)} describedBy={describedBy} />
       <Message state={state} id="signup-error" />
       <button type="submit" className="btn mt-6 w-full" disabled={pending}>

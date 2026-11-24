@@ -11,7 +11,8 @@ import { CheckBullet } from "@/components/ui/CheckBullet";
 import { Reveal } from "@/components/ui/Reveal";
 import { getEbooks, getExchangeRates, getPriceTable, getRegions } from "@/lib/content";
 import { buildMetadata } from "@/lib/seo";
-import { paymentMode } from "@/lib/checkout.server";
+import { memberHasProgram, paymentMode } from "@/lib/checkout.server";
+import { getCurrentMember } from "@/lib/auth/session.server";
 
 export async function generateMetadata() {
   const ebooks = await getEbooks();
@@ -20,7 +21,9 @@ export async function generateMetadata() {
 }
 
 export default async function EbookPage() {
-  const [ebooks, regions, table, rates, mode] = await Promise.all([getEbooks(), getRegions(), getPriceTable(), getExchangeRates(), paymentMode()]);
+  const [ebooks, regions, table, rates, mode, member] = await Promise.all([getEbooks(), getRegions(), getPriceTable(), getExchangeRates(), paymentMode(), getCurrentMember()]);
+  // Logged-in clients who already have a program see (and pay) the lower e-book price
+  const memberPrice = await memberHasProgram(member?.id);
   if (!ebooks.length) notFound();
   const many = ebooks.length > 1;
 
@@ -63,7 +66,7 @@ export default async function EbookPage() {
             <p className="lead mt-4 whitespace-pre-line">
               {many ? "Measured portions and calories on every recipe, made for desi kitchens. Get one or both." : ebooks[0].description}
             </p>
-            <EbookBuy paymentMode={mode} ebooks={ebooks.map(({ slug, title, cover }) => ({ slug, title, cover }))} />
+            <EbookBuy paymentMode={mode} memberPrice={memberPrice} ebooks={ebooks.map(({ slug, title, cover }) => ({ slug, title, cover }))} />
           </div>
         </div>
       </section>

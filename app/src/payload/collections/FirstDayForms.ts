@@ -10,14 +10,14 @@ const cm = (name: string, label: string) => ({ name, label, type: "number" as co
 
 export const FirstDayForms: CollectionConfig = {
   slug: "first-day-forms",
-  labels: { singular: "First day form", plural: "First day forms" },
+  labels: { singular: "Wellness profile", plural: "Wellness profiles" },
   defaultSort: "-updatedAt",
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "member", "reviewed", "updatedAt"],
     group: "Clients",
     pagination: { defaultLimit: 50 },
-    description: "Filled in by each client after joining. Read it, send her diet plan on WhatsApp, then tick \"Diet plan sent\".",
+    description: "Each client's Personal Wellness Profile (filled in after joining). Read it, send her diet plan on WhatsApp, then tick \"Diet plan sent\".",
   },
   hooks: {
     beforeChange: [

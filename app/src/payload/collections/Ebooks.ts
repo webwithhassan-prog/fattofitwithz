@@ -6,6 +6,7 @@
  */
 import type { CollectionConfig } from "payload";
 import { contentHooks } from "../hooks/revalidateSite";
+import { formatSlug } from "../fields/formatSlug";
 
 export const Ebooks: CollectionConfig = {
   slug: "ebooks",
@@ -29,7 +30,8 @@ export const Ebooks: CollectionConfig = {
           required: true,
           unique: true,
           index: true,
-          admin: { description: 'Short name for links, e.g. "healthy-desserts". Don\'t change it after people have bought it.' },
+          hooks: { beforeValidate: [formatSlug] }, // "Healthy Desserts " -> "healthy-desserts"
+          admin: { description: 'Short name for links, e.g. "healthy-desserts" (made lowercase with dashes automatically).' },
         },
         { name: "order", type: "number", defaultValue: 1, admin: { description: "1 shows first" } },
       ],

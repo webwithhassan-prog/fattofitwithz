@@ -78,12 +78,7 @@ export async function SitePhotos(view: AdminViewServerProps) {
       editLabel: "Edit banners (text and which photo)",
       slots: home.banners.map((b, i) => ({ label: `Banner ${i + 1}: ${b.kicker}`, media: asMedia(b.photo), target: `array:homepage:banners:${i}:photo` })),
     },
-    {
-      title: "Homepage: Zaineb's messages slider",
-      editHref: "/admin/globals/homepage",
-      editLabel: "Edit slides (messages and which photo)",
-      slots: home.founder.slides.map((s, i) => ({ label: `Slide ${i + 1}: ${s.caption}`, media: asMedia(s.photo), target: `array:homepage:founder.slides:${i}:photo` })),
-    },
+    // (The "Zaineb's messages" photo slider was removed from the homepage on 2026-11-24, so it's not listed here.)
     {
       title: "Before / after slider (homepage and testimonials page)",
       editHref: "/admin/globals/page-photos",

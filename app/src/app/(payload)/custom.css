@@ -547,3 +547,34 @@ a.ftf-card:hover {
 .ftf-btn--ghost {
   background: transparent;
 }
+
+/* Quick actions on the Overview (payload/admin/Dashboard.tsx) */
+.ftf-quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.ftf-quick__item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-base-200);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ftf-ink);
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.ftf-quick__item:hover {
+  border-color: #ff65c5;
+  transform: translateY(-2px);
+}
+.ftf-quick__item b {
+  font-size: 15px;
+}
+.ftf-quick__item span {
+  font-size: 13px;
+  color: var(--ftf-muted, #6b585d);
+}

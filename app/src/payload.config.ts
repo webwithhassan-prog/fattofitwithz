@@ -71,36 +71,40 @@ export default buildConfig({
     },
   },
 
-  // THE ADMIN MENU (owner's list, 2026-10-13). Groups appear in the order below; each file sets its group.
-  //   Clients:             Clients, First day forms, Follow-up forms, Client issues, Orders & payments
+  // THE ADMIN MENU (2026-11-24: everything the coach edits is in the menu, in plain words).
+  // Groups appear in this order; each file sets its own group.
+  //   (top shortcuts: Overview, Payments to confirm, Diet plans to send, Site photos - payload/admin/NavLinks.tsx)
+  //   Clients:             Clients, Wellness profiles, Follow-up forms, Orders & payments, Client issues, Website messages
   //   Messages to clients: Reminders & announcements
-  //   Website:             Workout recordings, Programs, E-books, All photos, Payment details
-  // Everything else has `admin.group: false`: hidden from the menu, but the pages and data still work
-  // (open them from a client's page, the Overview, Site photos, or by address, e.g. /admin/globals/pricing).
+  //   Website:             Programs, E-books, Transformations, FAQs, Workout recordings, Homepage text
+  //   Settings:            Photo library, Legal pages, Newsletter sign-ups, Admin logins,
+  //                        Payment details, Prices: e-books & countries, Contact info & menus
+  // Hidden (group: false), used through other pages: Memberships (inside each client), logins, password links,
+  // visit counts, Page photos (edited in Site photos).
   collections: [
     Members,
     FirstDayForms,
     FollowUpForms,
-    ClientIssues,
     Orders,
+    ClientIssues,
+    ContactMessages,
     Announcements,
-    WorkoutSessions,
-    Ebooks,
-    Media,
-    // Hidden from the menu
-    Memberships,
     Programs,
+    Ebooks,
     Testimonials,
     Faqs,
+    WorkoutSessions,
+    Media,
     LegalPages,
-    ContactMessages,
     Subscribers,
     Users,
+    // Hidden from the menu
+    Memberships,
     MemberSessions,
     PasswordResets,
     SiteStats,
   ],
-  globals: [Payments, Homepage, Pricing, SiteSettings, PagePhotos], // only Payment details is in the menu
+  globals: [Homepage, Payments, Pricing, SiteSettings, PagePhotos],
 
   secret: process.env.PAYLOAD_SECRET ?? "",
   // The admin login is only accepted from these addresses (protection against cross-site requests)

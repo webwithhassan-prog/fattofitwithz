@@ -2,7 +2,8 @@
  * HOMEPAGE - approved Blossom design (docs/13-approved-design-decisions.md).
  * Sections, top to bottom:
  *   Hero carousel -> Trust strip -> Programs carousel -> Recommended carousel ->
- *   How it works -> Before/after -> Founder carousel (12 photos) -> FAQ
+ *   How it works -> Before/after -> Highlight cards -> FAQ
+ *   (The founder photo slider was removed on 2026-11-24 at the client's request.)
  */
 import Link from "next/link";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
@@ -10,7 +11,7 @@ import { TrustStrip } from "@/components/home/TrustStrip";
 import { StepsSection } from "@/components/home/StepsSection";
 import { WeightChange } from "@/components/home/WeightChange";
 import { BeforeAfter } from "@/components/home/BeforeAfter";
-import { FounderCarousel } from "@/components/home/FounderCarousel";
+import { HighlightBadges } from "@/components/home/HighlightBadges";
 import { FaqList } from "@/components/home/FaqList";
 import { ProgramsCarousel } from "@/components/programs/ProgramsCarousel";
 import { RecommendedCarousel } from "@/components/programs/RecommendedCarousel";
@@ -20,7 +21,6 @@ import { Reveal } from "@/components/ui/Reveal";
 import { JsonLd } from "@/components/seo/JsonLd";
 import {
   getFaqs,
-  getFounderSlides,
   getGoals,
   getHeroBanners,
   getHomeFaqs,
@@ -40,9 +40,8 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [hero, founder, homeFaqs, allFaqs, programs, goals, regions, table, whatsappHref, pagePhotos, rates] = await Promise.all([
+  const [hero, homeFaqs, allFaqs, programs, goals, regions, table, whatsappHref, pagePhotos, rates] = await Promise.all([
     getHeroBanners(),
-    getFounderSlides(),
     getHomeFaqs(),
     getFaqs(),
     getPrograms(),
@@ -114,7 +113,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <FounderCarousel slides={founder.slides} author={founder.author} authorTitle={founder.authorTitle} />
+      <HighlightBadges />
 
       <section className="section bg-blush" id="faq">
         <div className="container-site">

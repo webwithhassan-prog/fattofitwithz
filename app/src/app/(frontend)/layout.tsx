@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   openGraph: { siteName: SITE_NAME, type: "website", images: ["/images/og.jpg"] },
   twitter: { card: "summary_large_image" },
+  // Google Search Console "HTML tag" check: put the code from Google in Netlify env var GOOGLE_SITE_VERIFICATION
+  // (only the content="..." value), redeploy, then press Verify. Not needed if the domain is verified by DNS.
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
 };
 
 export const viewport: Viewport = {

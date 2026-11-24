@@ -16,7 +16,7 @@ export const Payments: GlobalConfig = {
   slug: "payments",
   label: "Payment details",
   admin: {
-    group: "Website",
+    group: "Settings",
     description: "The bank and JazzCash / Easypaisa details clients see after placing an order. Changes show on the website straight away.",
   },
   hooks: { afterChange: [revalidateGlobalAfterChange] },

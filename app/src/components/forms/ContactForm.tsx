@@ -6,6 +6,7 @@
  * (The old Shopify page had two forms and no feedback at all.)
  */
 import { useState } from "react";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 
 type Props = { subjects: string[] };
 type Status = { kind: "idle" | "sending" | "sent" | "error"; message?: string };
@@ -49,7 +50,7 @@ export function ContactForm({ subjects }: Props) {
         <label htmlFor="contact-phone" className="field-label">
           Phone / WhatsApp <span className="font-normal text-muted">(optional)</span>
         </label>
-        <input id="contact-phone" name="phone" type="tel" autoComplete="tel" className="field-input" />
+        <PhoneInput id="contact-phone" />
       </div>
       <div>
         <label htmlFor="contact-subject" className="field-label">Subject</label>

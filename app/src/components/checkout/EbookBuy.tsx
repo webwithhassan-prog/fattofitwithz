@@ -12,17 +12,24 @@ import { useClientValue } from "@/components/ui/hooks";
 import { buyEbookAction, type CheckoutFormState } from "@/app/(frontend)/(site)/checkout/actions";
 import { RegionSelect } from "@/components/pricing/RegionSelect";
 import { useRegion } from "@/components/pricing/RegionProvider";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 
 const START: CheckoutFormState = {};
 
-type Props = { paymentMode: "stripe" | "manual"; ebooks: Pick<EbookOffer, "slug" | "title" | "cover">[] };
+type Props = {
+  paymentMode: "stripe" | "manual";
+  /** She is logged in and already has a program: the lower "with a program" price */
+  memberPrice?: boolean;
+  ebooks: Pick<EbookOffer, "slug" | "title" | "cover">[];
+};
 
-export function EbookBuy({ paymentMode, ebooks }: Props) {
+export function EbookBuy({ paymentMode, memberPrice = false, ebooks }: Props) {
   const [state, formAction, pending] = useActionState(buyEbookAction, START);
   const { market, ready, ebook, money } = useRegion();
   const [chosen, setChosen] = useState<string[]>(ebooks.map((e) => e.slug)); // all ticked to start
   const toggle = (slug: string) => setChosen((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
-  const total = chosen.length * ebook.alone;
+  const each = memberPrice ? ebook.withPlan : ebook.alone;
+  const total = chosen.length * each;
   const manual = paymentMode === "manual";
   const inPakistan = market.country === "PK";
   const value = (name: string) => state.values?.[name] ?? "";
@@ -56,12 +63,21 @@ export function EbookBuy({ paymentMode, ebooks }: Props) {
       <p className={`font-display text-4xl tabular-nums transition-opacity duration-300 ${ready ? "opacity-100" : "opacity-0"}`}>
         {money(total)}
         <span className="ml-3 align-middle font-body text-sm text-muted">
-          {money(ebook.alone)} each, or {money(ebook.withPlan)} each with any program
+          {memberPrice ? (
+            <>
+              {money(ebook.withPlan)} each with your program <s>{money(ebook.alone)}</s>
+            </>
+          ) : (
+            <>
+              {money(ebook.alone)} each, or {money(ebook.withPlan)} each with any program
+            </>
+          )}
         </span>
       </p>
+      <p className="-mt-2 text-xs text-muted">One-time payment, yours to keep. No subscription, nothing to pay monthly.</p>
 
       {manual ? (
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <label htmlFor="eb-name" className="field-label">Full name</label>
             <input id="eb-name" name="fullName" autoComplete="name" required defaultValue={value("fullName")} className="field-input" />
@@ -70,9 +86,9 @@ export function EbookBuy({ paymentMode, ebooks }: Props) {
             <label htmlFor="eb-email" className="field-label">Email</label>
             <input id="eb-email" name="email" type="email" autoComplete="email" required defaultValue={value("email")} className="field-input" />
           </div>
-          <div>
+          <div className="sm:col-span-2">
             <label htmlFor="eb-phone" className="field-label">WhatsApp number</label>
-            <input id="eb-phone" name="phone" type="tel" autoComplete="tel" required defaultValue={value("phone")} placeholder="+92 300 1234567" className="field-input" />
+            <PhoneInput id="eb-phone" required defaultValue={value("phone")} />
           </div>
         </div>
       ) : null}

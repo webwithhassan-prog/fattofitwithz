@@ -35,7 +35,7 @@ export async function DietPlans(view: AdminViewServerProps) {
     <AdminPage
       view={view}
       title="Diet plans to send"
-      intro="Clients who sent their first day form and are waiting for their diet plan. Send it on WhatsApp, then press “Mark as sent”."
+      intro="Clients who sent their Wellness Profile and are waiting for their diet plan. Send it on WhatsApp, then press “Mark as sent”."
     >
       <div className="ftf-cards">
         <div className={`ftf-card${waiting.totalDocs ? " ftf-card--highlight" : ""}`}>
@@ -48,7 +48,7 @@ export async function DietPlans(view: AdminViewServerProps) {
       <section className="ftf-panel">
         <h3>Waiting for a diet plan</h3>
         {waiting.docs.length === 0 ? (
-          <p className="ftf-muted">All done: every client who sent a first day form has her diet plan. 🎉</p>
+          <p className="ftf-muted">All done: every client who sent a Wellness Profile has her diet plan. 🎉</p>
         ) : (
           <ul className="ftf-list">
             {waiting.docs.map((form) => {

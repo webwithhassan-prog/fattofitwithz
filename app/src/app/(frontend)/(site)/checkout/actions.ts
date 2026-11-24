@@ -17,13 +17,14 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { createCheckoutSession, paymentMode, priceBasket, type Basket } from "@/lib/checkout.server";
+import { createCheckoutSession, memberHasProgram, paymentMode, priceBasket, type Basket } from "@/lib/checkout.server";
 import { createPendingOrder } from "@/lib/orders.server";
 import { getPayloadClient } from "@/lib/payload.server";
 import { getCurrentMember, startSession } from "@/lib/auth/session.server";
 import { normalizeEmail } from "@/lib/auth/passwords.server";
 import { clientIp, LIMITS, rateLimit } from "@/lib/rate-limit.server";
 import { countEvent } from "@/lib/stats.server";
+import { withCountryCode } from "@/lib/phone";
 
 export type CheckoutFormState = { error?: string; loginLink?: string; values?: Record<string, string> };
 
@@ -82,13 +83,15 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
   const priced = await priceBasket({ programSlug, months, ebooks, country: get("country") });
   if (!priced.ok) return { error: priced.error, values };
 
+  // Her WhatsApp number with the country code added (from her country), so the coach's WhatsApp button works
+  const phoneWithCode = withCountryCode(values.phone, priced.basket.market.country);
   let member = await getCurrentMember();
   let buyerName = member?.fullName || values.fullName;
   try {
     const payload = await getPayloadClient();
     if (member) {
       // Logged in: only the WhatsApp number can change here.
-      const phone = phoneRule.safeParse(get("phone"));
+      const phone = phoneRule.safeParse(phoneWithCode);
       if (!phone.success) return { error: phone.error.issues[0].message, values };
       if (phone.data !== member.phone) member = await payload.update({ collection: "members", id: member.id, data: { phone: phone.data } });
     } else {
@@ -99,10 +102,10 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
       const existing = (await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 })).docs[0];
       if (existing) {
         // She already has an account: the order goes to it. (Not logged in: that needs her password.)
-        member = existing.phone ? existing : await payload.update({ collection: "members", id: existing.id, data: { phone: parsed.data.phone } });
+        member = existing.phone ? existing : await payload.update({ collection: "members", id: existing.id, data: { phone: phoneWithCode } });
       } else {
         // New: an account without a password, and she's logged in on this device straight away.
-        member = await payload.create({ collection: "members", data: { email, fullName: parsed.data.fullName, phone: parsed.data.phone } });
+        member = await payload.create({ collection: "members", data: { email, fullName: parsed.data.fullName, phone: phoneWithCode } });
         await startSession(member.id);
       }
     }
@@ -127,7 +130,7 @@ export async function checkoutAction(_previous: CheckoutFormState, formData: For
     memberId: member.id,
     buyerName,
     email: member.email,
-    phone: values.phone || member.phone || "",
+    phone: phoneWithCode || member.phone || "",
   });
   if (!placed.ok) return { error: placed.error, values };
   redirect(placed.path);
@@ -141,11 +144,12 @@ export async function buyEbookAction(_previous: CheckoutFormState, formData: For
 
   const ebooks = formData.getAll("ebooks").map(String).filter(Boolean);
   if (!ebooks.length) return { error: "Please choose at least one e-book.", values };
-  const priced = await priceBasket({ ebooks, country: get("country") });
-  if (!priced.ok) return { error: priced.error, values };
   const member = await getCurrentMember(); // optional: logged-in buyers are linked to their account
 
   if ((await paymentMode()) === "stripe") {
+    // Clients who already have a program pay the lower e-book price
+    const priced = await priceBasket({ ebooks, country: get("country"), memberPrice: await memberHasProgram(member?.id) });
+    if (!priced.ok) return { error: priced.error, values };
     const result = await createCheckoutSession({ basket: priced.basket, email: member?.email, memberId: member?.id, origin: await siteOrigin(), cancelPath: "/ebook?cancelled=1" });
     if (!result.ok) return { error: result.error, values };
     redirect(result.url);
@@ -160,7 +164,10 @@ export async function buyEbookAction(_previous: CheckoutFormState, formData: For
     const payload = await getPayloadClient();
     memberId = (await payload.find({ collection: "members", where: { email: { equals: email } }, limit: 1, depth: 0 })).docs[0]?.id;
   }
-  const placed = await placePendingOrder(priced.basket, { memberId, buyerName: parsed.data.fullName, email, phone: parsed.data.phone });
+  // Clients who already have a program pay the lower e-book price
+  const priced = await priceBasket({ ebooks, country: get("country"), memberPrice: await memberHasProgram(memberId) });
+  if (!priced.ok) return { error: priced.error, values };
+  const placed = await placePendingOrder(priced.basket, { memberId, buyerName: parsed.data.fullName, email, phone: withCountryCode(parsed.data.phone, priced.basket.market.country) });
   if (!placed.ok) return { error: placed.error, values };
   redirect(placed.path);
 }

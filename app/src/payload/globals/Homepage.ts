@@ -29,8 +29,8 @@ const button = (name: string, label: string) => ({
 
 export const Homepage: GlobalConfig = {
   slug: "homepage",
-  label: "Homepage",
-  admin: { group: false, // hidden from the menu (2026-10-13)
+  label: "Homepage text",
+  admin: { group: "Website",
     description: "The big banners at the top, Zaineb's messages, and the goal picker." },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
@@ -90,9 +90,9 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: "Founder messages",
+          label: "Founder messages (not shown)",
           name: "founder",
-          description: "The photo slider with Zaineb's messages.",
+          description: "NOT SHOWN on the website: this photo slider was removed from the homepage on 24 Nov 2026. Kept here only in case you want it back; changes have no effect.",
           fields: [
             {
               type: "row",

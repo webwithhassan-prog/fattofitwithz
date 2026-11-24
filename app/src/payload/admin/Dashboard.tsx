@@ -16,6 +16,21 @@ import { flushStats, statsDay } from "../../lib/stats.server";
 import { restartEndedFreezes } from "../../lib/members.server";
 
 const DAYS = 30;
+
+/** "Quick actions" at the top of the Overview: the jobs the coach does most, one click each. */
+const QUICK_ACTIONS = [
+  { label: "Confirm a payment", help: "Set an order to Paid", href: "/admin/collections/orders?where[status][equals]=pending" },
+  { label: "Change photos", help: "Banners, before/after, results", href: "/admin/site-photos" },
+  { label: "Change a program or its price", help: "Open it › Prices tab", href: "/admin/collections/programs" },
+  { label: "Add a new program", help: "Name, durations, prices", href: "/admin/collections/programs/create" },
+  { label: "Add a client result", help: "Before/after photo + weights", href: "/admin/collections/testimonials/create" },
+  { label: "Message clients", help: "Reminder or announcement", href: "/admin/collections/announcements/create" },
+  { label: "E-books", help: "Covers, Drive links", href: "/admin/collections/ebooks" },
+  { label: "E-book prices", help: "Per country, with or without a program", href: "/admin/globals/pricing" },
+  { label: "Homepage text", help: "Banners, goal picker", href: "/admin/globals/homepage" },
+  { label: "FAQs", help: "Add or edit questions", href: "/admin/collections/faqs" },
+  { label: "WhatsApp & contact info", help: "Number, emails, social links", href: "/admin/globals/site-settings" },
+];
 const DAY = 24 * 60 * 60 * 1000;
 
 const formatNumber = (n: number) => n.toLocaleString("en-US");
@@ -106,10 +121,20 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
         <p className="ftf-muted">Welcome{name ? `, ${name}` : ""}. Sales of the last {DAYS} days and what needs your attention.</p>
       </header>
 
+      <h2 className="ftf-section">Quick actions</h2>
+      <div className="ftf-quick">
+        {QUICK_ACTIONS.map((q) => (
+          <Link key={q.href} href={q.href} className="ftf-quick__item">
+            <b>{q.label}</b>
+            <span>{q.help}</span>
+          </Link>
+        ))}
+      </div>
+
       <h2 className="ftf-section">To do</h2>
       <div className="ftf-cards">
         <StatCard label="Payments to confirm" value={o.todo.unpaid} note="orders waiting for payment" href="/admin/collections/orders?where[status][equals]=pending" highlight={o.todo.unpaid > 0} />
-        <StatCard label="Diet plans to send" value={o.todo.dietPlans} note="first day forms waiting" href="/admin/diet-plans" highlight={o.todo.dietPlans > 0} />
+        <StatCard label="Diet plans to send" value={o.todo.dietPlans} note="wellness profiles waiting" href="/admin/diet-plans" highlight={o.todo.dietPlans > 0} />
         <StatCard label="Follow-ups to review" value={o.todo.followUps} href="/admin/collections/follow-up-forms?where[reviewed][not_equals]=true" highlight={o.todo.followUps > 0} />
         <StatCard label="Open client issues" value={o.todo.issues} href="/admin/collections/client-issues?where[status][not_equals]=solved" highlight={o.todo.issues > 0} />
         <StatCard label="Website messages" value={o.todo.messages} note={`contact form, last ${DAYS} days`} href="/admin/collections/contact-messages" />

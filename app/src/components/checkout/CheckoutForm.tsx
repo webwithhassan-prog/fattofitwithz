@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { checkoutAction, type CheckoutFormState } from "@/app/(frontend)/(site)/checkout/actions";
 import { useRegion } from "@/components/pricing/RegionProvider";
+import { PhoneInput } from "@/components/forms/PhoneInput";
 import { PaymentMethodBadges, type PayMethods } from "@/components/checkout/PaymentMethodBadges";
 import type { EbookOffer, OwnPrices } from "@/lib/types";
 
@@ -80,7 +81,7 @@ export function CheckoutForm({ program, months, durationLabel, ebooks, startWith
             <span className="text-sm">
               <b className="block text-[15px]">Add the e-book: {ebook.title}</b>
               <span className="text-muted">
-                {price(ebookPrice)} with your program <s>{price(ebookPrices.alone)}</s>
+                {price(ebookPrice)} with your program <s>{price(ebookPrices.alone)}</s> · one-time, not monthly
               </span>
             </span>
           </label>
@@ -108,7 +109,7 @@ export function CheckoutForm({ program, months, durationLabel, ebooks, startWith
               Logged in as <b className="text-ink">{member.email}</b>
             </p>
             <label htmlFor="co-phone" className="field-label mt-5">WhatsApp number (your coach will message you here)</label>
-            <input id="co-phone" name="phone" type="tel" autoComplete="tel" required defaultValue={value("phone", member.phone)} placeholder="+92 300 1234567" className="field-input" />
+            <PhoneInput id="co-phone" required defaultValue={value("phone", member.phone)} />
           </>
         ) : (
           <>
@@ -122,7 +123,7 @@ export function CheckoutForm({ program, months, durationLabel, ebooks, startWith
             <label htmlFor="co-name" className="field-label mt-5">Full name</label>
             <input id="co-name" name="fullName" autoComplete="name" required defaultValue={value("fullName")} className="field-input" />
             <label htmlFor="co-phone" className="field-label mt-4">WhatsApp number (your coach will message you here)</label>
-            <input id="co-phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" required defaultValue={value("phone")} placeholder="+92 300 1234567" className="field-input" />
+            <PhoneInput id="co-phone" required defaultValue={value("phone")} />
             <label htmlFor="co-email" className="field-label mt-4">Email address</label>
             <input id="co-email" name="email" type="email" autoComplete="email" inputMode="email" required defaultValue={value("email")} className="field-input" />
             <p className="mt-2 text-xs text-muted">No password needed now: after your payment we email you a link to open your member area.</p>
