@@ -6,7 +6,7 @@ export const Users: CollectionConfig = {
   labels: { singular: "Admin login", plural: "Admin logins" },
   admin: {
     useAsTitle: "email",
-    group: "Settings",
+    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
     description: "People who can log in to this admin panel (the coach, the developer). Members log in on the website instead.",
   },
   auth: {

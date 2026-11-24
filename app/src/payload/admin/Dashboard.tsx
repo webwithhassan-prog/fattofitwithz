@@ -21,15 +21,23 @@ const DAYS = 30;
 const QUICK_ACTIONS = [
   { label: "Confirm a payment", help: "Set an order to Paid", href: "/admin/collections/orders?where[status][equals]=pending" },
   { label: "Change photos", help: "Banners, before/after, results", href: "/admin/site-photos" },
-  { label: "Change a program or its price", help: "Open it › Prices tab", href: "/admin/collections/programs" },
-  { label: "Add a new program", help: "Name, durations, prices", href: "/admin/collections/programs/create" },
+  { label: "Program prices", help: "Open a program › Prices tab", href: "/admin/collections/programs" },
+  { label: "E-book prices", help: "Per country", href: "/admin/globals/pricing" },
   { label: "Add a client result", help: "Before/after photo + weights", href: "/admin/collections/testimonials/create" },
   { label: "Message clients", help: "Reminder or announcement", href: "/admin/collections/announcements/create" },
-  { label: "E-books", help: "Covers, Drive links", href: "/admin/collections/ebooks" },
-  { label: "E-book prices", help: "Per country, with or without a program", href: "/admin/globals/pricing" },
-  { label: "Homepage text", help: "Banners, goal picker", href: "/admin/globals/homepage" },
-  { label: "FAQs", help: "Add or edit questions", href: "/admin/collections/faqs" },
-  { label: "WhatsApp & contact info", help: "Number, emails, social links", href: "/admin/globals/site-settings" },
+];
+/** Pages hidden from the sidebar to keep it short (rarely needed), linked once at the bottom of the Overview. */
+const MORE_LINKS = [
+  { label: "Payment details (bank, JazzCash)", href: "/admin/globals/payments" },
+  { label: "Workout videos", href: "/admin/collections/workout-sessions" },
+  { label: "Wellness profiles", href: "/admin/collections/first-day-forms" },
+  { label: "Follow-up forms", href: "/admin/collections/follow-up-forms" },
+  { label: "Client issues", href: "/admin/collections/client-issues" },
+  { label: "Website messages", href: "/admin/collections/contact-messages" },
+  { label: "Newsletter sign-ups", href: "/admin/collections/subscribers" },
+  { label: "Legal pages", href: "/admin/collections/legal-pages" },
+  { label: "Photo library", href: "/admin/collections/media" },
+  { label: "Admin logins", href: "/admin/collections/users" },
 ];
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -216,6 +224,14 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
           </div>
         )}
       </section>
+      <h2 className="ftf-section">More</h2>
+      <p className="ftf-more">
+        {MORE_LINKS.map((l) => (
+          <Link key={l.href} href={l.href}>
+            {l.label}
+          </Link>
+        ))}
+      </p>
     </Gutter>
   );
 }

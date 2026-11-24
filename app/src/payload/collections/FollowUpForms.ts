@@ -15,7 +15,7 @@ export const FollowUpForms: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "member", "mood", "reviewed", "createdAt"],
-    group: "Clients",
+    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
     pagination: { defaultLimit: 50 },
     description: "Progress updates from clients. Read them, reply on WhatsApp, then tick \"Reviewed\".",
   },

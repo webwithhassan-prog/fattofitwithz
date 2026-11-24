@@ -12,7 +12,7 @@ export const Media: CollectionConfig = {
   admin: {
     useAsTitle: "alt", // show the description, not the file name
     defaultColumns: ["filename", "alt", "updatedAt"],
-    group: "Settings",
+    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
     pagination: { defaultLimit: 50 },
     description: "The photo library (every uploaded file). To change a picture on the website, go to Site photos (top of the menu) and press \"Replace photo\" under it: that's the easy way.",
   },

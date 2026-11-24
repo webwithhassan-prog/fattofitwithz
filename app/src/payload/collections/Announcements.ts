@@ -14,7 +14,7 @@ export const Announcements: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "audience", "member", "showUntil", "createdAt"],
-    group: "Messages to clients",
+    group: "Clients",
     description: "Shown on the client's dashboard. An announcement goes to every client; a reminder goes to one client.",
   },
   fields: [

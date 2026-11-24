@@ -15,7 +15,7 @@ export const FirstDayForms: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "member", "reviewed", "updatedAt"],
-    group: "Clients",
+    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
     pagination: { defaultLimit: 50 },
     description: "Each client's Personal Wellness Profile (filled in after joining). Read it, send her diet plan on WhatsApp, then tick \"Diet plan sent\".",
   },

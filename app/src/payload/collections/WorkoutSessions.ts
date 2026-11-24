@@ -9,7 +9,7 @@ export const WorkoutSessions: CollectionConfig = {
   admin: {
     useAsTitle: "workout",
     defaultColumns: ["workout", "week", "day", "youtubeUrl"],
-    group: "Website",
+    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
     pagination: { defaultLimit: 50 },
     description: "The recorded YouTube workouts on the member dashboard. Six per week (Monday to Saturday); day 1 = Monday.",
   },
