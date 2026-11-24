@@ -50,6 +50,11 @@ if (!process.env.PAYLOAD_SECRET) {
   console.error("[payload] PAYLOAD_SECRET is missing. Add a long random string to app/.env.local.");
 }
 
+/** Hides the developer "API" tab (raw data as code) on every admin page: the coach never needs it. */
+function hideApiTab<T extends { admin?: object }>(entity: T): T {
+  return { ...entity, admin: { ...entity.admin, hideAPIURL: true } };
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -103,8 +108,8 @@ export default buildConfig({
     MemberSessions,
     PasswordResets,
     SiteStats,
-  ],
-  globals: [Homepage, Payments, Pricing, SiteSettings, PagePhotos],
+  ].map(hideApiTab),
+  globals: [Homepage, Payments, Pricing, SiteSettings, PagePhotos].map(hideApiTab),
 
   secret: process.env.PAYLOAD_SECRET ?? "",
   // The admin login is only accepted from these addresses (protection against cross-site requests)
