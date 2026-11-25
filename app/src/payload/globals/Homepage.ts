@@ -92,6 +92,7 @@ export const Homepage: GlobalConfig = {
         {
           label: "Founder messages (not shown)",
           name: "founder",
+          admin: { condition: () => false }, // hidden: the slider was removed from the homepage (2026-11-24); data kept
           description: "NOT SHOWN on the website: this photo slider was removed from the homepage on 24 Nov 2026. Kept here only in case you want it back; changes have no effect.",
           fields: [
             {

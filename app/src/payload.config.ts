@@ -83,7 +83,7 @@ export default buildConfig({
   //   Messages to clients: Reminders & announcements
   //   Website:             Programs, E-books, Transformations, FAQs, Workout recordings, Homepage text
   //   Settings:            Photo library, Legal pages, Newsletter sign-ups, Admin logins,
-  //                        Payment details, Prices: e-books & countries, Contact info & menus
+  //                        Payment details, E-book prices, Contact info & menus
   // Hidden (group: false), used through other pages: Memberships (inside each client), logins, password links,
   // visit counts, Page photos (edited in Site photos).
   collections: [

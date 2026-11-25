@@ -144,12 +144,13 @@ export const Members: CollectionConfig = {
             {
               type: "row",
               fields: [
-                { name: "failedLogins", type: "number", defaultValue: 0, label: "Wrong passwords in a row" },
+                { name: "failedLogins", type: "number", defaultValue: 0, label: "Wrong passwords in a row", admin: { hidden: true } },
                 {
                   name: "lockedUntil",
                   type: "date",
                   label: "Locked until",
                   admin: {
+                    hidden: true, // shown in words above, with "Unlock now"
                     date: { pickerAppearance: "dayAndTime" },
                     description: '5 wrong passwords lock the account for 15 minutes. To unlock now, use "Unlock now" above.',
                   },

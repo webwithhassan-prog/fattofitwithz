@@ -1453,7 +1453,7 @@ export interface Homepage {
     };
     id?: string | null;
   }[];
-  founder: {
+  founder?: {
     author: string;
     authorTitle: string;
     slides: {
@@ -1514,7 +1514,7 @@ export interface Payment {
   createdAt?: string | null;
 }
 /**
- * E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > "Prices" tab). The program prices below are only a backup, used when a program has no price for a country or duration.
+ * E-book prices for each country. Open a country to change them. Program prices are NOT here: open the program (Website > Programs) and use its "Prices" tab.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pricing".

@@ -579,15 +579,3 @@ a.ftf-card:hover {
   color: var(--ftf-muted, #6b585d);
 }
 
-/* "More" on the Overview: rarely used pages, kept out of the sidebar */
-.ftf-more {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  font-size: 14px;
-}
-.ftf-more a {
-  color: var(--theme-elevation-700);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}

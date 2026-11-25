@@ -17,28 +17,6 @@ import { restartEndedFreezes } from "../../lib/members.server";
 
 const DAYS = 30;
 
-/** "Quick actions" at the top of the Overview: the jobs the coach does most, one click each. */
-const QUICK_ACTIONS = [
-  { label: "Confirm a payment", help: "Set an order to Paid", href: "/admin/collections/orders?where[status][equals]=pending" },
-  { label: "Change photos", help: "Banners, before/after, results", href: "/admin/site-photos" },
-  { label: "Program prices", help: "Open a program › Prices tab", href: "/admin/collections/programs" },
-  { label: "E-book prices", help: "Per country", href: "/admin/globals/pricing" },
-  { label: "Add a client result", help: "Before/after photo + weights", href: "/admin/collections/testimonials/create" },
-  { label: "Message clients", help: "Reminder or announcement", href: "/admin/collections/announcements/create" },
-];
-/** Pages hidden from the sidebar to keep it short (rarely needed), linked once at the bottom of the Overview. */
-const MORE_LINKS = [
-  { label: "Payment details (bank, JazzCash)", href: "/admin/globals/payments" },
-  { label: "Workout videos", href: "/admin/collections/workout-sessions" },
-  { label: "Wellness profiles", href: "/admin/collections/first-day-forms" },
-  { label: "Follow-up forms", href: "/admin/collections/follow-up-forms" },
-  { label: "Client issues", href: "/admin/collections/client-issues" },
-  { label: "Website messages", href: "/admin/collections/contact-messages" },
-  { label: "Newsletter sign-ups", href: "/admin/collections/subscribers" },
-  { label: "Legal pages", href: "/admin/collections/legal-pages" },
-  { label: "Photo library", href: "/admin/collections/media" },
-  { label: "Admin logins", href: "/admin/collections/users" },
-];
 const DAY = 24 * 60 * 60 * 1000;
 
 const formatNumber = (n: number) => n.toLocaleString("en-US");
@@ -129,16 +107,6 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
         <p className="ftf-muted">Welcome{name ? `, ${name}` : ""}. Sales of the last {DAYS} days and what needs your attention.</p>
       </header>
 
-      <h2 className="ftf-section">Quick actions</h2>
-      <div className="ftf-quick">
-        {QUICK_ACTIONS.map((q) => (
-          <Link key={q.href} href={q.href} className="ftf-quick__item">
-            <b>{q.label}</b>
-            <span>{q.help}</span>
-          </Link>
-        ))}
-      </div>
-
       <h2 className="ftf-section">To do</h2>
       <div className="ftf-cards">
         <StatCard label="Payments to confirm" value={o.todo.unpaid} note="orders waiting for payment" href="/admin/collections/orders?where[status][equals]=pending" highlight={o.todo.unpaid > 0} />
@@ -224,14 +192,6 @@ export async function Dashboard({ payload, user }: AdminViewServerProps) {
           </div>
         )}
       </section>
-      <h2 className="ftf-section">More</h2>
-      <p className="ftf-more">
-        {MORE_LINKS.map((l) => (
-          <Link key={l.href} href={l.href}>
-            {l.label}
-          </Link>
-        ))}
-      </p>
     </Gutter>
   );
 }

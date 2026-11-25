@@ -21,11 +21,11 @@ export const REGION_OPTIONS = [
 
 export const Pricing: GlobalConfig = {
   slug: "pricing",
-  label: "Prices: e-books & countries",
+  label: "E-book prices",
   admin: {
     group: "Settings",
     description:
-      "E-book prices and country settings. PROGRAM prices are now in each program (Website > Programs > open a program > \"Prices\" tab). The program prices below are only a backup, used when a program has no price for a country or duration.",
+      'E-book prices for each country. Open a country to change them. Program prices are NOT here: open the program (Website > Programs) and use its "Prices" tab.',
   },
   hooks: { afterChange: [revalidateGlobalAfterChange] },
   fields: [
@@ -35,7 +35,15 @@ export const Pricing: GlobalConfig = {
       label: "Countries",
       required: true,
       labels: { singular: "Country", plural: "Countries" },
-      admin: { initCollapsed: true, components: { RowLabel: rowLabel("{label} ({currency}): e-book {ebookPrice}, with a program {ebookPriceWithPlan}", "Country") } },
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: rowLabel(
+            "{label} ({currency}): e-book {ebookPrice}, with a program {ebookPriceWithPlan}",
+            "Country",
+          ),
+        },
+      },
       fields: [
         // E-book prices first (the program prices below are only a backup now).
         {
@@ -47,7 +55,10 @@ export const Pricing: GlobalConfig = {
               required: true,
               min: 0,
               label: "E-book price",
-              admin: { description: "One-time price when bought on its own (e.g. USD 8). Never monthly." },
+              admin: {
+                description:
+                  "One-time price when bought on its own (e.g. USD 8). Never monthly.",
+              },
             },
             {
               name: "ebookPriceWithPlan",
@@ -55,29 +66,80 @@ export const Pricing: GlobalConfig = {
               required: true,
               min: 0,
               label: "E-book price with a program",
-              validate: (value: number | null | undefined, { siblingData }: { siblingData: { ebookPrice?: number | null } }) => {
-                if (value === null || value === undefined) return "Please enter a price.";
-                if (typeof siblingData.ebookPrice === "number" && value > siblingData.ebookPrice) return "Should not be more than the normal e-book price.";
+              validate: (
+                value: number | null | undefined,
+                {
+                  siblingData,
+                }: { siblingData: { ebookPrice?: number | null } },
+              ) => {
+                if (value === null || value === undefined)
+                  return "Please enter a price.";
+                if (
+                  typeof siblingData.ebookPrice === "number" &&
+                  value > siblingData.ebookPrice
+                )
+                  return "Should not be more than the normal e-book price.";
                 return true;
               },
-              admin: { description: "Lower one-time price when added to a program, or for clients who already have one (e.g. USD 6)." },
+              admin: {
+                description:
+                  "Lower one-time price when added to a program, or for clients who already have one (e.g. USD 6).",
+              },
             },
           ],
         },
-        // Backup program prices (each program has its own prices in its "Prices" tab).
+        // Backup program prices (each program has its own prices in its "Prices" tab), folded away
+        // so this page reads as "e-book prices". A collapsible is layout only: no database change.
         {
-          name: "prices",
-          type: "array",
-          required: true,
-          labels: { singular: "Price", plural: "Prices" },
-          admin: { components: { RowLabel: rowLabel("{months}-month price: {amount} (was {compareAt})", "Price") } },
+          type: "collapsible",
+          label: "Backup program prices (not e-book, rarely needed)",
+          admin: {
+            initCollapsed: true,
+            description:
+              'Program prices are set in each program (Website > Programs > open a program > "Prices" tab). These are only used if a program has no price for this country or duration.',
+          },
           fields: [
             {
-              type: "row",
+              name: "prices",
+              type: "array",
+              required: true,
+              labels: { singular: "Price", plural: "Prices" },
+              admin: {
+                components: {
+                  RowLabel: rowLabel(
+                    "{months}-month price: {amount} (was {compareAt})",
+                    "Price",
+                  ),
+                },
+              },
               fields: [
-                { name: "months", type: "number", required: true, min: 1, max: 12, label: "Months" },
-                { name: "amount", type: "number", required: true, min: 0, label: "Price" },
-                { name: "compareAt", type: "number", required: true, min: 0, label: "Was (crossed out)" },
+                {
+                  type: "row",
+                  fields: [
+                    {
+                      name: "months",
+                      type: "number",
+                      required: true,
+                      min: 1,
+                      max: 12,
+                      label: "Months",
+                    },
+                    {
+                      name: "amount",
+                      type: "number",
+                      required: true,
+                      min: 0,
+                      label: "Price",
+                    },
+                    {
+                      name: "compareAt",
+                      type: "number",
+                      required: true,
+                      min: 0,
+                      label: "Was (crossed out)",
+                    },
+                  ],
+                },
               ],
             },
           ],
@@ -91,14 +153,31 @@ export const Pricing: GlobalConfig = {
             {
               type: "row",
               fields: [
-                { name: "code", type: "select", required: true, options: REGION_OPTIONS, label: "Price list" },
-                { name: "label", type: "text", required: true, label: "Name in the country picker" },
+                {
+                  name: "code",
+                  type: "select",
+                  required: true,
+                  options: REGION_OPTIONS,
+                  label: "Price list",
+                },
+                {
+                  name: "label",
+                  type: "text",
+                  required: true,
+                  label: "Name in the country picker",
+                },
               ],
             },
             {
               type: "row",
               fields: [
-                { name: "currency", type: "text", required: true, label: "Currency code", admin: { description: "3 letters, e.g. PKR" } },
+                {
+                  name: "currency",
+                  type: "text",
+                  required: true,
+                  label: "Currency code",
+                  admin: { description: "3 letters, e.g. PKR" },
+                },
                 {
                   name: "format",
                   type: "text",
@@ -116,9 +195,17 @@ export const Pricing: GlobalConfig = {
                   type: "text",
                   required: true,
                   label: "Visitors from",
-                  admin: { description: "2-letter country codes, separated by commas, e.g. AE" },
+                  admin: {
+                    description:
+                      "2-letter country codes, separated by commas, e.g. AE",
+                  },
                 },
-                { name: "isDefault", type: "checkbox", label: "Also use for every other country", defaultValue: false },
+                {
+                  name: "isDefault",
+                  type: "checkbox",
+                  label: "Also use for every other country",
+                  defaultValue: false,
+                },
               ],
             },
           ],

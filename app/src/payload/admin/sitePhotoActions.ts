@@ -7,7 +7,7 @@
  *
  * `target` says which place, e.g.:
  *   global:page-photos:beforePhoto            one photo field of a settings page
- *   array:homepage:banners:2:photo            row 3 of a list (banners, founder.slides)
+ *   array:homepage:banners:2:photo            row 3 of the homepage banners
  *   doc:testimonials:12:image                 one item of a list page (testimonials, ebooks)
  * Only the places listed in TARGETS can be changed. Only a logged-in admin may use it.
  */

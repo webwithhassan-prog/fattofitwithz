@@ -7,7 +7,7 @@ import type { Payload } from "payload";
 /** The places that can be changed, e.g. "array:homepage:banners:2:photo" (see sitePhotoActions.ts). */
 export const PHOTO_TARGETS = [
   /^global:page-photos:(beforePhoto|afterPhoto|aboutPhoto)$/,
-  /^array:homepage:(banners|founder\.slides):\d{1,2}:photo$/,
+  /^array:homepage:banners:\d{1,2}:photo$/, // (the founder slider was removed 2026-11-24)
   /^doc:testimonials:\d+:image$/,
   /^doc:ebooks:\d+:cover$/,
 ];
@@ -30,15 +30,10 @@ export async function assignPhoto(payload: Payload, target: string, mediaId: num
     const [field] = rest;
     await payload.updateGlobal({ slug: "page-photos", data: { [field]: mediaId } });
   } else if (kind === "array") {
-    const [path, index, field] = rest;
+    const [, index, field] = rest; // only "banners" (see PHOTO_TARGETS)
     const home = await payload.findGlobal({ slug: "homepage", depth: 0 });
-    if (path === "banners") {
-      const banners = home.banners.map((row, i) => (i === Number(index) ? { ...row, [field]: mediaId } : row));
-      await payload.updateGlobal({ slug: "homepage", data: { banners } });
-    } else {
-      const slides = home.founder.slides.map((row, i) => (i === Number(index) ? { ...row, [field]: mediaId } : row));
-      await payload.updateGlobal({ slug: "homepage", data: { founder: { ...home.founder, slides } } });
-    }
+    const banners = home.banners.map((row, i) => (i === Number(index) ? { ...row, [field]: mediaId } : row));
+    await payload.updateGlobal({ slug: "homepage", data: { banners } });
   } else if (kind === "doc") {
     const [id, field] = rest;
     if (slug === "testimonials") await payload.update({ collection: "testimonials", id: Number(id), data: { [field]: mediaId } });

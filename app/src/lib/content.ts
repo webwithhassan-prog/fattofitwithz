@@ -23,7 +23,6 @@ import type {
   BeforeAfter,
   EbookOffer,
   FaqItem,
-  FounderSlide,
   Goal,
   HeroBanner,
   InstagramItem,
@@ -200,15 +199,6 @@ export async function getHeroBanners(): Promise<{ autoplayMs: number; banners: H
         badge: b.badge,
       };
     }),
-  };
-}
-
-export async function getFounderSlides(): Promise<{ author: string; authorTitle: string; slides: FounderSlide[] }> {
-  const { founder } = await getHomepageGlobal();
-  return {
-    author: founder.author,
-    authorTitle: founder.authorTitle,
-    slides: founder.slides.map((s) => ({ photo: photo(s.photo).src, caption: s.caption, message: s.message, source: s.source ?? "" })),
   };
 }
 

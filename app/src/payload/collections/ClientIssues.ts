@@ -18,7 +18,7 @@ export const ClientIssues: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "status", "createdAt"],
-    group: false, // hidden from the menu (2026-11-25, kept simple); open it from admin Overview > More
+    group: false, // not in the menu (kept short); the Overview cards and client pages link here
     pagination: { defaultLimit: 50 },
     description: "Problems reported by clients. Write a reply (she sees it on her dashboard) and set the status.",
   },
