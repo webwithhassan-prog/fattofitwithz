@@ -94,6 +94,7 @@ export const Pricing: GlobalConfig = {
           type: "collapsible",
           label: "Backup program prices (not e-book, rarely needed)",
           admin: {
+            condition: () => false, // hidden: every program has its own prices (checked 2026-11-25); kept as a safety net
             initCollapsed: true,
             description:
               'Program prices are set in each program (Website > Programs > open a program > "Prices" tab). These are only used if a program has no price for this country or duration.',
